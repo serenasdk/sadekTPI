@@ -4,7 +4,7 @@
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <link href="../Documents/NetBeansProjects/TemplateTripTracker/stylesheets/templateMap.css" rel="stylesheet" type="text/css"/>
 <link href="stylesheets/frontPage.css" rel="stylesheet" type="text/css"/>
-
+<script src="js/LoginRegister.js" type="text/javascript"></script>
 <!-- Contenu de la page -->
 
 <div class="background-image"></div>
@@ -69,9 +69,10 @@
             <div class="loginmodal-container">
                 <h1>Connexion</h1><br>
                 <form method="post" action="index.php">
-                    <input type="text" name="user" placeholder="Nom d'utilisateur">
-                    <input type="password" name="pass" placeholder="Mot de passe">
-                    <input type="submit" name="login" class="login loginmodal-submit" value="Valider">
+                    <div class="form-group" id="userNameLogP"><input type="text" id="userNameLog" class="form-control" name="user" placeholder="Nom d'utilisateur"> </div>
+                    <div class="form-group" id="passLogP"><input type="password" id="passLog" class="form-control" name="pass" placeholder="Mot de passe"> </div>
+                    <div id="errorSectionLog"></div>
+                    <input type="button" name="login" id="login" class="login loginmodal-submit" value="Valider">
                 </form>
 
                 <div class="login-help">
@@ -84,10 +85,13 @@
             <div class="loginmodal-container">
                 <h1>Inscription</h1><br>
                 <form method="post" action="index.php">
-                    <input type="text" name="user" placeholder="Nom d'utilisateur">
-                    <input type="password" name="pass" placeholder="Mot de passe">
-                    <input type="password" name="passConf" placeholder="Confirmation du mot de passe">
-                    <input type="submit" name="register" class="login loginmodal-submit" value="Valider">
+                    <div id="userNameRegP" class="form-group">
+                        <input type="text" class="form-control" name="user" id="userNameReg" placeholder="Nom d'utilisateur">
+                    </div>
+                    <div id="passRegP" class="form-group"><input class="form-control" type="password" name="pass"  id="passReg" placeholder="Mot de passe"></div>
+                    <div id="passConfirmRegP" class="form-group"><input type="password" class="form-control" name="passConf" id="passConfirmReg" placeholder="Confirmation du mot de passe"></div>
+                    <div id="errorSectionReg"></div>
+                    <input type="button" name="register"   id="register" class="login loginmodal-submit" value="Valider">
                 </form>
 
                 <div class="login-help">
@@ -95,4 +99,4 @@
             </div>
         </div>
     </div>
-</div>
+</div

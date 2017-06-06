@@ -5,13 +5,6 @@ if (isset($_POST["deco"])) {
     session_destroy();
     Header('Location: ' . $_SERVER['PHP_SELF']);
 }
-
-if (isset($_POST["login"])) {
-    $_SESSION["idUser"] = 1;
-}
-if (isset($_POST["register"])) {
-    
-}
 ?>
 <!DOCTYPE html>
 <html>
