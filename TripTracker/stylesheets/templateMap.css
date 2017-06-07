@@ -118,3 +118,8 @@ body { overflow: hidden; }
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+.insertPanel{
+    max-height: 90em;
+    overflow-y: auto;
+}
