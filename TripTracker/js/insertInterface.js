@@ -8,6 +8,7 @@
 var InsertionElements = [];
 var count = 0;
 var coll = true;
+var focus = null;
 
 $(document).ready(function () {
 
@@ -83,6 +84,13 @@ $(document).ready(function () {
             //console.log($('#navTrips .collapse').not(id));
             $('#InsertionContent .collapse').not(id).collapse("hide");
             coll = true;
+            focus = id.substring(8, id.length);
+        }
+    });
+    
+    $('body').on('hide.bs.collapse', '#InsertionContent .collapse', function () {
+        if (coll) {
+            focus = null;
         }
     });
 
@@ -96,7 +104,6 @@ $(document).ready(function () {
         else {
             $(target).html("[Insérer un titre]");
         }
-
     });
 });
 

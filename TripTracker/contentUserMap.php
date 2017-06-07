@@ -184,7 +184,7 @@
             <div class="panel-collapse collapse in">
                 <div class="panel-body list-group insertPanel">
                     <div id="InsertionContent">
-
+                        
                     </div>
                     <div id="InsertionControls">
                         <input type="button" id="AddState" class="btn btn-default pull-left" value="Ajouter une étape">

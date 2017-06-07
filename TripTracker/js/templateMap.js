@@ -1,4 +1,8 @@
 var coll = true;
+var creating = false;
+
+var creationMarkers = [];
+var créationRoutes = [];
 
 $(document).ready(function () {
     initMap();
@@ -107,6 +111,7 @@ function openAdd() {
         $('#navInsert .sidebar-body').toggle();
         $('#cmdInsert').hide();
     }
+    creating = true;
 }
 function closeAdd(reopen) {
     if ($('#navInsert .sidebar-body').is(":visible") == true) {
@@ -117,6 +122,7 @@ function closeAdd(reopen) {
     } else {
         if (!reopen) {
             $('#cmdInsert').hide();
+            creating = false;
         }
     }
 }
