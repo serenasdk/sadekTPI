@@ -181,21 +181,32 @@ function getAdresseFromPosition(Position) {
     });
 }
 
-function getPositionFromAdresse() {
+function getPositionFromAdresse(Adresse) {
     var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({'location': Position}, function (results, status) {
+    geocoder.geocode({'address': Adresse}, function (results, status) {
         if (status === 'OK') {
-            if (results[1]) {
-                var id = "#adress" + focus;
-                $(id).val(results[1].formatted_address);
-
-            } else {
-                alert('Nous n\'avons rien trouvé pour cette adresse');
-            }
+            console.log(results);
+            var id = "#adress" + focus;
+            $(id).val(results[0].formatted_address);
+            placeMarker(new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
         } else {
             window.alert('Geocoder failed due to: ' + status);
         }
     });
+}
+
+function geoLocation() {
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            getAdresseFromPosition(pos);
+        }, function () {
+            alert("Une erreur est survenue lors de la géolocalisation");
+        });
+    } else {
+        alert("La géolocalisation n'est pas autorisée par votre navigateur.");
+    }
 }
 
 function placeMarker(location) {
@@ -229,11 +240,11 @@ function TracePreviousRoad(PlaceId) {
                     //console.log("no route");
                     return;
                 } else {
-                    if (typeof creationRoutes[PlaceId-1] == "object") {
-                        creationRoutes[PlaceId-1].display.setMap(null);
+                    if (typeof creationRoutes[PlaceId - 1] == "object") {
+                        creationRoutes[PlaceId - 1].display.setMap(null);
                     }
                     if (true) {
-                        setPath(creationMarkers[PlaceId], creationMarkers[count], PlaceId-1);
+                        setPath(creationMarkers[PlaceId], creationMarkers[count], PlaceId - 1);
                     }
                     //console.log(count);
                 }
@@ -243,7 +254,7 @@ function TracePreviousRoad(PlaceId) {
 }
 
 function TraceNextRoad(PlaceId) {
-    
+
     if (Number(PlaceId) + 1 < creationMarkers.length) {
         //console.log("in");
         var posiArray = creationMarkers.slice(Number(PlaceId) + 1, creationMarkers.length);
@@ -255,9 +266,10 @@ function TraceNextRoad(PlaceId) {
                     //console.log("no route");
                     return;
                 } else {
-                    creationRoutes[count-1].display.setMap(null);
+                    creationRoutes[count - 1].display.setMap(null);
                     if (true) {
-                        setPath(creationMarkers[PlaceId], creationMarkers[count], count-1);
+
+                        setPath(creationMarkers[PlaceId], creationMarkers[count], count - 1);
                     }
                     //console.log(count);
                 }
@@ -277,12 +289,12 @@ function TraceNextRoad(PlaceId) {
 function setPath(position1, position2, StoragePosition) {
     creationRoutes[StoragePosition] = [];
     creationRoutes[StoragePosition].display = new google.maps.DirectionsRenderer({suppressMarkers: true});
-    
+
     var dep = new google.maps.LatLng(position1.position.lat(), position1.position.lng());
     var arr = new google.maps.LatLng(position2.position.lat(), position2.position.lng());
 
     var directionsService = new google.maps.DirectionsService();
-    
+
     creationRoutes[StoragePosition].display.setMap(map);
 
     var request = {
@@ -291,8 +303,8 @@ function setPath(position1, position2, StoragePosition) {
         travelMode: google.maps.TravelMode.WALKING,
         provideRouteAlternatives: false
     };
-    
-    
+
+
     directionsService.route(request, function (response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
             creationRoutes[StoragePosition].route = response;
@@ -307,3 +319,5 @@ function setPath(position1, position2, StoragePosition) {
 function drawFlight() {
 
 }
+
+

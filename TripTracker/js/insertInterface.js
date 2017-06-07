@@ -19,7 +19,7 @@ $(document).ready(function () {
         if (count > 0) {
             creationRoutes.push("none");
         }
-        
+
         var length = count;
         count++;
         $("#InsertionContent").append(
@@ -45,8 +45,8 @@ $(document).ready(function () {
                             <div class="input-group col-lg-11">\n\
                                 <input type="text" id="adress' + length + '" class="form-control" placeholder="Adresse de l\'étape">\n\
                                 <div class="input-group-btn">\n\
-                                    <button class="btn btn-default" id="findLoc"><i class="glyphicon glyphicon-search col-lg-1"></i></button>\n\
-                                    <button class="btn btn-default" id="MyLoc"><i class="glyphicon glyphicon-screenshot col-lg-1"></i></button>\n\
+                                    <button class="btn btn-default searchLoc" id="secfind' + length + '"><i id="findLoc' + length + '" class="glyphicon glyphicon-search col-lg-1"></i></button>\n\
+                                    <button class="btn btn-default searchMyLoc" id="secMyLc' + length + '"><i  id="MyLoc' + length + '" class="glyphicon glyphicon-screenshot col-lg-1"></i></button>\n\
                                 </div>\n\
                             </div>\n\
                         </div>\n\
@@ -90,6 +90,20 @@ $(document).ready(function () {
         creationRoutes[position] = null;
     });
 
+    $('body').on('click', '.searchLoc', function () {
+        var id = event.target.id;
+        var ref = id.substring(7, id.length);
+        var source = "#adress"+ ref;
+        var address = $(source).val();
+        if (address.length > 0) {
+            getPositionFromAdresse(address);
+        }
+    });
+    
+    $('body').on('click', '.searchMyLoc', function () {
+        geoLocation();
+    });
+
     $('body').on('show.bs.collapse', '#InsertionContent .collapse', function () {
         if (coll) {
             coll = false;
@@ -100,7 +114,7 @@ $(document).ready(function () {
             focus = id.substring(8, id.length);
         }
     });
-    
+
     $('body').on('hide.bs.collapse', '#InsertionContent .collapse', function () {
         if (coll) {
             focus = null;
