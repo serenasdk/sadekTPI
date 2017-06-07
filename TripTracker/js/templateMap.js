@@ -2,12 +2,12 @@ var coll = true;
 var creating = false;
 
 var creationMarkers = [];
-var créationRoutes = [];
+var creationRoutes = [];
 
 $(document).ready(function () {
     initMap();
     $("#navTrips .collapse").collapse({toggle: false});
-    
+
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
 
     $('#navInsert .slide-submenu').closest('.sidebar-body').hide();
@@ -66,6 +66,12 @@ $(document).ready(function () {
             coll = true;
         }
     });
+
+    google.maps.event.addListener(map, 'click', function (event) {
+        if (focus !== null) {
+            getAdresseFromPosition(event.latLng);
+        }
+    });
 });
 
 function openLeft() {
@@ -112,6 +118,10 @@ function openAdd() {
         $('#cmdInsert').hide();
     }
     creating = true;
+    creationMarkers = [];
+    creationRoutes = [];
+    count = 0;
+
 }
 function closeAdd(reopen) {
     if ($('#navInsert .sidebar-body').is(":visible") == true) {
@@ -123,6 +133,9 @@ function closeAdd(reopen) {
         if (!reopen) {
             $('#cmdInsert').hide();
             creating = false;
+            creationMarkers = [];
+            creationRoutes = [];
+            count = 0;
         }
     }
 }
@@ -145,4 +158,139 @@ function initMap() {
     var mapElement = document.getElementById('map');
 
     map = new google.maps.Map(mapElement, mapOptions);
+}
+
+function getAdresseFromPosition(Position) {
+
+    //var input = document.getElementById('latlng').value;
+    //var latlngStr = input.split(',', 2);
+    //var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'location': Position}, function (results, status) {
+        if (status === 'OK') {
+            if (results[1]) {
+                placeMarker(Position);
+                var id = "#adress" + focus;
+                $(id).val(results[1].formatted_address);
+            } else {
+                alert('Pas d\'adresse réferencée pour cette position');
+            }
+        } else {
+            window.alert('Geocoder failed due to: ' + status);
+        }
+    });
+}
+
+function getPositionFromAdresse() {
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'location': Position}, function (results, status) {
+        if (status === 'OK') {
+            if (results[1]) {
+                var id = "#adress" + focus;
+                $(id).val(results[1].formatted_address);
+
+            } else {
+                alert('Nous n\'avons rien trouvé pour cette adresse');
+            }
+        } else {
+            window.alert('Geocoder failed due to: ' + status);
+        }
+    });
+}
+
+function placeMarker(location) {
+    if (focus !== null) {
+        if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
+            creationMarkers[focus].setMap(null);
+        }
+        console.log(creationMarkers[focus]);
+        creationMarkers[focus] = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+
+        TraceRoute(focus);
+    }
+}
+
+function TraceRoute(PlaceId) {
+    TracePreviousRoad(PlaceId);
+    TraceNextRoad(PlaceId);
+}
+
+function TracePreviousRoad(PlaceId) {
+    if (PlaceId - 1 >= 0) {
+        var negaArray = creationMarkers.slice(0, PlaceId).reverse();
+        var count = PlaceId - 1;
+        console.log(negaArray);
+        negaArray.forEach(function (element) {
+            if (creationMarkers[count] !== null) {
+                if (creationMarkers[count] == "none") {
+                    console.log("no route");
+                    return;
+                } else {
+                    setPath(creationMarkers[PlaceId], creationMarkers[count]);
+                    console.log(count);
+                }
+            }
+        });
+    }
+}
+
+function TraceNextRoad(PlaceId) {
+    
+    if (Number(PlaceId) + 1 < creationMarkers.length) {
+        console.log("in");
+        var posiArray = creationMarkers.slice(Number(PlaceId) + 1, creationMarkers.length);
+        console.log(posiArray);
+        var count = Number(PlaceId) + 1;
+        posiArray.forEach(function (element) {
+            if (creationMarkers[count] !== null) {
+                if (creationMarkers[count] == "none") {
+                    console.log("no route");
+                    return;
+                } else {
+                    setPath(creationMarkers[PlaceId], creationMarkers[count]);
+                    console.log(count);
+                }
+            }
+            count++;
+        });
+    }
+}
+
+/**
+ * Prépare les paramètres de la fonction de géocodage, pour éviter 
+ * que son caractère asyncrone lui fasse perdre des informaitons.
+ * @param {type} position1
+ * @param {type} position2
+ * @returns {undefined}
+ */
+function setPath(position1, position2) {
+    console.log(position1, position2);
+    var dep = new google.maps.LatLng(position1.position.lat(), position1.position.lng());
+    var arr = new google.maps.LatLng(position2.position.lat(), position2.position.lng());
+
+    var directionsService = new google.maps.DirectionsService();
+    var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+    directionsDisplay.setMap(map);
+
+    var request = {
+        origin: dep,
+        destination: arr,
+        travelMode: google.maps.TravelMode.WALKING
+    };
+    
+    directionsService.route(request, function (response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+        }
+        else {
+            alert('Directions request failed due to ' + status);
+        }
+    });
+}
+
+function drawFlight() {
+
 }

@@ -15,6 +15,7 @@ $(document).ready(function () {
 
 
     $("#AddState").click(function () {
+        creationMarkers.push("none");
         var length = count;
         count++;
         $("#InsertionContent").append(
@@ -38,7 +39,7 @@ $(document).ready(function () {
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-map-marker col-lg-1"></i>\n\
                             <div class="input-group col-lg-11">\n\
-                                <input type="text" class="form-control" placeholder="Adresse de l\'étape">\n\
+                                <input type="text" id="adress' + length + '" class="form-control" placeholder="Adresse de l\'étape">\n\
                                 <div class="input-group-btn">\n\
                                     <button class="btn btn-default" id="findLoc"><i class="glyphicon glyphicon-search col-lg-1"></i></button>\n\
                                     <button class="btn btn-default" id="MyLoc"><i class="glyphicon glyphicon-screenshot col-lg-1"></i></button>\n\
@@ -75,6 +76,13 @@ $(document).ready(function () {
         var position = id.substring(5, id.length);
         var DeleteItemID = "#insert" + position;
         $(DeleteItemID).remove();
+        if (position == focus) {
+            focus = null;
+        }
+        if (creationMarkers[position] !== "none" && creationMarkers[position] !== null) {
+            creationMarkers[position].setMap(null);
+        }
+        creationMarkers[position] = null;
     });
 
     $('body').on('show.bs.collapse', '#InsertionContent .collapse', function () {
