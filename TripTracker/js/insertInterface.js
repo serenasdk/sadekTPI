@@ -1,0 +1,104 @@
+/* 
+ * SADEK Serena
+ * Juin 2017
+ * TripTracker
+ * Toute les fonctions reliées à l'onglet permettant l'insertion de voyage
+ */
+
+var InsertionElements = [];
+var count = 0;
+var coll = true;
+
+$(document).ready(function () {
+
+
+
+    $("#AddState").click(function () {
+        var length = count;
+        count++;
+        $("#InsertionContent").append(
+                '<div class="panel panel-default" id="insert' + length + '">'
+                + '<div class="panel-heading" role="tab" id="headInsert' + length + '">'
+                + '<h4 class="panel-title">'
+                + '<a role="button" data-toggle="collapse" id="TripName' + length + '" href="#content' + length + '" aria-expanded="true" aria-controls="content' + length + '" class="trigger collapsed">[Insérer un titre]</a>'
+                + '<button type="button" id="Close' + length + '" class="close pull-right closeInsertionPanel" aria-label="Close" ' + length + '">&times;</button></h4></div>'
+                + '<div id="content' + length + '" class="panel-collapse collapse" role="tabpane' + length + '" aria-labelledby="headInsert' + length + '">'
+                + '<div class="panel-body">'
+                + '<ul class="list-group">'
+                + '<li class="list-group-item">' //\n\
+                + '<!-- Titre à modifier -->\n\
+                        <div class="form-group">\n\
+                            <i class="glyphicon glyphicon-flag col-lg-1"></i>\n\
+                            <div class="input-group col-lg-11">\n\
+                                <input type="text" id="title' + length + '" class="form-control titleControl" placeholder="Titre de L\'étape">\n\
+                            </div>\n\
+                        </div>\n\
+                        <!-- Recherche d\'adresse -->\n\
+                        <div class="form-group">\n\
+                            <i class="glyphicon glyphicon-map-marker col-lg-1"></i>\n\
+                            <div class="input-group col-lg-11">\n\
+                                <input type="text" class="form-control" placeholder="Adresse de l\'étape">\n\
+                                <div class="input-group-btn">\n\
+                                    <button class="btn btn-default" id="findLoc"><i class="glyphicon glyphicon-search col-lg-1"></i></button>\n\
+                                    <button class="btn btn-default" id="MyLoc"><i class="glyphicon glyphicon-screenshot col-lg-1"></i></button>\n\
+                                </div>\n\
+                            </div>\n\
+                        </div>\n\
+                        <!-- Selection de la date -->\n\
+                        <div class="form-group">\n\
+                            <i class="glyphicon glyphicon-time col-lg-1"></i>\n\
+                            <div class="input-group col-lg-11">\n\
+                                <input type="text" class="form-control" placeholder="Date de l\'étape">\n\
+                                <div class="input-group-btn">\n\
+                                    <button class="btn btn-default" id="MyLoc"><i class="glyphicon glyphicon-calendar col-lg-1"></i></button>\n\
+                                </div>\n\
+                            </div>\n\
+                        </div>'
+                + '</li>'
+                + '<li class="list-group-item">'
+                + '<p>ça va ?</p>' //Ajout des images
+                + '</li>'
+                + '<li class="list-group-item">'
+                + '<p>Moi personellement ça va.</p>' //commentaires textuels
+                + '</li>'
+                + '</ul>'
+                + '</div></div></div>'
+                );
+        var name = '#content' + length;
+        $(name).collapse({toggle: false});
+
+    });
+
+    $('body').on('click', '.closeInsertionPanel', function () {
+        var id = event.target.id;
+        var position = id.substring(5, id.length);
+        var DeleteItemID = "#insert" + position;
+        $(DeleteItemID).remove();
+    });
+
+    $('body').on('show.bs.collapse', '#InsertionContent .collapse', function () {
+        if (coll) {
+            coll = false;
+            var id = "#" + (this.id);
+            //console.log($('#navTrips .collapse').not(id));
+            $('#InsertionContent .collapse').not(id).collapse("hide");
+            coll = true;
+        }
+    });
+
+    $('body').on('change', '.titleControl', function () {
+        var id = event.target.id;
+        var target = "#TripName" + id.substring(5, id.length);
+        var value = event.target.value;
+        if (value.length > 1) {
+            $(target).html(value);
+        }
+        else {
+            $(target).html("[Insérer un titre]");
+        }
+
+    });
+});
+
+
+

@@ -37,7 +37,7 @@ $(document).ready(function () {
         closeLeft(false);
         closeRight(false);
         var height = $(window).height() - 50 - 37 - 7;
-        $('#navInsert .panel-body').css("height", height);
+        $('#navInsert #insertPanel').css("height", height);
         window.setTimeout(function () {
             openAdd();
         }, 400);

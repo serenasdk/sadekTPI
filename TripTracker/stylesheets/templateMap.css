@@ -82,3 +82,34 @@ body { overflow: hidden; }
 #navTrips .panel-body{
     margin-bottom: 0px;
 }
+
+#insertPanel{
+    overflow-y: auto;
+}
+
+#InsertionControls{
+    margin: 15px;
+}
+
+#InsertionContent .panel-body{
+    margin: 0px;
+    padding: 0px;
+}
+
+.glyphicon-map-marker{
+    font-size: 2em;
+}
+
+.glyphicon-flag{
+    font-size: 1.5em;
+}
+
+.glyphicon-time{
+    font-size: 2em;
+}
+
+.input-group-btn .btn{
+    height: 34px;
+    margin: 0px;
+    padding: 0px;
+}
