@@ -203,7 +203,7 @@ function placeMarker(location) {
         if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
             creationMarkers[focus].setMap(null);
         }
-        console.log(creationMarkers[focus]);
+        //console.log(creationMarkers[focus]);
         creationMarkers[focus] = new google.maps.Marker({
             position: location,
             map: map
@@ -222,15 +222,20 @@ function TracePreviousRoad(PlaceId) {
     if (PlaceId - 1 >= 0) {
         var negaArray = creationMarkers.slice(0, PlaceId).reverse();
         var count = PlaceId - 1;
-        console.log(negaArray);
+        //console.log(negaArray);
         negaArray.forEach(function (element) {
             if (creationMarkers[count] !== null) {
                 if (creationMarkers[count] == "none") {
-                    console.log("no route");
+                    //console.log("no route");
                     return;
                 } else {
-                    setPath(creationMarkers[PlaceId], creationMarkers[count]);
-                    console.log(count);
+                    if (typeof creationRoutes[PlaceId-1] == "object") {
+                        creationRoutes[PlaceId-1].display.setMap(null);
+                    }
+                    if (true) {
+                        setPath(creationMarkers[PlaceId], creationMarkers[count], PlaceId-1);
+                    }
+                    //console.log(count);
                 }
             }
         });
@@ -240,18 +245,21 @@ function TracePreviousRoad(PlaceId) {
 function TraceNextRoad(PlaceId) {
     
     if (Number(PlaceId) + 1 < creationMarkers.length) {
-        console.log("in");
+        //console.log("in");
         var posiArray = creationMarkers.slice(Number(PlaceId) + 1, creationMarkers.length);
-        console.log(posiArray);
+        //console.log(posiArray);
         var count = Number(PlaceId) + 1;
         posiArray.forEach(function (element) {
             if (creationMarkers[count] !== null) {
                 if (creationMarkers[count] == "none") {
-                    console.log("no route");
+                    //console.log("no route");
                     return;
                 } else {
-                    setPath(creationMarkers[PlaceId], creationMarkers[count]);
-                    console.log(count);
+                    creationRoutes[count-1].display.setMap(null);
+                    if (true) {
+                        setPath(creationMarkers[PlaceId], creationMarkers[count], count-1);
+                    }
+                    //console.log(count);
                 }
             }
             count++;
@@ -266,24 +274,29 @@ function TraceNextRoad(PlaceId) {
  * @param {type} position2
  * @returns {undefined}
  */
-function setPath(position1, position2) {
-    console.log(position1, position2);
+function setPath(position1, position2, StoragePosition) {
+    creationRoutes[StoragePosition] = [];
+    creationRoutes[StoragePosition].display = new google.maps.DirectionsRenderer({suppressMarkers: true});
+    
     var dep = new google.maps.LatLng(position1.position.lat(), position1.position.lng());
     var arr = new google.maps.LatLng(position2.position.lat(), position2.position.lng());
 
     var directionsService = new google.maps.DirectionsService();
-    var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
-    directionsDisplay.setMap(map);
+    
+    creationRoutes[StoragePosition].display.setMap(map);
 
     var request = {
         origin: dep,
         destination: arr,
-        travelMode: google.maps.TravelMode.WALKING
+        travelMode: google.maps.TravelMode.WALKING,
+        provideRouteAlternatives: false
     };
+    
     
     directionsService.route(request, function (response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
+            creationRoutes[StoragePosition].route = response;
+            creationRoutes[StoragePosition].display.setDirections(response);
         }
         else {
             alert('Directions request failed due to ' + status);

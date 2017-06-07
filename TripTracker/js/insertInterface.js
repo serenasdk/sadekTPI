@@ -16,6 +16,10 @@ $(document).ready(function () {
 
     $("#AddState").click(function () {
         creationMarkers.push("none");
+        if (count > 0) {
+            creationRoutes.push("none");
+        }
+        
         var length = count;
         count++;
         $("#InsertionContent").append(
@@ -83,6 +87,7 @@ $(document).ready(function () {
             creationMarkers[position].setMap(null);
         }
         creationMarkers[position] = null;
+        creationRoutes[position] = null;
     });
 
     $('body').on('show.bs.collapse', '#InsertionContent .collapse', function () {
