@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 /*
@@ -11,7 +10,7 @@ session_start();
  * Elle est utilisée pour la connexion et l'inscription
  */
 
-require_once 'connection.php';
+require_once '../connection.php';
 
 if (isset($_POST["register"])) {
     $result = [];
@@ -41,6 +40,7 @@ if (isset($_POST["login"])) {
     
     $result = connectUser($username, $pwd);
     if (is_numeric($result)) {
+        $_SESSION["result"] = $result;
         $_SESSION["idUser"] = $result;
     }
     echo json_encode($result);
@@ -67,7 +67,7 @@ function userExist($username) {
 function registerUser($username, $pwd) {
     $crypt = sha1($pwd);
     $co = getConnection();
-    $req = $co->prepare("INSERT INTO user(`userName`, `password`) values (:userName, :password)");
+    $req = $co->prepare("INSERT INTO user(`userName`, `userPwd`) values (:userName, :password)");
     $req->bindParam(":userName", $username, PDO::PARAM_STR);
     $req->bindParam(":password", $crypt, PDO::PARAM_STR);
     $req->execute();
@@ -89,7 +89,7 @@ function connectUser($username, $pwd) {
     $req->execute();
     $result = $req->fetchAll(PDO::FETCH_ASSOC);
     if (count($result) > 0) {
-        if ($result[0]["password"] === sha1($pwd)) {
+        if ($result[0]["userPwd"] === sha1($pwd)) {
             return $result[0]["idUser"];
         } else {
             return TRUE;

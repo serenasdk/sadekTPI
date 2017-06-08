@@ -32,7 +32,7 @@ $(document).ready(function () {
         if (valid) { //Si tout les champs sont correctes
             $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
                 type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
-                url: '../AJAX/UserDbRelation.php',
+                url: './AJAX/UserDbRelation.php',
                 data: {userName: username, password: pwd, login: true},
                 success: function (response) {
                     if (response == "true") { // True => l'utilisateur existe mais le mot de passe est incorrecte
@@ -45,6 +45,7 @@ $(document).ready(function () {
                         $('#errorSectionLog').addClass('alert-danger');
                         $('#errorSectionLog').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>L\'utilisateur n\'existe pas');
                     } else { // Valeur numérique => Les informations sont correctes
+                        alert(response);
                         $('#errorSectionLog').addClass('alert');
                         $('#errorSectionLog').removeClass('alert-danger');
                         $('#errorSectionLog').addClass('alert-success');
@@ -91,7 +92,7 @@ $(document).ready(function () {
             if (pwd == confirm) { //Si les mots de passe correspondent
                 $.ajax({//On demande à la base de donnée d'ajouter l'utilisateur à la base
                     type: 'post',
-                    url: '../AJAX/UserDbRelation.php',
+                    url: './AJAX/UserDbRelation.php',
                     data: {userName: username, password: pwd, register: true},
                     success: function (response) {
                         var result = JSON.parse(response); //Les informations arrivent sous forme de string, qu'on va convertir en tableau
