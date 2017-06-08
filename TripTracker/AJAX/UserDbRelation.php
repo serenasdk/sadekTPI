@@ -40,7 +40,6 @@ if (isset($_POST["login"])) {
     
     $result = connectUser($username, $pwd);
     if (is_numeric($result)) {
-        $_SESSION["result"] = $result;
         $_SESSION["idUser"] = $result;
     }
     echo json_encode($result);

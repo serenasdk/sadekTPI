@@ -33,7 +33,6 @@ $(document).ready(function () {
                     content[content.length - 1].comment = $("#comment" + flag).val();
                 }
                 if (count == flag + 1) {
-                    console.log(content);
                     checkInformations(content);
                     break;
                 }
@@ -101,14 +100,12 @@ $(document).ready(function () {
                 $("#insert" + element.ref).removeClass("panel-default");
                 $("#insert" + element.ref).addClass("panel-danger");
                 ok = false;
-            }
-            else {
+            } else {
                 $("#insert" + element.ref).addClass("panel-default");
                 $("#insert" + element.ref).removeClass("panel-danger");
             }
             i++;
         });
-
         areAllPointSet(content, ok, 0);
     }
 
@@ -118,16 +115,13 @@ $(document).ready(function () {
      */
     function areAllPointSet(content, ok, inc) {
         creationMarkers.forEach(function (element) {
-            console.log(inc);
             if ($("#insert" + inc).length !== 0) {
                 if (element == "none") {
                     $("#Padress" + inc).addClass("has-error");
                     ok = false;
-                    console.log("#Padress" + inc);
 
                 } else {
                     $("#Padress" + inc).removeClass("has-error");
-                    console.log("ok");
                 }
             }
             if (inc == creationMarkers.length - 1 && ok) {
@@ -149,7 +143,7 @@ $(document).ready(function () {
                 if (points.length != 0) {
                     points = points.concat(response.route.routes[0].legs[0].steps);
                     if (inc == creationRoutes.length - 1) {
-                        serializePath(points);
+                        serializePath(points, content);
                     }
                 } else {
                     points = response.route.routes[0].legs[0].steps;
@@ -192,17 +186,27 @@ $(document).ready(function () {
             PathString += "]}";
         });
         PathString += "]";
-        SavaInformations(PathString, content);
+        SaveInformations(PathString, content);
     }
-    
+
     /*
      * Enregistre les informations dans la base de donnée et enregistre le chemin
      * dans un fichier texte, stocké sur le serveur. Toute ses oppérations se font
      * sous forme de transaction : si une étape n'est pas effectuée correctement, 
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
-    function SavaInformations(path, content){
-        
+    function SaveInformations(path, content) {
+        console.log(content);
+        console.log(JSON.stringify(content));
+        console.log(JSON.parse(content));
+        $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
+            type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
+            url: './AJAX/DataInsertModif.php',
+            data: {path: path, content: JSON.stringify(content), insert: true},
+            success: function (response) {
+                console.log(response);
+            }
+        });
     }
 });
 

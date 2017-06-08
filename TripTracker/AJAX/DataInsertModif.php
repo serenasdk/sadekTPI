@@ -2,21 +2,40 @@
 session_start();
 
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * SADEK Serena
+ * Juin 2017
+ * TripTracker
+ * 
+ * Toute les fonctions de cette page sont dédiées à l'insertion des données dans 
+ * le serveur et dans la base de donnée. Cette page fait également office de protail
+ * pour les call AJAX commandant l'insertion et la modification d'éléments.
  */
 
 if (isset($_POST["insert"])) {
-    
+    var_dump($_POST["content"]);
+    var_dump(json_decode($_POST["content"]));
+    /*try {
+        $connection = getConnexion();
+        $connection->beginTransaction();
+        
+        $tripId = InsertTrip($a, $connection);
+        
+        $fileId = CreatePathTextFile($_POST["path"]);
+        
+        
+        $connection->commit();
+        echo "1";
+    } catch (Exception $ex) {
+        $connection->rollBack();
+        echo "0";
+    }*/
 }
 
 if (isset($_POST["update"])) {
     
 }
 
-function InsertTrip($title){
-    $co = getConnection();
+function InsertTrip($title, $co){
     $req = $co->prepare("INSERT INTO trip(idUser, title) values (:idUser, :title)");
     $req->bindParam(":idUser", $_SESSION["idUser"], PDO::PARAM_INT);
     $req->bindParam(":title", $title, PDO::PARAM_STR);
@@ -24,16 +43,14 @@ function InsertTrip($title){
     return $co->lastInsertId();
 }
 
-function setPath($WpId, $pathLocation){
-    $co = getConnection();
-    $req = $co->prepare("UPDATE trip set pathObject = :path WHERE idWaypoint = :idWaypoint");
+function setPath($idTrip, $pathLocation, $co){
+    $req = $co->prepare("UPDATE trip set pathObject = :path WHERE idTrip = :idTrip");
     $req->bindParam(":path", $pathLocation, PDO::PARAM_STR);
-    $req->bindParam(":idWaypoint", $WpId, PDO::PARAM_INT);
+    $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
     $req->execute();
 }
 
-function InsertWaypoint($idTrip, $title, $comment, $date, $lat, $lng, $address){
-    $co = getConnection();
+function InsertWaypoint($idTrip, $title, $comment, $date, $lat, $lng, $address, $co){
     $req = $co->prepare("INSERT INTO waypoint(idTrip, wpTitle, wpComment, wpDate, lat, lng, address) values (:idTrip, :title, :comment, :date, :lat, :lng, :address)");
      $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
      $req->bindParam(":title", $title, PDO::PARAM_STR);
@@ -46,7 +63,13 @@ function InsertWaypoint($idTrip, $title, $comment, $date, $lat, $lng, $address){
      return $co->lastInsertId();
 }
 
-function CreatePathTextFile(){
-    //Utiliser uniqid
-    //utiliser fread, fwrite, fopen et fclose
+function CreatePathTextFile($content){
+    $id = uniqid("path", true);
+    $id .= ".txt";
+    
+    $stream = fopen("../userRessources/".$id, 'a+');
+    fwrite($stream,$content);
+    fclose($stream);
+    
+    return $id;
 }
