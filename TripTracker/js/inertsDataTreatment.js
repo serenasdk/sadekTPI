@@ -124,22 +124,16 @@ $(document).ready(function () {
                     $("#Padress" + inc).addClass("has-error");
                     ok = false;
                     console.log("#Padress" + inc);
-                    
-                } else{
+
+                } else {
                     $("#Padress" + inc).removeClass("has-error");
                     console.log("ok");
                 }
             }
+            if (inc == creationMarkers.length-1 && ok) {
+                renderDirectionsPolylines(content);
+            }
             inc++;
-        });
-    }
-
-    /**
-     * Vérifie qu'un tracé a pu être trouvé entre tout les points
-     * @returns {undefined}
-     */
-    function areAllPathSet() {
-        creationMarkers.forEach(function (marker) {
         });
     }
 
@@ -150,6 +144,62 @@ $(document).ready(function () {
      */
     function generateConstructor() {
 
+    }
+
+    /*
+     * Génère une polyline à partir d'un résultat Google Map Route API
+     */
+    function renderDirectionsPolylines(content) {
+        var points = [];
+        var inc = 0;
+        creationRoutes.forEach(function (response) {
+            if (typeof response == "object") {
+                if (points.length != 0) {
+                    points = points.concat(response.route.routes[0].legs[0].steps);
+                    if (inc == creationRoutes.length - 1) {
+                        serializePath(points);
+                    }
+                } else {
+                    points = response.route.routes[0].legs[0].steps;
+                }
+            } else {
+                if (inc == creationRoutes.length - 1) {
+                    serializePath(points, content);
+                }
+            }
+            inc++;
+        });
+    }
+
+    function serializePath(Polylines, content) {
+        var PathString = "[";
+
+        var countA = 0;
+        Polylines.forEach(function (polyline) {
+
+            if (countA !== 0) {
+                PathString += ",";
+            }
+
+            PathString += "{\"map\": null,\"paths\": [";
+            countA++;
+
+            var countB = 0;
+            var path = polyline.path;
+
+            path.forEach(function (point) {
+
+                if (countB !== 0) {
+                    PathString += ",";
+                }
+
+                countB++;
+
+                PathString += "{\"lat\": " + point.lat() + ",\"lng\": " + point.lng() + "}";
+            });
+            PathString += "]}";
+        });
+        PathString += "]";
     }
 });
 
