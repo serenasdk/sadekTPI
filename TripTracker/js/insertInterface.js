@@ -36,14 +36,14 @@ $(document).ready(function () {
                 + '<!-- Titre à modifier -->\n\
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-flag col-lg-1"></i>\n\
-                            <div class="input-group col-lg-11">\n\
+                            <div id="Ptitle' + length + '" class="input-group col-lg-11">\n\
                                 <input type="text" id="title' + length + '" class="form-control titleControl" placeholder="Titre de L\'étape">\n\
                             </div>\n\
                         </div>\n\
                         <!-- Recherche d\'adresse -->\n\
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-map-marker col-lg-1"></i>\n\
-                            <div class="input-group col-lg-11">\n\
+                            <div id="Padress' + length + '" class="input-group col-lg-11">\n\
                                 <input type="text" id="adress' + length + '" class="form-control" placeholder="Adresse de l\'étape">\n\
                                 <div class="input-group-btn">\n\
                                     <button class="btn btn-default searchLoc" id="secfind' + length + '"><i id="findLoc' + length + '" class="glyphicon glyphicon-search col-lg-1"></i></button>\n\
@@ -54,7 +54,7 @@ $(document).ready(function () {
                         <!-- Selection de la date -->\n\
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-time col-lg-1"></i>\n\
-                            <div class="input-group col-lg-11">\n\
+                            <div id="Pdate' + length + '" class="input-group col-lg-11">\n\
                                 <input id="date' + length + '" type="text" value="' + date + '" readonly class="form_date col-lg-12 form-control">\n\
                             </div>\n\
                         </div>'
@@ -63,7 +63,7 @@ $(document).ready(function () {
                 + '<p>Ici le composant pour ajouter les images</p>' //Ajout des images
                 + '</li>'
                 + '</ul>'
-                + '<div class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment' + length + '"></textarea></div>'
+                + '<div id="Pcomment' + length + '" class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment' + length + '"></textarea></div>'
                 + '</div></div></div>'
                 );
         var name = '#content' + length;
