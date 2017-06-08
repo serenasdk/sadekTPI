@@ -162,7 +162,7 @@ function getAdresseFromPosition(Position) {
     geocoder.geocode({'location': Position}, function (results, status) {
         if (status === 'OK') {
             if (results[1]) {
-                placeMarker(Position);
+                placeMarker(Position, results[0].formatted_address);
                 var id = "#adress" + focus;
                 $(id).val(results[1].formatted_address);
             } else {
@@ -180,7 +180,7 @@ function getPositionFromAdresse(Adresse) {
         if (status === 'OK') {
             var id = "#adress" + focus;
             $(id).val(results[0].formatted_address);
-            placeMarker(new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
+            placeMarker(new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()), results[0].formatted_address);
         } else {
             window.alert('Geocoder failed due to: ' + status);
         }
@@ -201,7 +201,7 @@ function geoLocation() {
     }
 }
 
-function placeMarker(location) {
+function placeMarker(location, address) {
     if (focus !== null) {
         if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
             creationMarkers[focus].setMap(null);
@@ -210,6 +210,8 @@ function placeMarker(location) {
             position: location,
             map: map
         });
+        
+        creationMarkers[focus].address = address;
 
         TraceRoute(focus);
     }
