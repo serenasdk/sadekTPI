@@ -59,7 +59,6 @@ $(document).ready(function () {
             if (!regExpDate.test(element.date)) {
                 //Si le format de la date n'est pas correcte;
                 $("#Pdate" + element.ref).addClass("has-error");
-                console.log(element.date);
                 hasError = true;
             } else if (i > 0 && regExpDate.test(content[i - 1].date)) {
                 //Si la date de l'étape est antérieure à celle de la précédente
@@ -110,19 +109,48 @@ $(document).ready(function () {
             i++;
         });
 
-        if (ok) {
-            areAllPointSet(content);
-        }
+        areAllPointSet(content, ok, 0);
     }
 
     /**
      * Vérifie si un tracé a pu être trouvé entre tout les points
      * @returns {undefined}
      */
-    function areAllPointSet() {
-        console.log("Ravioli Ravioli, give me the formuoli");
+    function areAllPointSet(content, ok, inc) {
+        creationMarkers.forEach(function (element) {
+            console.log(inc);
+            if ($("#insert" + inc).length !== 0) {
+                if (element == "none") {
+                    $("#Padress" + inc).addClass("has-error");
+                    ok = false;
+                    console.log("#Padress" + inc);
+                    
+                } else{
+                    $("#Padress" + inc).removeClass("has-error");
+                    console.log("ok");
+                }
+            }
+            inc++;
+        });
     }
 
+    /**
+     * Vérifie qu'un tracé a pu être trouvé entre tout les points
+     * @returns {undefined}
+     */
+    function areAllPathSet() {
+        creationMarkers.forEach(function (marker) {
+        });
+    }
+
+    /**
+     * Genère le constructeur d'une Polyline devant correspondre au tracé de 
+     * l'utilisateur
+     * @returns {undefined}
+     */
+    function generateConstructor() {
+
+    }
 });
 
 
