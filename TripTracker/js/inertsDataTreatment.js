@@ -20,12 +20,16 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function getInformations() {
+        
+        //creationMarkers[0].position.lat();
+        //creationMarkers[0].position.lat();
+        
         if (count >= 2) {
             var name = "#insert";
             var content = [];
             for (var flag = 0; flag < Number(count); flag++) {
                 if ($("#insert" + flag).length !== 0) {
-                    content.push([]);
+                    content.push({});
                     content[content.length - 1].ref = flag;
                     content[content.length - 1].title = $("#title" + flag).val();
                     content[content.length - 1].adress = $("#adress" + flag).val();
@@ -196,9 +200,6 @@ $(document).ready(function () {
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
     function SaveInformations(path, content) {
-        console.log(content);
-        console.log(JSON.stringify(content));
-        console.log(JSON.parse(content));
         $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
             type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
             url: './AJAX/DataInsertModif.php',
