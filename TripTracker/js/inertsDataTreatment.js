@@ -130,24 +130,16 @@ $(document).ready(function () {
                     console.log("ok");
                 }
             }
-            if (inc == creationMarkers.length-1 && ok) {
+            if (inc == creationMarkers.length - 1 && ok) {
                 renderDirectionsPolylines(content);
             }
             inc++;
         });
     }
 
-    /**
+    /*
      * Genère le constructeur d'une Polyline devant correspondre au tracé de 
      * l'utilisateur
-     * @returns {undefined}
-     */
-    function generateConstructor() {
-
-    }
-
-    /*
-     * Génère une polyline à partir d'un résultat Google Map Route API
      */
     function renderDirectionsPolylines(content) {
         var points = [];
@@ -200,6 +192,17 @@ $(document).ready(function () {
             PathString += "]}";
         });
         PathString += "]";
+        SavaInformations(PathString, content);
+    }
+    
+    /*
+     * Enregistre les informations dans la base de donnée et enregistre le chemin
+     * dans un fichier texte, stocké sur le serveur. Toute ses oppérations se font
+     * sous forme de transaction : si une étape n'est pas effectuée correctement, 
+     * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
+     */
+    function SavaInformations(path, content){
+        
     }
 });
 
