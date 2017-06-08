@@ -1,6 +1,7 @@
 <?php
-
 session_start();
+
+require_once '../connection.php';
 
 /*
  * SADEK Serena
@@ -13,31 +14,45 @@ session_start();
  */
 
 if (isset($_POST["insert"])) {
-    
     $_POST["content"] = json_decode($_POST["content"]);
     try {
-        $connection = getConnexion();
+        $connection = getConnection();
         $connection->beginTransaction();
 
-        $tripId = InsertTrip("titre", $connection);
-        $fileId = CreatePathTextFile($_POST["path"]);
+        //$tripId = InsertTrip("titre", $connection);
+        //$fileId = CreatePathTextFile($_POST["path"]);
 
-        for ($index = 0; $index < count($_POST["content"]); $index++) {
+        $args = array(
+            "content" => array(
+                "title" => FILTER_SANITIZE_STRING,
+                "comment" => FILTER_SANITIZE_STRING,
+                "date" => FILTER_SANITIZE_STRING,
+                "lat" => FILTER_SANITIZE_NUMBER_FLOAT,
+                "lng" => FILTER_SANITIZE_NUMBER_FLOAT,
+                "address" => FILTER_SANITIZE_STRING)
+        );
+        $_POST["content"] = json_decode($_POST["content"]);
+        $sanitizedContent = filter_input_array(INPUT_POST, $args);
+        var_dump($sanitizedContent["content"]);
+        /*for ($index = 0; $index < count($_POST["content"]); $index++) {
+            
+            
             $title = $_POST["content"]["title"];
             $comment = $_POST["content"]["comment"];
             $date = $_POST["content"]["date"];
             $lat = $_POST["content"]["lat"];
             $lng = $_POST["content"]["lng"];
             $address = $_POST["content"]["address"];
+            
             InsertWaypoint($tripId, $title, $comment, $date, $lat, $lng, $address, $connection);
-        }
+        }*/
 
         $connection->commit();
 
         echo "1";
     } catch (Exception $ex) {
         $connection->rollBack();
-        echo "0";
+        echo $ex->getTraceAsString();
     }
 }
 
