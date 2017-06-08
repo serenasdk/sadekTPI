@@ -19,7 +19,8 @@ $(document).ready(function () {
         if (count > 0) {
             creationRoutes.push("none");
         }
-
+        var nowDate = new Date();
+        var date = nowDate.toLocaleDateString();
         var length = count;
         count++;
         $("#InsertionContent").append(
@@ -54,25 +55,22 @@ $(document).ready(function () {
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-time col-lg-1"></i>\n\
                             <div class="input-group col-lg-11">\n\
-                                <input type="text" class="form-control" placeholder="Date de l\'étape">\n\
-                                <div class="input-group-btn">\n\
-                                    <button class="btn btn-default" id="MyLoc"><i class="glyphicon glyphicon-calendar col-lg-1"></i></button>\n\
-                                </div>\n\
+                                <input id="date' + length + '" type="text" value="' + date + '" readonly class="form_date col-lg-12 form-control">\n\
                             </div>\n\
                         </div>'
                 + '</li>'
                 + '<li class="list-group-item">'
-                + '<p>ça va ?</p>' //Ajout des images
-                + '</li>'
-                + '<li class="list-group-item">'
-                + '<p>Moi personellement ça va.</p>' //commentaires textuels
+                + '<p>Ici le composant pour ajouter les images</p>' //Ajout des images
                 + '</li>'
                 + '</ul>'
+                + '<div class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment"></textarea></div>'
                 + '</div></div></div>'
                 );
         var name = '#content' + length;
         $(name).collapse({toggle: false});
-
+        $("#date" + length).datetimepicker({format: 'dd/mm/yyyy', startView: 'month',
+            minView: 'month',
+            autoclose: true});
     });
 
     $('body').on('click', '.closeInsertionPanel', function () {
@@ -87,20 +85,20 @@ $(document).ready(function () {
             creationMarkers[position].setMap(null);
         }
         creationMarkers[position] = null;
-        
+
         suppressRoadsOfDot(position);
     });
 
     $('body').on('click', '.searchLoc', function () {
         var id = event.target.id;
         var ref = id.substring(7, id.length);
-        var source = "#adress"+ ref;
+        var source = "#adress" + ref;
         var address = $(source).val();
         if (address.length > 0) {
             getPositionFromAdresse(address);
         }
     });
-    
+
     $('body').on('click', '.searchMyLoc', function () {
         geoLocation();
     });

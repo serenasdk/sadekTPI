@@ -2,8 +2,12 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfv2UYZVSvgZdy3JX8p2r6sutqh2o_4Dg"></script>
 <link href="./stylesheets/templateMap.css" rel="stylesheet" type="text/css"/>
+<link href="ressources/bootstrap-datetimepicker-master/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css"/>
+
+<script src="ressources/bootstrap-datetimepicker-master/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="js/templateMap.js" type="text/javascript"></script>
 <script src="js/insertInterface.js" type="text/javascript"></script>
+
 <!-- Contenu de la page -->
 <div id="map">
 </div>
@@ -184,7 +188,7 @@
             <div class="panel-collapse collapse in">
                 <div class="panel-body list-group insertPanel">
                     <div id="InsertionContent">
-                        
+
                     </div>
                     <div id="InsertionControls">
                         <input type="button" id="AddState" class="btn btn-default pull-left" value="Ajouter une étape">

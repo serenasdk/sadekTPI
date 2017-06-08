@@ -123,3 +123,18 @@ body { overflow: hidden; }
     max-height: 90em;
     overflow-y: auto;
 }
+
+.form-date{
+    border-radius: 4px;
+}
+
+textarea {
+    resize: none;
+}
+
+ul{
+    margin-bottom : 0px !important;
+}
+.panel-body{
+    margin-bottom: 0px !important;
+}
