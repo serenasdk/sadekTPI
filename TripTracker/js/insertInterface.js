@@ -63,7 +63,7 @@ $(document).ready(function () {
                 + '<p>Ici le composant pour ajouter les images</p>' //Ajout des images
                 + '</li>'
                 + '</ul>'
-                + '<div class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment"></textarea></div>'
+                + '<div class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment' + length + '"></textarea></div>'
                 + '</div></div></div>'
                 );
         var name = '#content' + length;

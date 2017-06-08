@@ -126,6 +126,7 @@ body { overflow: hidden; }
 
 .form-date{
     border-radius: 4px;
+    cursor: default !important;
 }
 
 textarea {

@@ -7,6 +7,7 @@
 <script src="ressources/bootstrap-datetimepicker-master/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="js/templateMap.js" type="text/javascript"></script>
 <script src="js/insertInterface.js" type="text/javascript"></script>
+<script src="js/inertsDataTreatment.js" type="text/javascript"></script>
 
 <!-- Contenu de la page -->
 <div id="map">
