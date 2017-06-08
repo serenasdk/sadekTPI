@@ -87,7 +87,8 @@ $(document).ready(function () {
             creationMarkers[position].setMap(null);
         }
         creationMarkers[position] = null;
-        creationRoutes[position] = null;
+        
+        suppressRoadsOfDot(position);
     });
 
     $('body').on('click', '.searchLoc', function () {
@@ -108,7 +109,6 @@ $(document).ready(function () {
         if (coll) {
             coll = false;
             var id = "#" + (this.id);
-            //console.log($('#navTrips .collapse').not(id));
             $('#InsertionContent .collapse').not(id).collapse("hide");
             coll = true;
             focus = id.substring(8, id.length);

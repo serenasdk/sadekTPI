@@ -51,17 +51,10 @@ $(document).ready(function () {
         closeAdd(true);
     });
 
-    /* $('.collapsed').click(function(){
-     var id = event.target.id;
-     console.log(this.id);
-     $('.collapse').not(this).collapse("hide");
-     });*/
-
     $('#navTrips .collapse').on('show.bs.collapse', function () {
         if (coll) {
             coll = false;
             var id = "#" + (this.id);
-            //console.log($('#navTrips .collapse').not(id));
             $('#navTrips .collapse').not(id).collapse("hide");
             coll = true;
         }
@@ -185,7 +178,6 @@ function getPositionFromAdresse(Adresse) {
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode({'address': Adresse}, function (results, status) {
         if (status === 'OK') {
-            console.log(results);
             var id = "#adress" + focus;
             $(id).val(results[0].formatted_address);
             placeMarker(new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
@@ -214,7 +206,6 @@ function placeMarker(location) {
         if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
             creationMarkers[focus].setMap(null);
         }
-        //console.log(creationMarkers[focus]);
         creationMarkers[focus] = new google.maps.Marker({
             position: location,
             map: map
@@ -233,22 +224,21 @@ function TracePreviousRoad(PlaceId) {
     if (PlaceId - 1 >= 0) {
         var negaArray = creationMarkers.slice(0, PlaceId).reverse();
         var count = PlaceId - 1;
-        //console.log(negaArray);
         negaArray.forEach(function (element) {
             if (creationMarkers[count] !== null) {
                 if (creationMarkers[count] == "none") {
-                    //console.log("no route");
                     return;
                 } else {
                     if (typeof creationRoutes[PlaceId - 1] == "object") {
                         creationRoutes[PlaceId - 1].display.setMap(null);
                     }
+                    setPath(creationMarkers[PlaceId], creationMarkers[count], PlaceId - 1);
                     if (true) {
-                        setPath(creationMarkers[PlaceId], creationMarkers[count], PlaceId - 1);
+                        return;
                     }
-                    //console.log(count);
                 }
             }
+            count--;
         });
     }
 }
@@ -256,22 +246,20 @@ function TracePreviousRoad(PlaceId) {
 function TraceNextRoad(PlaceId) {
 
     if (Number(PlaceId) + 1 < creationMarkers.length) {
-        //console.log("in");
         var posiArray = creationMarkers.slice(Number(PlaceId) + 1, creationMarkers.length);
-        //console.log(posiArray);
         var count = Number(PlaceId) + 1;
         posiArray.forEach(function (element) {
             if (creationMarkers[count] !== null) {
                 if (creationMarkers[count] == "none") {
-                    //console.log("no route");
                     return;
                 } else {
-                    creationRoutes[count - 1].display.setMap(null);
-                    if (true) {
-
-                        setPath(creationMarkers[PlaceId], creationMarkers[count], count - 1);
+                    if (typeof creationRoutes[count - 1] == "object") {
+                        creationRoutes[count - 1].display.setMap(null);
                     }
-                    //console.log(count);
+                    setPath(creationMarkers[PlaceId], creationMarkers[count], count - 1);
+                    if (true) {
+                        return;
+                    }
                 }
             }
             count++;
@@ -318,6 +306,50 @@ function setPath(position1, position2, StoragePosition) {
 
 function drawFlight() {
 
+}
+
+function suppressRoadsOfDot(dotId) {
+    var dot1 = null;
+
+    creationRoutes[Number(dotId) - 1].display.setMap(null);
+
+    var negaArray = creationMarkers.slice(0, Number(dotId)).reverse();
+    dot1 = Number(dotId) - 1;
+    var count = Number(dotId) - 1;
+    negaArray.forEach(function (element) {
+        if (creationMarkers[count] !== null) {
+            dot1 = count;
+            return;
+        }
+        count--;
+    });
+
+    if (true) {
+        creationRoutes[Number(dotId) - 1] = null;
+    }
+
+    if (Number(dotId) + 1 < creationMarkers.length) {
+        var posiArray = creationMarkers.slice(Number(dotId) + 1, creationMarkers.length);
+        var count = Number(dotId) + 1;
+        posiArray.forEach(function (element) {
+            if (creationMarkers[count] !== null) {
+                if (creationMarkers[count] == "none") {
+                    return;
+                } else {
+                    creationRoutes[count - 1].display.setMap(null);
+                    creationRoutes[count - 1] = null;
+                    if (dot1 !== null) {
+                        //console.log("On relie " + dot1 + " à " + count);
+                        setPath(creationMarkers[dot1], creationMarkers[count], count - 1);
+                    }
+                    if (true) {
+                        return;
+                    }
+                }
+            }
+            count++;
+        });
+    }
 }
 
 
