@@ -15,8 +15,7 @@ session_start();
 if (isset($_POST["insert"])) {
     
     $_POST["content"] = json_decode($_POST["content"]);
-    var_dump($_POST["content"]);
-    /*try {
+    try {
         $connection = getConnexion();
         $connection->beginTransaction();
 
@@ -27,10 +26,9 @@ if (isset($_POST["insert"])) {
             $title = $_POST["content"]["title"];
             $comment = $_POST["content"]["comment"];
             $date = $_POST["content"]["date"];
-            $lat = 1; //$_POST["content"]["lat"];
-            $lng = 1;
-            $_POST["content"]["lng"];
-            $address = "Bonjour"; //$_POST["content"]["address"];
+            $lat = $_POST["content"]["lat"];
+            $lng = $_POST["content"]["lng"];
+            $address = $_POST["content"]["address"];
             InsertWaypoint($tripId, $title, $comment, $date, $lat, $lng, $address, $connection);
         }
 
@@ -40,7 +38,7 @@ if (isset($_POST["insert"])) {
     } catch (Exception $ex) {
         $connection->rollBack();
         echo "0";
-    }*/
+    }
 }
 
 if (isset($_POST["update"])) {

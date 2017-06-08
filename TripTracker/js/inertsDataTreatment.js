@@ -21,9 +21,6 @@ $(document).ready(function () {
      */
     function getInformations() {
         
-        //creationMarkers[0].position.lat();
-        //creationMarkers[0].position.lat();
-        
         if (count >= 2) {
             var name = "#insert";
             var content = [];
@@ -32,9 +29,12 @@ $(document).ready(function () {
                     content.push({});
                     content[content.length - 1].ref = flag;
                     content[content.length - 1].title = $("#title" + flag).val();
-                    content[content.length - 1].adress = $("#adress" + flag).val();
+                    //content[content.length - 1].adress = $("#adress" + flag).val();
                     content[content.length - 1].date = $("#date" + flag).val();
                     content[content.length - 1].comment = $("#comment" + flag).val();
+                    content[content.length - 1].lat = creationMarkers[flag].position.lat();
+                    content[content.length - 1].lng = creationMarkers[flag].position.lng();
+                    content[content.length - 1].address = creationMarkers[flag].address;
                 }
                 if (count == flag + 1) {
                     checkInformations(content);
@@ -200,6 +200,7 @@ $(document).ready(function () {
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
     function SaveInformations(path, content) {
+        console.log(content);
         $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
             type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
             url: './AJAX/DataInsertModif.php',
