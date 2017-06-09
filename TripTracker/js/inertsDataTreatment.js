@@ -224,10 +224,30 @@ $(document).ready(function () {
             url: './AJAX/DataInsertModif.php',
             data: {path: path, content: JSON.stringify(content), title: title, insert: true},
             success: function (response) {
+                var result = JSON.parse(response);
+                console.log(result);
                 if (response.length == 1) {
                     if (response == "1") {
+                        var inc = 0;
+                        /*content.forEach(function (element) {
+                            var id = element.ref;
+                            if ($('#insert' + id + ' .clearfix').children().length > 1) {
+                                console.log("upload");
+                                $('#picSelect' + id).fileinput('upload');
+                            }
 
-                        uploadPictures(content);
+                            if (inc == content.length - 1) {
+                                $('#InsertionErrorSection').addClass('alert');
+                                $('#InsertionErrorSection').removeClass('alert-danger');
+                                $('#InsertionErrorSection').addClass('alert-success');
+                                $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ajouté');
+
+                                setTimeout(function () {
+                                    closeInsertInterface();
+                                }, 1500);
+                            }
+                            inc++;
+                        });*/
 
                     } else if (response == "0") {
                         $('#InsertionErrorSection').addClass('alert');
@@ -245,27 +265,7 @@ $(document).ready(function () {
     }
 
     function uploadPictures(content) {
-        var inc = 0;
-        console.log("begin upp");
-        content.forEach(function (element) {            
-            var id = element.ref;
-            if ($('#insert' + id + ' .clearfix').children().length > 1) {
-                console.log("upload");
-                $('#picSelect' + id).fileinput('upload');
-            }
 
-            /*if (inc == content.length - 1) {
-                $('#InsertionErrorSection').addClass('alert');
-                $('#InsertionErrorSection').removeClass('alert-danger');
-                $('#InsertionErrorSection').addClass('alert-success');
-                $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ajouté');
-
-                setTimeout(function () {
-                    closeInsertInterface();
-                }, 1500);
-            }*/
-            inc++;
-        });
     }
 });
 

@@ -21,6 +21,8 @@ require_once '../connection.php';
  */
 if (isset($_POST["insert"])) {
     try {
+        $ids = array();
+        
         $connection = getConnection();
         $connection->beginTransaction();
         
@@ -53,20 +55,20 @@ if (isset($_POST["insert"])) {
             $address = $content[$index]->address;
 
             $wpId = InsertWaypoint($tripId, $title, $comment, $date, $lat, $lng, $address, $connection);
-
+            array_push($ids, $wpId);
             //Insertion des media
         }
 
         $connection->commit();
 
-        echo "1";
+        echo json_encode($ids);
     } catch (Exception $ex) {
         $connection->rollBack();
         if (isset($fileId)) {
             unlink("../usersRessources/path/" . $fileId);
         }
         
-        echo $ex->getTraceAsString();
+        echo json_encode($ex->getTraceAsString());
     }
 }
 
