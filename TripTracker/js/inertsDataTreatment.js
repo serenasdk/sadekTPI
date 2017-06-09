@@ -224,17 +224,21 @@ $(document).ready(function () {
             url: './AJAX/DataInsertModif.php',
             data: {path: path, content: JSON.stringify(content), title: title, insert: true},
             success: function (response) {
-                var result = JSON.parse(response);
-                console.log(result);
-                if (response.length == 1) {
-                    if (response == "1") {
+                var wpIds
+                try
+                {
+                    var wpIds = JSON.parse(response);
+
+                    if (!isNaN(wpIds[0])) {
                         var inc = 0;
-                        /*content.forEach(function (element) {
+                        content.forEach(function (element) {
                             var id = element.ref;
-                            if ($('#insert' + id + ' .clearfix').children().length > 1) {
-                                console.log("upload");
-                                $('#picSelect' + id).fileinput('upload');
-                            }
+                            //$('#picSelect' + id).fileinput({uploadUrl: './AJAX/PictureInsertModif.php?wpId=' + wpIds[inc]});
+                            $('#picSelect' + id).fileinput('upload');
+
+                            $('#picSelect' + id).on('fileuploaded', function (event, data, previewId, index) {
+                                alert("upload");
+                            });
 
                             if (inc == content.length - 1) {
                                 $('#InsertionErrorSection').addClass('alert');
@@ -247,19 +251,23 @@ $(document).ready(function () {
                                 }, 1500);
                             }
                             inc++;
-                        });*/
+                        });
 
-                    } else if (response == "0") {
+                    } else {
                         $('#InsertionErrorSection').addClass('alert');
                         $('#InsertionErrorSection').addClass('alert-danger');
-                        $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Une erreur est survenue lors de la création de votre voyage');
+                        $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + response + '');
                     }
                 }
-                else {
+                catch (e)
+                {
                     $('#InsertionErrorSection').addClass('alert');
                     $('#InsertionErrorSection').addClass('alert-danger');
                     $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + response + '');
+
+                    return;
                 }
+
             }
         });
     }
@@ -267,6 +275,10 @@ $(document).ready(function () {
     function uploadPictures(content) {
 
     }
+
+    $('body').on('fileuploaded', '.file-loading', function (event, data, previewId, index) {
+        alert("upload");
+    });
 });
 
 
