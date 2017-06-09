@@ -22,10 +22,10 @@ require_once '../connection.php';
 if (isset($_POST["insert"])) {
     try {
         $ids = array();
-        
+
         $connection = getConnection();
         $connection->beginTransaction();
-        
+
         $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING);
 
         $tripId = InsertTrip($title, $connection);
@@ -42,21 +42,23 @@ if (isset($_POST["insert"])) {
 
             $title = $content[$index]->title;
             $comment = $content[$index]->comment;
-            
+
             $date = $content[$index]->date;
             $date = str_replace('/', '-', $date);
             $date = date('Y-m-d', strtotime($date));
 
             $date = $content[$index]->date;
             $date = implode("-", array_reverse(explode("/", $date)));
-            
+
             $lat = $content[$index]->lat;
             $lng = $content[$index]->lng;
             $address = $content[$index]->address;
 
             $wpId = InsertWaypoint($tripId, $title, $comment, $date, $lat, $lng, $address, $connection);
+            setcookie("WP".$content[$index]->ref, $wpId, time()+10);
+            //Cookie destiné au call AJAX d'insertion des media
+            
             array_push($ids, $wpId);
-            //Insertion des media
         }
 
         $connection->commit();
@@ -67,7 +69,7 @@ if (isset($_POST["insert"])) {
         if (isset($fileId)) {
             unlink("../usersRessources/path/" . $fileId);
         }
-        
+
         echo json_encode($ex->getTraceAsString());
     }
 }

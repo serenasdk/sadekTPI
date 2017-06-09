@@ -1,28 +1,21 @@
 <?php
 
-session_start();
-
-$stream = fopen("../log.txt", 'a');
-fwrite($stream, "in");
-fclose($stream);
-
-if (!isset($_SESSION["visit"])) {
-    $_SESSION["visit"] = array();
-}
-
-$_SESSION["visit"] = var_export($_FILES, true);
-
-require '../connection.php';
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-//idState
+session_start();
 
-if (isset($_POST["insert"])) {
-    //$id = $_GET["wpId"];
+if (!isset($_SESSION["visit"])) {
+    $_SESSION["visit"] = array();
+}
+
+require '../connection.php';
+
+if (isset($_POST["insert"]) && !empty($_FILES)) {
+    $id = $_COOKIE["WP" . $_POST["idState"]];
     $input = "picSelect" . $_POST["idState"];
     for ($index = 0; $index < count($_FILES[$input]["error"]); $index++) {
         try {
@@ -32,7 +25,8 @@ if (isset($_POST["insert"])) {
             if ($_FILES[$input]["error"][$index] == UPLOAD_ERR_OK) {
                 $tmp_name = $_FILES[$input]["tmp_name"][$index];
                 $name = uniqid("picture", true);
-                $name .= ".txt";
+                $ext = pathinfo($_FILES[$input]["name"][$index], PATHINFO_EXTENSION);
+                $name .= ".".$ext;
 
                 $win = move_uploaded_file($tmp_name, "../usersRessources/image/$name");
                 if (!$win) {
@@ -44,8 +38,10 @@ if (isset($_POST["insert"])) {
                     $stream = fopen("../log.txt", 'a');
                     fwrite($stream, "Déplacement réussi\n");
                     fclose($stream);
-
-                    //AddPictureToWayPoint($id, $name, $co);
+                    
+                    
+                    
+                    AddPictureToWayPoint($id, $name, $connection);
                     //echo json_encode(array());
 
                     $stream = fopen("../log.txt", 'a');
@@ -69,11 +65,12 @@ if (isset($_POST["insert"])) {
     }
 }
 
-echo json_encode(array());
-
 function AddPictureToWayPoint($wpId, $picName, $co) {
     $req = $co->prepare("INSERT INTO media (mediaName, idWaypoint) values (:mediaName, :idWp)");
-    $req->bindParam($picName, ":mediaName", PDO::PARAM_STR);
-    $req->bindParam($wpId, ":idWp", PDO::PARAM_INT);
+    $req->bindParam(":idWp", $wpId, PDO::PARAM_INT);
+    $req->bindParam(":mediaName", $picName, PDO::PARAM_STR);
     $req->execute();
 }
+
+
+echo json_encode(array());

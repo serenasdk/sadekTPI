@@ -236,10 +236,6 @@ $(document).ready(function () {
                             //$('#picSelect' + id).fileinput({uploadUrl: './AJAX/PictureInsertModif.php?wpId=' + wpIds[inc]});
                             $('#picSelect' + id).fileinput('upload');
 
-                            $('#picSelect' + id).on('fileuploaded', function (event, data, previewId, index) {
-                                alert("upload");
-                            });
-
                             if (inc == content.length - 1) {
                                 $('#InsertionErrorSection').addClass('alert');
                                 $('#InsertionErrorSection').removeClass('alert-danger');
