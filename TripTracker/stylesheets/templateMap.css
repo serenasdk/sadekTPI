@@ -139,3 +139,18 @@ ul{
 .panel-body{
     margin-bottom: 0px !important;
 }
+#InsertionErrorSection{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+#QuitCreation{
+    margin-right: 10px;
+}
+
+#titleTrip{
+    margin-bottom: 15px;
+}
+
+#InsertionContent{
+    margin-top: 50px;
+}

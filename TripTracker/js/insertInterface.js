@@ -12,8 +12,6 @@ var focus = null;
 
 $(document).ready(function () {
 
-
-
     $("#AddState").click(function () {
         creationMarkers.push("none");
         if (count > 0) {
@@ -72,6 +70,13 @@ $(document).ready(function () {
             minView: 'month',
             autoclose: true});
     });
+
+    $('#QuitCreation').click(function () {
+        alert("close");
+        closeInsertInterface();
+    });
+    
+    
 
     $('body').on('click', '.closeInsertionPanel', function () {
         var id = event.target.id;
@@ -134,3 +139,33 @@ $(document).ready(function () {
 
 
 
+function closeInsertInterface() {
+        focus = null;
+        var countA = 0;
+        creationMarkers.forEach(function (element) {
+            if (typeof element == "object") {
+                element.setMap(null);
+            }
+            if (countA == creationMarkers.length - 1) {
+                creationMarkers = [];
+            }
+            countA++;
+        });
+        var countB = 0;
+        creationRoutes.forEach(function (element) {
+            if (typeof element == "object") {
+                element.display.setMap(null);
+            }
+            if (countB == creationRoutes.length - 1) {
+                creationRoutes = [];
+            }
+            countB++;
+        });
+
+        $('#InsertionErrorSection').html('');
+        $('#InsertionContent').html('');
+        $('#InsertionErrorSection').removeClass('alert');
+        $('#InsertionErrorSection').removeClass('alert-success');
+        closeAdd(false);
+        openRight();
+    }

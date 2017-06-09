@@ -45,7 +45,6 @@ $(document).ready(function () {
                         $('#errorSectionLog').addClass('alert-danger');
                         $('#errorSectionLog').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>L\'utilisateur n\'existe pas');
                     } else { // Valeur numérique => Les informations sont correctes
-                        alert(response);
                         $('#errorSectionLog').addClass('alert');
                         $('#errorSectionLog').removeClass('alert-danger');
                         $('#errorSectionLog').addClass('alert-success');

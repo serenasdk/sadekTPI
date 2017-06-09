@@ -20,10 +20,13 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function getInformations() {
-        
+
         if (count >= 2) {
             var name = "#insert";
             var content = [];
+            
+            var title = $('#titleTrip').val();
+            
             for (var flag = 0; flag < Number(count); flag++) {
                 if ($("#insert" + flag).length !== 0) {
                     content.push({});
@@ -32,12 +35,14 @@ $(document).ready(function () {
                     //content[content.length - 1].adress = $("#adress" + flag).val();
                     content[content.length - 1].date = $("#date" + flag).val();
                     content[content.length - 1].comment = $("#comment" + flag).val();
-                    content[content.length - 1].lat = creationMarkers[flag].position.lat();
-                    content[content.length - 1].lng = creationMarkers[flag].position.lng();
-                    content[content.length - 1].address = creationMarkers[flag].address;
+                    if (typeof creationMarkers[flag] == "object") {
+                        content[content.length - 1].lat = creationMarkers[flag].position.lat();
+                        content[content.length - 1].lng = creationMarkers[flag].position.lng();
+                        content[content.length - 1].address = creationMarkers[flag].address;
+                    }
                 }
                 if (count == flag + 1) {
-                    checkInformations(content);
+                    checkInformations(content, title);
                     break;
                 }
             }
@@ -49,10 +54,16 @@ $(document).ready(function () {
      * @param {type} content
      * @returns {undefined}
      */
-    function checkInformations(content) {
+    function checkInformations(content, title) {
         var i = 0;
-
         var ok = true;
+
+        if (title.length == 0) {
+            ok = false;
+            $("#titleSection").addClass("has-error");
+        }else{
+            $("#titleSection").removeClass("has-error");
+        }
 
         content.forEach(function (element) {
             var hasError = false;
@@ -110,14 +121,14 @@ $(document).ready(function () {
             }
             i++;
         });
-        areAllPointSet(content, ok, 0);
+        areAllPointSet(content, title, ok, 0);
     }
 
     /**
      * Vérifie si un tracé a pu être trouvé entre tout les points
      * @returns {undefined}
      */
-    function areAllPointSet(content, ok, inc) {
+    function areAllPointSet(content, title, ok, inc) {
         creationMarkers.forEach(function (element) {
             if ($("#insert" + inc).length !== 0) {
                 if (element == "none") {
@@ -128,8 +139,16 @@ $(document).ready(function () {
                     $("#Padress" + inc).removeClass("has-error");
                 }
             }
-            if (inc == creationMarkers.length - 1 && ok) {
-                renderDirectionsPolylines(content);
+            if (inc == creationMarkers.length - 1) {
+                if (ok) {
+                    renderDirectionsPolylines(content, title);
+                } else {
+                    $('#InsertionErrorSection').addClass('alert');
+                    $('#InsertionErrorSection').addClass('alert-danger');
+                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Toute vos informations ne sont pas correctes.');
+                }
+
+
             }
             inc++;
         });
@@ -139,7 +158,7 @@ $(document).ready(function () {
      * Genère le constructeur d'une Polyline devant correspondre au tracé de 
      * l'utilisateur
      */
-    function renderDirectionsPolylines(content) {
+    function renderDirectionsPolylines(content, title) {
         var points = [];
         var inc = 0;
         creationRoutes.forEach(function (response) {
@@ -147,21 +166,21 @@ $(document).ready(function () {
                 if (points.length != 0) {
                     points = points.concat(response.route.routes[0].legs[0].steps);
                     if (inc == creationRoutes.length - 1) {
-                        serializePath(points, content);
+                        serializePath(points, content, title);
                     }
                 } else {
                     points = response.route.routes[0].legs[0].steps;
                 }
             } else {
                 if (inc == creationRoutes.length - 1) {
-                    serializePath(points, content);
+                    serializePath(points, content, title);
                 }
             }
             inc++;
         });
     }
 
-    function serializePath(Polylines, content) {
+    function serializePath(Polylines, content, title) {
         var PathString = "[";
 
         var countA = 0;
@@ -190,7 +209,7 @@ $(document).ready(function () {
             PathString += "]}";
         });
         PathString += "]";
-        SaveInformations(PathString, content);
+        SaveInformations(PathString, content, title);
     }
 
     /*
@@ -199,14 +218,37 @@ $(document).ready(function () {
      * sous forme de transaction : si une étape n'est pas effectuée correctement, 
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
-    function SaveInformations(path, content) {
-        console.log(content);
+    function SaveInformations(path, content, title) {
         $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
             type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
             url: './AJAX/DataInsertModif.php',
-            data: {path: path, content: JSON.stringify(content), insert: true},
+            data: {path: path, content: JSON.stringify(content), title: title, insert: true},
             success: function (response) {
-                console.log(response);
+                if (response.length == 1) {
+                    if (response == "1") {
+                        $('#InsertionErrorSection').addClass('alert');
+                        $('#InsertionErrorSection').removeClass('alert-danger');
+                        $('#InsertionErrorSection').addClass('alert-success');
+                        $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ajouté');
+
+
+
+
+
+                        setTimeout(function () {
+                            closeInsertInterface();
+                        }, 1500);
+                    } else if (response == "0") {
+                        $('#InsertionErrorSection').addClass('alert');
+                        $('#InsertionErrorSection').addClass('alert-danger');
+                        $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Une erreur est survenue lors de la création de votre voyage');
+                    }
+                }
+                else {
+                    $('#InsertionErrorSection').addClass('alert');
+                    $('#InsertionErrorSection').addClass('alert-danger');
+                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>'+response+'');
+                }
             }
         });
     }

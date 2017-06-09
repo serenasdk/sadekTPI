@@ -119,9 +119,7 @@ function openAdd() {
 function closeAdd(reopen) {
     if ($('#navInsert .sidebar-body').is(":visible") == true) {
         $('#navInsert .slide-submenu').closest('.sidebar-body').fadeOut('slide');
-        if (reopen) {
             $('#cmdInsert').fadeIn();
-        }
     } else {
         if (!reopen) {
             $('#cmdInsert').hide();

@@ -180,7 +180,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    Ajout d'un voyage
+                    Ajout d'un Voyage
                     <span class="pull-right slide-submenu"  id="collapseDetails">
                         <i class="fa fa-chevron-right"></i>
                     </span>
@@ -188,12 +188,22 @@
             </div>
             <div class="panel-collapse collapse in">
                 <div class="panel-body list-group insertPanel">
-                    <div id="InsertionContent">
+                    <div id="titleSection" class="form-group">
+                        <input type="text" id="titleTrip" class="form-control col-lg-12" placeholder="Titre du Voyage">
+                    </div>
+                    <div>
+                        <div id="InsertionContent">
+
+                        </div>
+                    </div>
+
+                    <div id="InsertionErrorSection">
 
                     </div>
                     <div id="InsertionControls">
                         <input type="button" id="AddState" class="btn btn-default pull-left" value="Ajouter une étape">
                         <input type="button" id="SubmitNewTrip" class="btn btn-primary pull-right" value="Enregistrer mon voyage">
+                        <input type="button" id="QuitCreation" class="btn btn-danger pull-right" value="Quitter">
                     </div>
                 </div>
             </div>
