@@ -24,9 +24,9 @@ $(document).ready(function () {
         if (count >= 2) {
             var name = "#insert";
             var content = [];
-            
+
             var title = $('#titleTrip').val();
-            
+
             for (var flag = 0; flag < Number(count); flag++) {
                 if ($("#insert" + flag).length !== 0) {
                     content.push({});
@@ -61,7 +61,7 @@ $(document).ready(function () {
         if (title.length == 0) {
             ok = false;
             $("#titleSection").addClass("has-error");
-        }else{
+        } else {
             $("#titleSection").removeClass("has-error");
         }
 
@@ -226,18 +226,9 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.length == 1) {
                     if (response == "1") {
-                        $('#InsertionErrorSection').addClass('alert');
-                        $('#InsertionErrorSection').removeClass('alert-danger');
-                        $('#InsertionErrorSection').addClass('alert-success');
-                        $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ajouté');
 
+                        uploadPictures(content);
 
-
-
-
-                        setTimeout(function () {
-                            closeInsertInterface();
-                        }, 1500);
                     } else if (response == "0") {
                         $('#InsertionErrorSection').addClass('alert');
                         $('#InsertionErrorSection').addClass('alert-danger');
@@ -247,9 +238,33 @@ $(document).ready(function () {
                 else {
                     $('#InsertionErrorSection').addClass('alert');
                     $('#InsertionErrorSection').addClass('alert-danger');
-                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>'+response+'');
+                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + response + '');
                 }
             }
+        });
+    }
+
+    function uploadPictures(content) {
+        var inc = 0;
+        console.log("begin upp");
+        content.forEach(function (element) {            
+            var id = element.ref;
+            if ($('#insert' + id + ' .clearfix').children().length > 1) {
+                console.log("upload");
+                $('#picSelect' + id).fileinput('upload');
+            }
+
+            /*if (inc == content.length - 1) {
+                $('#InsertionErrorSection').addClass('alert');
+                $('#InsertionErrorSection').removeClass('alert-danger');
+                $('#InsertionErrorSection').addClass('alert-success');
+                $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ajouté');
+
+                setTimeout(function () {
+                    closeInsertInterface();
+                }, 1500);
+            }*/
+            inc++;
         });
     }
 });

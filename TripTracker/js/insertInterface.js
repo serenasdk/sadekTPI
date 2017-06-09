@@ -58,7 +58,7 @@ $(document).ready(function () {
                         </div>'
                 + '</li>'
                 + '<li class="list-group-item">'
-                + '<p>Ici le composant pour ajouter les images</p>' //Ajout des images
+                + '<input id="picSelect' + length + '" name="picSelect' + length + '[]" type="file" multiple class="file-loading">' //Ajout des images
                 + '</li>'
                 + '</ul>'
                 + '<div id="Pcomment' + length + '" class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment' + length + '"></textarea></div>'
@@ -69,14 +69,31 @@ $(document).ready(function () {
         $("#date" + length).datetimepicker({format: 'dd/mm/yyyy', startView: 'month',
             minView: 'month',
             autoclose: true});
+
+
+        $("#picSelect" + length).fileinput({
+            previewFileType: "image",
+            browseClass: "btn btn-default custom",
+            browseLabel: "",
+            browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
+            removeClass: "btn btn-default customRem",
+            removeLabel: "",
+            removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+            uploadUrl: './AJAX/PictureInsertModif.php',
+            uploadExtraData: {
+                idState: length,
+                insert: true
+            }, // server upload action ?idState=' + length+"&insert=true"
+            uploadAsync: false,
+            showUpload: false
+        });
     });
 
     $('#QuitCreation').click(function () {
-        alert("close");
         closeInsertInterface();
     });
-    
-    
+
+
 
     $('body').on('click', '.closeInsertionPanel', function () {
         var id = event.target.id;
@@ -134,38 +151,39 @@ $(document).ready(function () {
         else {
             $(target).html("[Insérer un titre]");
         }
-    });
+    }
+    );
 });
 
 
 
 function closeInsertInterface() {
-        focus = null;
-        var countA = 0;
-        creationMarkers.forEach(function (element) {
-            if (typeof element == "object") {
-                element.setMap(null);
-            }
-            if (countA == creationMarkers.length - 1) {
-                creationMarkers = [];
-            }
-            countA++;
-        });
-        var countB = 0;
-        creationRoutes.forEach(function (element) {
-            if (typeof element == "object") {
-                element.display.setMap(null);
-            }
-            if (countB == creationRoutes.length - 1) {
-                creationRoutes = [];
-            }
-            countB++;
-        });
+    focus = null;
+    var countA = 0;
+    creationMarkers.forEach(function (element) {
+        if (typeof element == "object") {
+            element.setMap(null);
+        }
+        if (countA == creationMarkers.length - 1) {
+            creationMarkers = [];
+        }
+        countA++;
+    });
+    var countB = 0;
+    creationRoutes.forEach(function (element) {
+        if (typeof element == "object") {
+            element.display.setMap(null);
+        }
+        if (countB == creationRoutes.length - 1) {
+            creationRoutes = [];
+        }
+        countB++;
+    });
 
-        $('#InsertionErrorSection').html('');
-        $('#InsertionContent').html('');
-        $('#InsertionErrorSection').removeClass('alert');
-        $('#InsertionErrorSection').removeClass('alert-success');
-        closeAdd(false);
-        openRight();
-    }
+    $('#InsertionErrorSection').html('');
+    $('#InsertionContent').html('');
+    $('#InsertionErrorSection').removeClass('alert');
+    $('#InsertionErrorSection').removeClass('alert-success');
+    closeAdd(false);
+    openRight();
+}

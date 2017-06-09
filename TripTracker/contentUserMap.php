@@ -2,8 +2,9 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfv2UYZVSvgZdy3JX8p2r6sutqh2o_4Dg"></script>
 <link href="./stylesheets/templateMap.css" rel="stylesheet" type="text/css"/>
+<link href="ressources/kartik-v-bootstrap-fileinput-v4.4.1-15-g6a94917/kartik-v-bootstrap-fileinput-6a94917/css/fileinput.css" rel="stylesheet" type="text/css"/>
 <link href="ressources/bootstrap-datetimepicker-master/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css"/>
-
+<script src="ressources/kartik-v-bootstrap-fileinput-v4.4.1-15-g6a94917/kartik-v-bootstrap-fileinput-6a94917/js/fileinput.min.js" type="text/javascript"></script>
 <script src="ressources/bootstrap-datetimepicker-master/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="js/templateMap.js" type="text/javascript"></script>
 <script src="js/insertInterface.js" type="text/javascript"></script>
@@ -193,7 +194,7 @@
                     </div>
                     <div>
                         <div id="InsertionContent">
-
+                            
                         </div>
                     </div>
 

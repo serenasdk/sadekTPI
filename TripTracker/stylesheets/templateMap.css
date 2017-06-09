@@ -46,7 +46,7 @@ body { overflow: hidden; }
     bottom: 20px;
     right: .5em;
     z-index: 40;
-     
+
 }
 
 #map { z-index: 35; }
@@ -107,6 +107,13 @@ body { overflow: hidden; }
 .glyphicon-time{
     font-size: 2em;
 }
+.glyphicon-picture{
+    font-size: 1.2em;
+}
+
+.glyphicon-trash{
+    font-size: 1.2em;
+}
 
 .input-group-btn .btn{
     height: 34px;
@@ -153,4 +160,21 @@ ul{
 
 #InsertionContent{
     margin-top: 50px;
+}
+
+.custom{
+    //background-color: red;
+    padding-top: 6px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.customRem{
+    padding-top: 4px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.file-drop-zone{
+    height: 100px;
 }
