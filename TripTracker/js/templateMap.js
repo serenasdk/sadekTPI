@@ -264,7 +264,7 @@ function TracePreviousRoad(PlaceId) {
                     if (typeof creationRoutes[PlaceId - 1] == "object") {
                         creationRoutes[PlaceId - 1].display.setMap(null);
                     }
-                    setPath(creationMarkers[PlaceId], creationMarkers[count], PlaceId - 1);
+                    setPath(creationMarkers[count], creationMarkers[PlaceId], PlaceId - 1);
                     if (true) {
                         return;
                     }
@@ -334,9 +334,9 @@ function setPath(position1, position2, StoragePosition) {
         if (status === google.maps.DirectionsStatus.OK) {
             creationRoutes[StoragePosition].route = response;
             creationRoutes[StoragePosition].display.setDirections(response);
-        }
-        else {
-            alert('Directions request failed due to ' + status);
+        }        
+        if (status === "ZERO_RESULTS") {
+            drawFlight(dep, arr, StoragePosition);
         }
     });
 }
@@ -345,8 +345,16 @@ function setPath(position1, position2, StoragePosition) {
  * Dessine une ligne droite entre deux point ne pouvant pas être reliés par la terre
  * @returns {undefined}
  */
-function drawFlight() {
-
+function drawFlight(position1, position2, StoragePosition) {
+    creationRoutes[StoragePosition].display = new google.maps.Polyline({
+          path: [position1, position2],
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 4
+        });
+        creationRoutes[StoragePosition].display.setMap(map);
+        creationRoutes[StoragePosition].route = ["polyline"];
 }
 
 /**
