@@ -6,6 +6,7 @@ var creationRoutes = [];
 
 $(document).ready(function () {
     initMap();
+    
     $("#navTrips .collapse").collapse({toggle: false});
 
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
@@ -151,11 +152,14 @@ function initMap() {
     map = new google.maps.Map(mapElement, mapOptions);
 }
 
-function getAdresseFromPosition(Position) {
 
-    //var input = document.getElementById('latlng').value;
-    //var latlngStr = input.split(',', 2);
-    //var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+/**
+ * Récupère les informations complètes liée à la position et complète les 
+ * informations du panel sélectionné
+ * @param {type} Position
+ * @returns {undefined}
+ */
+function getAdresseFromPosition(Position) {
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode({'location': Position}, function (results, status) {
         if (status === 'OK') {
@@ -172,6 +176,12 @@ function getAdresseFromPosition(Position) {
     });
 }
 
+/**
+ * Récupère les informations complètes liée à l'adresse et complète les 
+ * informations du panel sélectionné
+ * @param {type} Adresse
+ * @returns {undefined}
+ */
 function getPositionFromAdresse(Adresse) {
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode({'address': Adresse}, function (results, status) {
@@ -185,6 +195,11 @@ function getPositionFromAdresse(Adresse) {
     });
 }
 
+/**
+ * Géolocalise l'utilisateur, obtient les informations complète de cette 
+ * localisation et complète les informations du panel sélectionné
+ * @returns {undefined}
+ */
 function geoLocation() {
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
@@ -199,6 +214,13 @@ function geoLocation() {
     }
 }
 
+/**
+ * Place un marqueur sur la map en le stockang à la position correspondant au 
+ * focus.
+ * @param {LatLng} location
+ * @param {string} address
+ * @returns {undefined}
+ */
 function placeMarker(location, address) {
     if (focus !== null) {
         if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
@@ -215,11 +237,21 @@ function placeMarker(location, address) {
     }
 }
 
+/**
+ * Tente de traces les deux routes auxquelles le marqueur pourrait être relié
+ * @param {int} PlaceId
+ * @returns {undefined}
+ */
 function TraceRoute(PlaceId) {
     TracePreviousRoad(PlaceId);
     TraceNextRoad(PlaceId);
 }
 
+/**
+ * Tente de tracer la route entre le marqueur et l'emplacement précédent
+ * @param {int} PlaceId
+ * @returns {undefined}
+ */
 function TracePreviousRoad(PlaceId) {
     if (PlaceId - 1 >= 0) {
         var negaArray = creationMarkers.slice(0, PlaceId).reverse();
@@ -243,6 +275,11 @@ function TracePreviousRoad(PlaceId) {
     }
 }
 
+/**
+ * Tente de tracer la route entre le marqueur et l'emplacement suivant
+ * @param {int} PlaceId
+ * @returns {undefined}
+ */
 function TraceNextRoad(PlaceId) {
 
     if (Number(PlaceId) + 1 < creationMarkers.length) {
@@ -304,10 +341,19 @@ function setPath(position1, position2, StoragePosition) {
     });
 }
 
+/**
+ * Dessine une ligne droite entre deux point ne pouvant pas être reliés par la terre
+ * @returns {undefined}
+ */
 function drawFlight() {
 
 }
 
+/**
+ * Supprime les routes auxquel un point est lié
+ * @param {int} dotId
+ * @returns {undefined}
+ */
 function suppressRoadsOfDot(dotId) {
     var dot1 = null;
 
@@ -339,7 +385,6 @@ function suppressRoadsOfDot(dotId) {
                     creationRoutes[count - 1].display.setMap(null);
                     creationRoutes[count - 1] = null;
                     if (dot1 !== null) {
-                        //console.log("On relie " + dot1 + " à " + count);
                         setPath(creationMarkers[dot1], creationMarkers[count], count - 1);
                     }
                     if (true) {

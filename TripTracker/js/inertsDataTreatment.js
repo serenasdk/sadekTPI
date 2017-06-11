@@ -2,14 +2,20 @@
  * SADEK Serena 
  * Juin 2017
  * TripTracker
+ * 
  * Les fonctions de cette page concernent le traitement, le formatage et l'envoi
  * des informations rentrées par l'utilsiateur dans le formulaire d'ajour de 
  * voyage.
  */
+
+//Expression régulière pour jj/mm/aaaa
 var regExpDate = new RegExp(/^(((0[1-9]|[12][0-9]|30)[-\/]?(0[13-9]|1[012])|31[-\/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-\/]?02)[-\/]?[0-9]{4}|29[-\/]?02[-\/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/);
 
 $(document).ready(function () {
 
+    /**
+     * Evènement déclenché par le click du bouton "Enregistrer le voyage"
+     */
     $("#SubmitNewTrip").click(function () {
         getInformations();
     });
@@ -20,28 +26,31 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function getInformations() {
-
-        if (count >= 2) {
+        
+        //Si le voyage est composé d'au moins deux étapes
+        if (count >= 1) {
             var name = "#insert";
             var content = [];
-
+            
+            //Récupération du titre du voyage
             var title = $('#titleTrip').val();
 
+            //Récupération du contenu des champs des panel, sous forme de tableau associatif
             for (var flag = 0; flag < Number(count); flag++) {
                 if ($("#insert" + flag).length !== 0) {
                     content.push({});
-                    content[content.length - 1].ref = flag;
-                    content[content.length - 1].title = $("#title" + flag).val();
-                    //content[content.length - 1].adress = $("#adress" + flag).val();
-                    content[content.length - 1].date = $("#date" + flag).val();
-                    content[content.length - 1].comment = $("#comment" + flag).val();
-                    if (typeof creationMarkers[flag] == "object") {
-                        content[content.length - 1].lat = creationMarkers[flag].position.lat();
-                        content[content.length - 1].lng = creationMarkers[flag].position.lng();
-                        content[content.length - 1].address = creationMarkers[flag].address;
+                    content[content.length - 1].ref = flag; //Numéro du panel
+                    content[content.length - 1].title = $("#title" + flag).val(); //Titre
+                    content[content.length - 1].date = $("#date" + flag).val(); //Date
+                    content[content.length - 1].comment = $("#comment" + flag).val(); //Commentaire
+                    if (typeof creationMarkers[flag] == "object") { //Si le marqueur est défini
+                        content[content.length - 1].lat = creationMarkers[flag].position.lat(); //Latitude
+                        content[content.length - 1].lng = creationMarkers[flag].position.lng(); //Longitude
+                        content[content.length - 1].address = creationMarkers[flag].address; //Adresse
                     }
                 }
                 if (count == flag + 1) {
+                    //Verification des informations
                     checkInformations(content, title);
                     break;
                 }
@@ -55,10 +64,15 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function checkInformations(content, title) {
+        
         var i = 0;
+        
+        //Présence d'aucune erreur
         var ok = true;
+        
+        ///     VERIFICATION DU TITRE DU VOYAGE
 
-        if (title.length == 0) {
+        if (title.length == 0) { //Le titre n'est pas vide
             ok = false;
             $("#titleSection").addClass("has-error");
         } else {
@@ -95,23 +109,24 @@ $(document).ready(function () {
 
             ///     VERIFICATION DU COMMENTAIRE
 
-            if (element.comment.length == 0) {
+            if (element.comment.length == 0) {//Le commentaire n'est pas vide
                 hasError = true;
                 $("#Pcomment" + element.ref).addClass("has-error");
             } else {
                 $("#Pcomment" + element.ref).removeClass("has-error");
             }
 
-            ///     VERIFICATION DU TITRE
+            ///     VERIFICATION DU TITRE DE L'ETAPE
 
-            if (element.title.length == 0) {
+            if (element.title.length == 0) {//Le titre n'est pas vide
                 hasError = true;
                 $("#Ptitle" + element.ref).addClass("has-error");
             } else {
                 $("#Ptitle" + element.ref).removeClass("has-error");
             }
 
-            if (hasError) {
+            //Met le panneau en rouge s'il possède au moins une erreur
+            if (hasError) { 
                 $("#insert" + element.ref).removeClass("panel-default");
                 $("#insert" + element.ref).addClass("panel-danger");
                 ok = false;
@@ -121,6 +136,7 @@ $(document).ready(function () {
             }
             i++;
         });
+        //Le chemin est-il complet
         areAllPointSet(content, title, ok, 0);
     }
 
@@ -129,6 +145,10 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function areAllPointSet(content, title, ok, inc) {
+        
+        /* Si un marqueur n'est pas défini, c'est dans le champs d'adresse du
+         * panel correspondant que l'erreur sera indiquée */
+        
         creationMarkers.forEach(function (element) {
             if ($("#insert" + inc).length !== 0) {
                 if (element == "none") {
@@ -147,8 +167,6 @@ $(document).ready(function () {
                     $('#InsertionErrorSection').addClass('alert-danger');
                     $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Toute vos informations ne sont pas correctes.');
                 }
-
-
             }
             inc++;
         });
@@ -180,6 +198,13 @@ $(document).ready(function () {
         });
     }
 
+    /**
+     * Genère le constructeur de la polyline sous forme de string
+     * @param {array} Polylines
+     * @param {array} content
+     * @param {string} title
+     * @returns {undefined}
+     */
     function serializePath(Polylines, content, title) {
         var PathString = "[";
 
@@ -233,7 +258,6 @@ $(document).ready(function () {
                         var inc = 0;
                         content.forEach(function (element) {
                             var id = element.ref;
-                            //$('#picSelect' + id).fileinput({uploadUrl: './AJAX/PictureInsertModif.php?wpId=' + wpIds[inc]});
                             $('#picSelect' + id).fileinput('upload');
 
                             if (inc == content.length - 1) {
@@ -267,14 +291,6 @@ $(document).ready(function () {
             }
         });
     }
-
-    function uploadPictures(content) {
-
-    }
-
-    $('body').on('fileuploaded', '.file-loading', function (event, data, previewId, index) {
-        alert("upload");
-    });
 });
 
 

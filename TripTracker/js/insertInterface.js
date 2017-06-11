@@ -2,25 +2,44 @@
  * SADEK Serena
  * Juin 2017
  * TripTracker
+ * 
  * Toute les fonctions reliées à l'onglet permettant l'insertion de voyage
  */
 
 var InsertionElements = [];
+
+//Compteur d'onglet générés
 var count = 0;
+
+//Indique si on est en train de fermer manuellement un panel
 var coll = true;
+
+//Valeur numérique ou nulle indiquant l'onglet qui est ouvert
 var focus = null;
 
 $(document).ready(function () {
 
+    /**
+     * Evenèement click du bouton "Ajouter une étape"
+     * Genère un onglet pré-fabriqué, mais unique grâce à la variable count
+     */
     $("#AddState").click(function () {
+        //Crée un marqueueur non défini
         creationMarkers.push("none");
-        if (count > 0) {
+        
+        //Crée une route non défini
+        if (count > 0) { //Si ce n'est pas le premier marqueur
             creationRoutes.push("none");
         }
+        
         var nowDate = new Date();
         var date = nowDate.toLocaleDateString();
         var length = count;
+        
+        //Incrémente le compteur
         count++;
+        
+        //Code du pannel
         $("#InsertionContent").append(
                 '<div class="panel panel-default" id="insert' + length + '">'
                 + '<div class="panel-heading" role="tab" id="headInsert' + length + '">'
@@ -65,12 +84,15 @@ $(document).ready(function () {
                 + '</div></div></div>'
                 );
         var name = '#content' + length;
+        //Initialise la variable définissant l'ouverture du panel
         $(name).collapse({toggle: false});
+        
+        //Initialise le DateTimePicker avec la date du jour
         $("#date" + length).datetimepicker({format: 'dd/mm/yyyy', startView: 'month',
             minView: 'month',
             autoclose: true});
 
-
+        //Initialise le fileINput
         $("#picSelect" + length).fileinput({
             previewFileType: "image",
             browseClass: "btn btn-default custom",
@@ -89,28 +111,47 @@ $(document).ready(function () {
         });
     });
 
+    //Défini l'évènement de suppression commandé par la croix
     $('#QuitCreation').click(function () {
         closeInsertInterface();
     });
 
 
-
+    /**
+     * Evènement déclenché par la croix d'un panel dynamique
+     * Commande la suppression de ce panel
+     */
     $('body').on('click', '.closeInsertionPanel', function () {
+        //Récupèration de l'id de la cible
         var id = event.target.id;
+        //Récupèraction du numéro du panel
         var position = id.substring(5, id.length);
+        //Génération de l'id du panel
         var DeleteItemID = "#insert" + position;
+        //Suppression du panel
         $(DeleteItemID).remove();
         if (position == focus) {
+            //Le focus ne doit pas rester sur un panel supprimé
             focus = null;
         }
+        //Masquer le marqueur si il est défini
         if (creationMarkers[position] !== "none" && creationMarkers[position] !== null) {
             creationMarkers[position].setMap(null);
         }
+        //Supprimer le marqueur
         creationMarkers[position] = null;
 
+        //Supprimer les routes liées à cette étape
         suppressRoadsOfDot(position);
     });
 
+    /**
+     * Évenement généré par l'évènement click du bouton loupe, à droite du champ
+     * d'adresse.
+     * Cherche la position corespondant à l'adresse, et si elle existe, génère
+     * un marqueur, corrige l'addresse et trace les éventuelles route qui le
+     * relie aux autres marqueurs.
+     */
     $('body').on('click', '.searchLoc', function () {
         var id = event.target.id;
         var ref = id.substring(7, id.length);
@@ -121,26 +162,52 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     * Évenement généré par l'évènement click du bouton cible, à droite du champ
+     * d'adresse.
+     * Géolocalise l'utilisateur et genère le marqueur, l'adresse et les 
+     * éventuelles routes liés à cette localisation.
+     */
     $('body').on('click', '.searchMyLoc', function () {
         geoLocation();
     });
 
+    /**
+     * Empêche l'utilisateur d'avoir plus d'un onglet ouver à la fois
+     */
     $('body').on('show.bs.collapse', '#InsertionContent .collapse', function () {
-        if (coll) {
+        /*Vu que l'évènement se déclenche lui-même, il a le potentiel de 
+         * Déclencher une boucle infini. La variable coll est donc nécessaire 
+         * pour que l'évenement agisse différement s'il est appellé par une 
+         * action de l'utilisateur ou s'il est appelé par lui même*/
+       
+        if (coll) { //L'évenèment est-il appelé par une action ?
+            //Le prochain ne le sera pas
             coll = false;
             var id = "#" + (this.id);
+            //Fermer tout les onglets qui ne sont pas la target.
             $('#InsertionContent .collapse').not(id).collapse("hide");
+            
+            //Les prochain evènement seront une action
             coll = true;
+            
+            //Changement de focus
             focus = id.substring(8, id.length);
         }
     });
 
+    /**
+     * met le focus à null si une autre fenêtre n'est pas ouverte à la vollée.
+     */
     $('body').on('hide.bs.collapse', '#InsertionContent .collapse', function () {
         if (coll) {
             focus = null;
         }
     });
 
+    /**
+     * Met à jour l'entête du paneau par raport à son champ de titre
+     */
     $('body').on('change', '.titleControl', function () {
         var id = event.target.id;
         var target = "#TripName" + id.substring(5, id.length);
@@ -149,6 +216,7 @@ $(document).ready(function () {
             $(target).html(value);
         }
         else {
+            //Si le champ titre est vide, on remet l'entête par défaut
             $(target).html("[Insérer un titre]");
         }
     }
@@ -156,10 +224,17 @@ $(document).ready(function () {
 });
 
 
-
+/**
+ * Ferme correctement l'interface de création, en supprimant son contenu et en
+ * réinitialisant les variables qui lui sont liés.
+ * @returns {undefined}
+ */
 function closeInsertInterface() {
+    //Réinitalisation du focus
     focus = null;
     var countA = 0;
+    
+    //Suppression et annulation de l'affichage de chaque marqueur 
     creationMarkers.forEach(function (element) {
         if (typeof element == "object") {
             element.setMap(null);
@@ -170,6 +245,7 @@ function closeInsertInterface() {
         countA++;
     });
     var countB = 0;
+    //Suppression et annulation de l'affichage de chaque route
     creationRoutes.forEach(function (element) {
         if (typeof element == "object") {
             element.display.setMap(null);
@@ -180,10 +256,15 @@ function closeInsertInterface() {
         countB++;
     });
 
+    //Vides les champs qui ne sont pas supprimés
     $('#InsertionErrorSection').html('');
     $('#InsertionContent').html('');
     $('#InsertionErrorSection').removeClass('alert');
     $('#InsertionErrorSection').removeClass('alert-success');
+    
+    //Fermeture de l'interface de création
     closeAdd(false);
+    
+    //Réouverture de la navigation
     openRight();
 }
