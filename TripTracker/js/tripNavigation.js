@@ -43,6 +43,7 @@ function loadPage(idPage) {
             var data = JSON.parse(response);
             generateTripPanels(data);
             drawNavPath(data);
+            drawMarkers(data);
         }
     });
 }
@@ -88,9 +89,12 @@ function drawNavPath(pageFullData) {
     var count = 0;
     pageFullData.forEach(function (trip) {
         var pathConstructor = JSON.parse(trip.pathConstructor);
-        //console.log(pathConstructor);
-        NavPaths[count] = new google.maps.Polyline(pathConstructor);
-        
+        NavPaths[count] = new google.maps.Polyline(pathConstructor[0]);
+        NavPaths[count].setMap(map);
         count++;
     });
+}
+
+function drawMarkers(pageFullData){
+    console.log(pageFullData);
 }
