@@ -26,12 +26,12 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function getInformations() {
-        
+
         //Si le voyage est composé d'au moins deux étapes
         if (count >= 1) {
             var name = "#insert";
             var content = [];
-            
+
             //Récupération du titre du voyage
             var title = $('#titleTrip').val();
 
@@ -64,12 +64,12 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function checkInformations(content, title) {
-        
+
         var i = 0;
-        
+
         //Présence d'aucune erreur
         var ok = true;
-        
+
         ///     VERIFICATION DU TITRE DU VOYAGE
 
         if (title.length == 0) { //Le titre n'est pas vide
@@ -126,7 +126,7 @@ $(document).ready(function () {
             }
 
             //Met le panneau en rouge s'il possède au moins une erreur
-            if (hasError) { 
+            if (hasError) {
                 $("#insert" + element.ref).removeClass("panel-default");
                 $("#insert" + element.ref).addClass("panel-danger");
                 ok = false;
@@ -145,10 +145,10 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function areAllPointSet(content, title, ok, inc) {
-        
+
         /* Si un marqueur n'est pas défini, c'est dans le champs d'adresse du
          * panel correspondant que l'erreur sera indiquée */
-        
+
         creationMarkers.forEach(function (element) {
             if ($("#insert" + inc).length !== 0) {
                 if (element == "none") {
@@ -207,7 +207,7 @@ $(document).ready(function () {
      */
     function serializePath(Polylines, content, title) {
         var PathString = "[";
-
+        PathString += "{\"map\": null,\"paths\": [";
         var countA = 0;
         Polylines.forEach(function (polyline) {
 
@@ -215,7 +215,7 @@ $(document).ready(function () {
                 PathString += ",";
             }
 
-            PathString += "{\"map\": null,\"paths\": [";
+
             countA++;
 
             var countB = 0;
@@ -231,8 +231,9 @@ $(document).ready(function () {
 
                 PathString += "{\"lat\": " + point.lat() + ",\"lng\": " + point.lng() + "}";
             });
-            PathString += "]}";
+            
         });
+        PathString += "]}";
         PathString += "]";
         SaveInformations(PathString, content, title);
     }

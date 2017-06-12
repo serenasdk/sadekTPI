@@ -9,6 +9,7 @@
 <script src="js/templateMap.js" type="text/javascript"></script>
 <script src="js/insertInterface.js" type="text/javascript"></script>
 <script src="js/inertsDataTreatment.js" type="text/javascript"></script>
+<script src="js/tripNavigation.js" type="text/javascript"></script>
 
 <!-- Contenu de la page -->
 <div id="map">
@@ -19,127 +20,16 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        Layers
+                        Mes voyages
                         <span class="pull-right slide-submenu" id="collapseTrip">
                             <i class="fa fa-chevron-left"></i>
                         </span>
                     </h4>
                 </div>
-                <div class="panel-body list-group">
-                    <div class="panel panel-default" id="panel1">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="trigger collapsed">
-                                    Voyage 1
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 1
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 2
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 3
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 4
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 5
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default" id="panel2">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" href="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo" class="trigger collapsed">
-                                    Voyage 2
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapsetwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 1
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 2
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 3
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 4
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 5
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default" id="panel23">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" href="#collapsetwoo" aria-expanded="true" aria-controls="collapsetwoo" class="trigger collapsed">
-                                    Voyage 3
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapsetwoo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 1
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 2
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 3
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 4
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 5
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default" id="panel62">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" href="#collapsetwwo" aria-expanded="true" aria-controls="collapsetwwo" class="trigger collapsed">
-                                    Voyage 4
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapsetwwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 1
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 2
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 3
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 4
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-globe"></i> Étape 5
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="panel-body list-group" id="TripPanels">
+                    
                 </div>
-                <div id="pageNos" class="text-center"><a class="noPage">1</a><a class="noPage">2</a><a class="noPage">3</a><a class="noPage">4</a><a class="noPage">5</a></div>
+                <div id="pageNos" class="text-center"></div>
             </div>
         </div>
     </div>

@@ -5,9 +5,8 @@ var creationMarkers = [];
 var creationRoutes = [];
 
 $(document).ready(function () {
-    initMap();
-    
-    $("#navTrips .collapse").collapse({toggle: false});
+    //Chargement de la carte
+    initMap();    
 
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
 
@@ -52,7 +51,7 @@ $(document).ready(function () {
         closeAdd(true);
     });
 
-    $('#navTrips .collapse').on('show.bs.collapse', function () {
+    $('body').on('show.bs.collapse', "#navTrips .collapse", function () {
         if (coll) {
             coll = false;
             var id = "#" + (this.id);
