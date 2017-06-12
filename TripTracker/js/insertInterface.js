@@ -26,19 +26,19 @@ $(document).ready(function () {
     $("#AddState").click(function () {
         //Crée un marqueueur non défini
         creationMarkers.push("none");
-        
+
         //Crée une route non défini
         if (count > 0) { //Si ce n'est pas le premier marqueur
             creationRoutes.push("none");
         }
-        
+
         var nowDate = new Date();
         var date = nowDate.toLocaleDateString();
         var length = count;
-        
+
         //Incrémente le compteur
         count++;
-        
+
         //Code du pannel
         $("#InsertionContent").append(
                 '<div class="panel panel-default" id="insert' + length + '">'
@@ -86,7 +86,7 @@ $(document).ready(function () {
         var name = '#content' + length;
         //Initialise la variable définissant l'ouverture du panel
         $(name).collapse({toggle: false});
-        
+
         //Initialise le DateTimePicker avec la date du jour
         $("#date" + length).datetimepicker({format: 'dd/mm/yyyy', startView: 'month',
             minView: 'month',
@@ -180,20 +180,22 @@ $(document).ready(function () {
          * Déclencher une boucle infini. La variable coll est donc nécessaire 
          * pour que l'évenement agisse différement s'il est appellé par une 
          * action de l'utilisateur ou s'il est appelé par lui même*/
-       
-        if (coll) { //L'évenèment est-il appelé par une action ?
-            //Le prochain ne le sera pas
-            coll = false;
-            var id = "#" + (this.id);
-            //Fermer tout les onglets qui ne sont pas la target.
-            $('#InsertionContent .collapse').not(id).collapse("hide");
-            
-            //Les prochain evènement seront une action
-            coll = true;
-            
-            //Changement de focus
-            focus = id.substring(8, id.length);
+        if (creating) {
+            if (coll) { //L'évenèment est-il appelé par une action ?
+                //Le prochain ne le sera pas
+                coll = false;
+                var id = "#" + (this.id);
+                //Fermer tout les onglets qui ne sont pas la target.
+                $('#InsertionContent .collapse').not(id).collapse("hide");
+
+                //Les prochain evènement seront une action
+                coll = true;
+
+                //Changement de focus
+                focus = id.substring(8, id.length);
+            }
         }
+
     });
 
     /**
@@ -233,7 +235,7 @@ function closeInsertInterface() {
     //Réinitalisation du focus
     focus = null;
     var countA = 0;
-    
+
     //Suppression et annulation de l'affichage de chaque marqueur 
     creationMarkers.forEach(function (element) {
         if (typeof element == "object") {
@@ -261,10 +263,13 @@ function closeInsertInterface() {
     $('#InsertionContent').html('');
     $('#InsertionErrorSection').removeClass('alert');
     $('#InsertionErrorSection').removeClass('alert-success');
-    
+
     //Fermeture de l'interface de création
     closeAdd(false);
-    
+
+    //Rechargement de la première page
+    loadPage(noPage);
+
     //Réouverture de la navigation
     openRight();
 }

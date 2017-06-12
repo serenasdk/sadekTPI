@@ -207,7 +207,7 @@ $(document).ready(function () {
      */
     function serializePath(Polylines, content, title) {
         var PathString = "[";
-        PathString += "{\"map\": null,\"paths\": [";
+        PathString += "{\"map\": null,\"path\": [";
         var countA = 0;
         Polylines.forEach(function (polyline) {
 

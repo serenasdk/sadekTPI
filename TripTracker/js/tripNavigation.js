@@ -22,14 +22,33 @@ $(document).ready(function () {
         loadPage(noPage);
     });
 
-    $('.collapse').on('show.bs.collapse', function () {
+    //$("body").click();
+
+    $("body").on('show.bs.collapse', '.collapse', function () {
+
         if (!creating) {
+            var href = event.target.href;
+            if (typeof href != "undefined") {
+                var comp = href.split("/");
+                var id = comp[comp.length - 1];
+                var ref = id.slice(13, id.length);
+                selectTab(ref);
+            }
+
+
             if (coll) {
                 coll = false;
                 var id = "#" + (this.id);
                 $('#navTrips .collapse').not(id).collapse("hide");
                 coll = true;
             }
+        }
+    });
+
+    $("body").on('hide.bs.collapse', '.collapse', function () {
+        if (!creating) {
+            showAllTrips();
+            panOnAllTrips();
         }
     });
 
@@ -54,6 +73,7 @@ function loadPage(idPage) {
             generateTripPanels(data);
             drawNavPath(data);
             drawMarkers(data);
+            panOnAllTrips();
         }
     });
 }
@@ -82,7 +102,7 @@ function generateTripPanels(pageContent) {
                                 </a>\n\
                             </h4>\n\
                         </div>\n\
-                        <div id="collapseTrip' + count + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTrip' + count + '">\n\
+                        <div id="collapseTrip' + count + '" class="panel-collapse collapse navPanel" role="tabpanel" aria-labelledby="headingTrip' + count + '">\n\
                             <div class="panel-body">';
         trip.waypoints.forEach(function (wp) {
             panel += '<button id="wpLink' + wp.idWaypoint + '" class="list-group-item col-lg-12 text-left waypoitLink">\n\
@@ -98,12 +118,21 @@ function generateTripPanels(pageContent) {
 }
 
 function drawNavPath(pageFullData) {
-    var count = 0;
+    var inc = 0;
     pageFullData.forEach(function (trip) {
         var pathConstructor = JSON.parse(trip.pathConstructor);
-        NavPaths[count] = new google.maps.Polyline(pathConstructor[0]);
-        NavPaths[count].setMap(map);
-        count++;
+        NavPaths[inc] = new google.maps.Polyline(pathConstructor[0]);
+        NavPaths[inc].setMap(map);
+        NavPaths[inc].ref = inc;
+        NavPaths[inc].setOptions({strokeWeight: 7});
+        createPathClickEvent(inc);
+        inc++;
+    });
+}
+
+function createPathClickEvent(inc) {
+    google.maps.event.addListener(NavPaths[inc], 'click', function () {
+        selectTrip(inc);
     });
 }
 
@@ -111,10 +140,10 @@ function drawMarkers(pageFullData) {
     var countA = 0;
     pageFullData.forEach(function (trip) {
         var countB = 0;
-        NavMarkers[count] = [];
+        NavMarkers[countA] = [];
         trip.waypoints.forEach(function (wp) {
-
-            NavMarkers[countA][countB] = new google.maps.Marker({position: new google.maps.LatLng(wp.lat, wp.lng)});
+            var position = new google.maps.LatLng(wp.lat, wp.lng);
+            NavMarkers[countA][countB] = new google.maps.Marker({position: position});
             countB++;
         });
         countA++;
@@ -143,7 +172,7 @@ function LoadDetails(tripId) {
             $("#wpDate").html(result.wpDate);
             $("#wpComment").html(result.wpComment);
             $("#wpAddress").html(result.address);
-            
+
             $("#carouselSection .carousel-indicators").html("");
             $("#carouselSection .carousel-inner").html("");
 
@@ -154,18 +183,87 @@ function LoadDetails(tripId) {
                 var inc = 0;
                 result.media.forEach(function (media) {
                     if (inc == 0) {
-                        $("#carouselSection .carousel-indicators").html('<li data-target="#carouselWP" data-slide-to="'+inc+'" class="active"></li>');
-                        $("#carouselSection .carousel-inner").html('<div class="item active"><img src="./usersRessources/image/'+media.mediaName+'" alt=""/></div>');
+                        $("#carouselSection .carousel-indicators").html('<li data-target="#carouselWP" data-slide-to="' + inc + '" class="active"></li>');
+                        $("#carouselSection .carousel-inner").html('<div class="item active"><img src="./usersRessources/image/' + media.mediaName + '" alt=""/></div>');
                     } else {
-                        $("#carouselSection .carousel-indicators").append('<li data-target="#carouselWP" data-slide-to="'+inc+'"></li>');
-                        $("#carouselSection .carousel-inner").append('<div class="item"><img src="./usersRessources/image/'+media.mediaName+'" alt=""/></div>');
+                        $("#carouselSection .carousel-indicators").append('<li data-target="#carouselWP" data-slide-to="' + inc + '"></li>');
+                        $("#carouselSection .carousel-inner").append('<div class="item"><img src="./usersRessources/image/' + media.mediaName + '" alt=""/></div>');
                     }
                     inc++;
                 });
             }
-
-            console.log(result);
         }
     });
+}
+
+function selectTrip(tripPosition) {
+    panOnTrip(tripPosition);
+    ShowOnlyTrip(tripPosition);
+    $("#collapseTrip" + tripPosition).collapse("show");
+}
+
+function selectTab(tripPosition) {
+    panOnTrip(tripPosition);
+    ShowOnlyTrip(tripPosition);
+}
+
+function panOnTrip(tripPosition) {
+    var bounds = new google.maps.LatLngBounds();
+    NavMarkers[tripPosition].forEach(function (marker) {
+        bounds.extend(marker.getPosition());
+    });
+    map.fitBounds(bounds);
+
+    var inc = 0;
+
+    NavMarkers.forEach(function (markerGroup) {
+        markerGroup.forEach(function (marker) {
+            if (inc !== Number(tripPosition)) {
+                marker.setMap(null);
+            } else {
+                marker.setMap(map);
+            }
+
+        });
+        inc++;
+    });
+}
+
+function panOnMarker(Trip, MarkerPosition) {
+    map.panTo(marker.position);
+}
+
+function ShowOnlyTrip(tripPosition) {
+    var inc = 0;
+    NavPaths.forEach(function (path) {
+        if (inc == Number(tripPosition)) {
+
+            path.setMap(map);
+        } else {
+            path.setMap(null);
+        }
+        inc++;
+    });
+}
+function showAllTrips() {
+    NavMarkers.forEach(function (markerGroup) {
+        markerGroup.forEach(function (marker) {
+            marker.setMap(null);
+        });
+    });
+
+    NavPaths.forEach(function (path) {
+        path.setMap(map);
+    });
+}
+
+function panOnAllTrips(tripId) {
+    var bounds = new google.maps.LatLngBounds();
+    NavMarkers.forEach(function (markerGroup) {
+        markerGroup.forEach(function (marker) {
+            bounds.extend(marker.getPosition());
+        });
+    });
+    map.fitBounds(bounds);
 }
 
