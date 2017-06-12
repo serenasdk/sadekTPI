@@ -55,7 +55,7 @@ $(document).ready(function () {
     $("body").on("click", ".waypoitLink", function () {
         var id = event.target.id;
         var ref = id.slice(6, id.length);
-
+        findMarker(ref);
         LoadDetails(ref);
         closeRight(true);
         openLeft();
@@ -144,9 +144,21 @@ function drawMarkers(pageFullData) {
         trip.waypoints.forEach(function (wp) {
             var position = new google.maps.LatLng(wp.lat, wp.lng);
             NavMarkers[countA][countB] = new google.maps.Marker({position: position});
+            NavMarkers[countA][countB].ref = wp.idWaypoint;
+            createMarkerClickEvent(wp.idWaypoint, countA, countB);
             countB++;
         });
         countA++;
+    });
+}
+
+function createMarkerClickEvent(id, positionA, positionB) {
+    google.maps.event.addListener(NavMarkers[positionA][positionB], 'click', function () {
+        //alert(id);
+        LoadDetails(id);
+        closeRight(true);
+        openLeft();
+        panOnMarker(NavMarkers[positionA][positionB]);
     });
 }
 
@@ -229,7 +241,7 @@ function panOnTrip(tripPosition) {
     });
 }
 
-function panOnMarker(Trip, MarkerPosition) {
+function panOnMarker(marker) {
     map.panTo(marker.position);
 }
 
@@ -267,3 +279,12 @@ function panOnAllTrips(tripId) {
     map.fitBounds(bounds);
 }
 
+function findMarker(markerId){
+    NavMarkers.forEach(function (markerGroup) {
+        markerGroup.forEach(function (marker) {
+            if (Number(markerId) == Number(marker.ref)) {
+                panOnMarker(marker);
+            }
+        });
+    });
+}
