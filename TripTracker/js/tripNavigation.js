@@ -62,16 +62,17 @@ function generatePageLinks() {
 
 function generateTripPanels(pageContent) {
     $("#TripPanels").html("");
+    var count = 0;
     pageContent.forEach(function (trip) {
-        var panel = '<div class="panel panel-default navPanelTrip" id="paneTrip' + trip.idTrip + '">\n\
-                        <div class="panel-heading" role="tab" id="headingTrip' + trip.idTrip + '">\n\
+        var panel = '<div class="panel panel-default navPanelTrip" id="paneTrip' + count + '">\n\
+                        <div class="panel-heading" role="tab" id="headingTrip' + count + '">\n\
                             <h4 class="panel-title">\n\
-                                <a role="button" data-toggle="collapse" href="#collapseTrip' + trip.idTrip + '" aria-expanded="true" aria-controls="collapseTrip' + trip.idTrip + '" class="trigger collapsed">\n\
+                                <a role="button" data-toggle="collapse" href="#collapseTrip' + count + '" aria-expanded="true" aria-controls="collapseTrip' + count + '" class="trigger collapsed">\n\
                                     ' + trip.tpTitle + '\n\
                                 </a>\n\
                             </h4>\n\
                         </div>\n\
-                        <div id="collapseTrip' + trip.idTrip + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTrip' + trip.idTrip + '">\n\
+                        <div id="collapseTrip' + count + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTrip' + count + '">\n\
                             <div class="panel-body">';
         trip.waypoints.forEach(function (wp) {
             panel += '<a href="#" class="list-group-item">\n\
@@ -82,6 +83,7 @@ function generateTripPanels(pageContent) {
         panel += '</div></div></div>';
         $("#TripPanels").append(panel);
         $("#navTrips .collapse").collapse({toggle: false});
+        count++;
     });
 }
 
@@ -96,5 +98,14 @@ function drawNavPath(pageFullData) {
 }
 
 function drawMarkers(pageFullData){
-    console.log(pageFullData);
+     var countA = 0;
+    pageFullData.forEach(function (trip) {
+        var countB = 0;
+        NavMarkers[count] = [];
+        trip.waypoints.forEach(function(wp){
+            NavMarkers[countA][countB] = new google.maps.Marker({position: new google.maps.LatLng(wp.lat, wp.lng)});
+            countB++;
+        });
+        countA++;
+    });
 }
