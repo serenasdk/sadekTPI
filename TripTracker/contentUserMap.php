@@ -27,7 +27,7 @@
                     </h4>
                 </div>
                 <div class="panel-body list-group" id="TripPanels">
-                    
+
                 </div>
                 <div id="pageNos" class="text-center"></div>
             </div>
@@ -40,7 +40,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    Task Pane
+                    Détails du Voyage
                     <span class="pull-right slide-submenu"  id="collapseDetails">
                         <i class="fa fa-chevron-right"></i>
                     </span>
@@ -48,18 +48,58 @@
             </div>
             <div id="taskpane" class="panel-collapse collapse in">
                 <div class="panel-body">
-                    <p>
-                        Lorem ipsum dolor sit amet, vel an wisi propriae. Sea ut graece gloriatur. Per ei quando dicant vivendum. An insolens appellantur eos, doctus convenire vis et, at solet aeterno intellegebat qui.
-                    </p>
-                    <p>
-                        Elitr minimum inciderint qui no. Ne mea quaerendum scriptorem consequuntur. Mel ea nobis discere dignissim, aperiam patrioque ei ius. Stet laboramus eos te, his recteque mnesarchum an, quo id adipisci salutatus. Quas solet inimicus eu per. Sonet conclusionemque id vis.
-                    </p>
-                    <p>
-                        Eam vivendo repudiandae in, ei pri sint probatus. Pri et lorem praesent periculis, dicam singulis ut sed. Omnis patrioque sit ei, vis illud impetus molestiae id. Ex viderer assentior mel, inani liber officiis pro et. Qui ut perfecto repudiandae, per no hinc tation labores.
-                    </p>
-                    <p>
-                        Pro cu scaevola antiopam, cum id inermis salutatus. No duo liber gloriatur. Duo id vitae decore, justo consequat vix et. Sea id tale quot vitae.
-                    </p>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <!-- Titre à modifier -->
+                            <div class="form-group">
+                                <i class="glyphicon glyphicon-flag col-lg-1"></i>
+                                <div id="Ptitle" class="input-group col-lg-11">
+                                    <h4 id="wpTitle">Titre de l'étape</h4>
+                                </div>
+                            </div>
+                            <!-- Recherche d\'adresse -->
+                            <div class="form-group">
+                                <i class="glyphicon glyphicon-map-marker col-lg-1"></i>
+                                <div id="Padress" class="input-group col-lg-11">
+                                    <h4 id="wpAddress">Addresse</h4>
+                                </div>
+                            </div>
+                            <!-- Selection de la date -->
+                            <div class="form-group">
+                                <i class="glyphicon glyphicon-time col-lg-1"></i>
+                                <div id="Pdate" class="input-group col-lg-11">
+                                    <h4 id="wpDate">06/11/2015</h4>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" id="carouselSection">
+                            <div id="carouselWP" class="carousel slide" data-ride="carousel">
+                                <!-- Indicators -->
+                                <ol class="carousel-indicators">
+                                </ol>
+
+                                <!-- Wrapper for slides -->
+                                <div class="carousel-inner">
+                                    
+                                </div>
+
+                                <!-- Left and right controls -->
+                                <a class="left carousel-control" href="#carouselWP" data-slide="prev">
+                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="right carousel-control" href="#carouselWP" data-slide="next">
+                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <p class="text-justify" id="wpComment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget nibh et nunc dignissim egestas ut in quam. Aliquam ultrices rutrum sem nec posuere. Ut turpis mi, pharetra sit amet pretium id, lacinia at nunc. Suspendisse gravida est nisi, id malesuada neque fermentum vitae. Phasellus sit amet nibh vestibulum turpis varius ullamcorper. Integer suscipit aliquam sapien, vitae vehicula eros. Ut tincidunt feugiat nisi a tristique. Duis vel justo pulvinar, ornare nulla vitae, sodales ligula. Suspendisse massa mauris, egestas nec eros sed, dignissim varius nisl. Fusce dapibus mollis justo, quis malesuada eros. Phasellus ut felis nisl. Aliquam eu vehicula urna, id tempus lectus. Integer sit amet ornare ipsum. Aliquam eget libero quis massa varius molestie a convallis nunc. Sed aliquet ultricies dolor.</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -84,7 +124,7 @@
                     </div>
                     <div>
                         <div id="InsertionContent">
-                            
+
                         </div>
                     </div>
 

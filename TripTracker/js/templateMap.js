@@ -6,7 +6,7 @@ var creationRoutes = [];
 
 $(document).ready(function () {
     //Chargement de la carte
-    initMap();    
+    initMap();
 
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
 
@@ -69,14 +69,21 @@ $(document).ready(function () {
 
 function openLeft() {
     if ($('#navDetails .sidebar-body').is(":visible") == false) {
-        $('#navDetails .sidebar-body').toggle();
-        $('#cmdNavDetails').hide();
+        window.setTimeout(function () {
+            var height = $(window).height() - 50 - 37 - 7;
+            $('#navDetails .panel-body').css("max-height", height);
+
+            $('#navDetails .sidebar-body').toggle();
+            $('#cmdNavDetails').hide();
+        }, 400);
     }
 }
 function openRight() {
     if ($('.sidebar-left .sidebar-body').is(":visible") == false) {
-        $('.sidebar-left .sidebar-body').toggle();
-        $('.mini-submenu-left').hide();
+        window.setTimeout(function () {
+            $('.sidebar-left .sidebar-body').toggle();
+            $('.mini-submenu-left').hide();
+        });
     }
 }
 function closeRight(reopen) {
@@ -119,7 +126,7 @@ function openAdd() {
 function closeAdd(reopen) {
     if ($('#navInsert .sidebar-body').is(":visible") == true) {
         $('#navInsert .slide-submenu').closest('.sidebar-body').fadeOut('slide');
-            $('#cmdInsert').fadeIn();
+        $('#cmdInsert').fadeIn();
     } else {
         if (!reopen) {
             $('#cmdInsert').hide();
@@ -229,7 +236,7 @@ function placeMarker(location, address) {
             position: location,
             map: map
         });
-        
+
         creationMarkers[focus].address = address;
 
         TraceRoute(focus);
@@ -333,7 +340,7 @@ function setPath(position1, position2, StoragePosition) {
         if (status === google.maps.DirectionsStatus.OK) {
             creationRoutes[StoragePosition].route = response;
             creationRoutes[StoragePosition].display.setDirections(response);
-        }        
+        }
         if (status === "ZERO_RESULTS") {
             drawFlight(dep, arr, StoragePosition);
         }
@@ -346,14 +353,14 @@ function setPath(position1, position2, StoragePosition) {
  */
 function drawFlight(position1, position2, StoragePosition) {
     creationRoutes[StoragePosition].display = new google.maps.Polyline({
-          path: [position1, position2],
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 4
-        });
-        creationRoutes[StoragePosition].display.setMap(map);
-        creationRoutes[StoragePosition].route = ["polyline"];
+        path: [position1, position2],
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 4
+    });
+    creationRoutes[StoragePosition].display.setMap(map);
+    creationRoutes[StoragePosition].route = ["polyline"];
 }
 
 /**

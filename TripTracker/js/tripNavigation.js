@@ -32,9 +32,19 @@ $(document).ready(function () {
             }
         }
     });
+
+    $("body").on("click", ".waypoitLink", function () {
+        var id = event.target.id;
+        var ref = id.slice(6, id.length);
+
+        LoadDetails(ref);
+        closeRight(true);
+        openLeft();
+    });
 });
 
 function loadPage(idPage) {
+    unsetPageDisplay();
     $.ajax({
         type: 'post',
         url: './AJAX/navigationData.php',
@@ -75,9 +85,9 @@ function generateTripPanels(pageContent) {
                         <div id="collapseTrip' + count + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTrip' + count + '">\n\
                             <div class="panel-body">';
         trip.waypoints.forEach(function (wp) {
-            panel += '<a href="#" class="list-group-item">\n\
+            panel += '<button id="wpLink' + wp.idWaypoint + '" class="list-group-item col-lg-12 text-left waypoitLink">\n\
                                     <i class="fa fa-globe"></i> ' + wp.wpTitle + '\n\
-                                </a>';
+                                </button>';
         });
 
         panel += '</div></div></div>';
@@ -97,15 +107,65 @@ function drawNavPath(pageFullData) {
     });
 }
 
-function drawMarkers(pageFullData){
-     var countA = 0;
+function drawMarkers(pageFullData) {
+    var countA = 0;
     pageFullData.forEach(function (trip) {
         var countB = 0;
         NavMarkers[count] = [];
-        trip.waypoints.forEach(function(wp){
+        trip.waypoints.forEach(function (wp) {
+
             NavMarkers[countA][countB] = new google.maps.Marker({position: new google.maps.LatLng(wp.lat, wp.lng)});
             countB++;
         });
         countA++;
     });
 }
+
+function unsetPageDisplay() {
+    NavMarkers.forEach(function (markerGroup) {
+        markerGroup.forEach(function (marker) {
+            marker.setMap(null);
+        });
+    });
+    NavPaths.forEach(function (path) {
+        path.setMap(null);
+    });
+}
+
+function LoadDetails(tripId) {
+    $.ajax({
+        type: 'post',
+        url: './AJAX/navigationData.php',
+        data: {getWpDetails: true, wpId: tripId},
+        success: function (response) {
+            var result = JSON.parse(response);
+            $("#wpTitle").html(result.wpTitle);
+            $("#wpDate").html(result.wpDate);
+            $("#wpComment").html(result.wpComment);
+            $("#wpAddress").html(result.address);
+            
+            $("#carouselSection .carousel-indicators").html("");
+            $("#carouselSection .carousel-inner").html("");
+
+            if (result.media.length == 0) {
+                $("#carouselSection").hide();
+            } else {
+                $("#carouselSection").show();
+                var inc = 0;
+                result.media.forEach(function (media) {
+                    if (inc == 0) {
+                        $("#carouselSection .carousel-indicators").html('<li data-target="#carouselWP" data-slide-to="'+inc+'" class="active"></li>');
+                        $("#carouselSection .carousel-inner").html('<div class="item active"><img src="./usersRessources/image/'+media.mediaName+'" alt=""/></div>');
+                    } else {
+                        $("#carouselSection .carousel-indicators").append('<li data-target="#carouselWP" data-slide-to="'+inc+'"></li>');
+                        $("#carouselSection .carousel-inner").append('<div class="item"><img src="./usersRessources/image/'+media.mediaName+'" alt=""/></div>');
+                    }
+                    inc++;
+                });
+            }
+
+            console.log(result);
+        }
+    });
+}
+

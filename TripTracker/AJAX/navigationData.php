@@ -55,7 +55,9 @@ if (isset($_POST["getWpDetails"])) {
     try {
         $wpId = filter_input(INPUT_POST, "wpId", FILTER_SANITIZE_NUMBER_INT);
         
-        $details = getWpDetails($wpId);
+        $details = getWpDetails($wpId)[0];
+        
+        $details["media"] = getMediaOfWp($wpId);
         
         echo json_encode($details);
         

@@ -177,3 +177,7 @@ ul{
 .file-drop-zone{
     height: 100px;
 }
+
+#navDetails .panel-body{
+    overflow-y: auto;
+}
