@@ -6,6 +6,7 @@
  * Les fonctions de cette page concernent la nagigation parmis les voyages, 
  * de l'affichage au chargement des données
  */
+var ActivePanelId = null;
 
 var NavPaths = [];
 var NavMarkers = [];
@@ -28,15 +29,19 @@ $(document).ready(function () {
 
         if (!creating) {
             var href = event.target.href;
+            var ref;
             if (typeof href != "undefined") {
                 var comp = href.split("/");
                 var id = comp[comp.length - 1];
-                var ref = id.slice(13, id.length);
+                ref = id.slice(13, id.length);
                 selectTab(ref);
             }
 
 
             if (coll) {
+                if (typeof ref !== "undefined") {
+                    ActivePanelId = ref;
+                }
                 coll = false;
                 var id = "#" + (this.id);
                 $('#navTrips .collapse').not(id).collapse("hide");
@@ -47,6 +52,7 @@ $(document).ready(function () {
 
     $("body").on('hide.bs.collapse', '.collapse', function () {
         if (!creating) {
+            ActivePanelId = null;
             showAllTrips();
             panOnAllTrips();
         }
@@ -91,12 +97,12 @@ function generatePageLinks() {
 }
 
 function generateTripPanels(pageContent) {
-    var panelClass = ["panel-default", "panel-success", "panel-info", "panel-warning", "panel-danger"]; 
-    
+    var panelClass = ["panel-default", "panel-success", "panel-info", "panel-warning", "panel-danger"];
+
     $("#TripPanels").html("");
     var count = 0;
     pageContent.forEach(function (trip) {
-        var panel = '<div class="panel '+panelClass[count]+' navPanelTrip" id="paneTrip' + count + '">\n\
+        var panel = '<div class="panel ' + panelClass[count] + ' navPanelTrip" id="paneTrip' + count + '">\n\
                         <div class="panel-heading" role="tab" id="headingTrip' + count + '">\n\
                             <h4 class="panel-title">\n\
                                 <a role="button" data-toggle="collapse" href="#collapseTrip' + count + '" aria-expanded="true" aria-controls="collapseTrip' + count + '" class="trigger collapsed">\n\
@@ -120,7 +126,7 @@ function generateTripPanels(pageContent) {
 }
 
 function drawNavPath(pageFullData) {
-    var color = ["#333333", "#3c763d", "#31708f", "#8a6d3b", "#a94442"]; 
+    var color = ["#333333", "#3c763d", "#31708f", "#8a6d3b", "#a94442"];
     var inc = 0;
     pageFullData.forEach(function (trip) {
         var pathConstructor = JSON.parse(trip.pathConstructor);
@@ -178,6 +184,26 @@ function unsetPageDisplay() {
 }
 
 function LoadDetails(tripId) {
+    $("#carouselSection").html(
+            '<div id="carouselWP" class="carousel slide" data-ride="carousel">\n\
+                                <!-- Indicators -->\n\
+                                <ol class="carousel-indicators">\n\
+                                </ol>\n\
+                                <!-- Wrapper for slides -->\n\
+                                <div class="carousel-inner">\n\
+                                    \n\
+                                </div>\n\
+                                <!-- Left and right controls -->\n\
+                                <a class="left carousel-control" href="#carouselWP" data-slide="prev">\n\
+                                    <span class="glyphicon glyphicon-chevron-left"></span>\n\
+                                    <span class="sr-only">Previous</span>\n\
+                                </a>\n\
+                                <a class="right carousel-control" href="#carouselWP" data-slide="next">\n\
+                                    <span class="glyphicon glyphicon-chevron-right"></span>\n\
+                                    <span class="sr-only">Next</span>\n\
+                                </a>\n\
+                            </div>'
+            );
     $.ajax({
         type: 'post',
         url: './AJAX/navigationData.php',
@@ -210,6 +236,7 @@ function LoadDetails(tripId) {
             }
         }
     });
+    map.setZoom(10);
 }
 
 function selectTrip(tripPosition) {
@@ -283,7 +310,7 @@ function panOnAllTrips(tripId) {
     map.fitBounds(bounds);
 }
 
-function findMarker(markerId){
+function findMarker(markerId) {
     NavMarkers.forEach(function (markerGroup) {
         markerGroup.forEach(function (marker) {
             if (Number(markerId) == Number(marker.ref)) {

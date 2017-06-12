@@ -80,10 +80,14 @@ function openLeft() {
 }
 function openRight() {
     if ($('.sidebar-left .sidebar-body').is(":visible") == false) {
+        if (ActivePanelId !== null) {
+            panOnTrip(ActivePanelId);
+        }
+
         window.setTimeout(function () {
             $('.sidebar-left .sidebar-body').toggle();
             $('.mini-submenu-left').hide();
-        });
+        }), 400;
     }
 }
 function closeRight(reopen) {

@@ -50,21 +50,18 @@
                 <div class="panel-body">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <!-- Titre à modifier -->
                             <div class="form-group">
                                 <i class="glyphicon glyphicon-flag col-lg-1"></i>
                                 <div id="Ptitle" class="input-group col-lg-11">
                                     <h4 id="wpTitle">Titre de l'étape</h4>
                                 </div>
                             </div>
-                            <!-- Recherche d\'adresse -->
                             <div class="form-group">
                                 <i class="glyphicon glyphicon-map-marker col-lg-1"></i>
                                 <div id="Padress" class="input-group col-lg-11">
                                     <h4 id="wpAddress">Addresse</h4>
                                 </div>
                             </div>
-                            <!-- Selection de la date -->
                             <div class="form-group">
                                 <i class="glyphicon glyphicon-time col-lg-1"></i>
                                 <div id="Pdate" class="input-group col-lg-11">
@@ -73,26 +70,7 @@
                             </div>
                         </li>
                         <li class="list-group-item" id="carouselSection">
-                            <div id="carouselWP" class="carousel slide" data-ride="carousel">
-                                <!-- Indicators -->
-                                <ol class="carousel-indicators">
-                                </ol>
-
-                                <!-- Wrapper for slides -->
-                                <div class="carousel-inner">
-                                    
-                                </div>
-
-                                <!-- Left and right controls -->
-                                <a class="left carousel-control" href="#carouselWP" data-slide="prev">
-                                    <span class="glyphicon glyphicon-chevron-left"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="right carousel-control" href="#carouselWP" data-slide="next">
-                                    <span class="glyphicon glyphicon-chevron-right"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </div>
+                            
                         </li>
                         <li class="list-group-item">
                             <div>
