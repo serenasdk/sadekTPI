@@ -91,10 +91,12 @@ function generatePageLinks() {
 }
 
 function generateTripPanels(pageContent) {
+    var panelClass = ["panel-default", "panel-success", "panel-info", "panel-warning", "panel-danger"]; 
+    
     $("#TripPanels").html("");
     var count = 0;
     pageContent.forEach(function (trip) {
-        var panel = '<div class="panel panel-default navPanelTrip" id="paneTrip' + count + '">\n\
+        var panel = '<div class="panel '+panelClass[count]+' navPanelTrip" id="paneTrip' + count + '">\n\
                         <div class="panel-heading" role="tab" id="headingTrip' + count + '">\n\
                             <h4 class="panel-title">\n\
                                 <a role="button" data-toggle="collapse" href="#collapseTrip' + count + '" aria-expanded="true" aria-controls="collapseTrip' + count + '" class="trigger collapsed">\n\
@@ -118,13 +120,15 @@ function generateTripPanels(pageContent) {
 }
 
 function drawNavPath(pageFullData) {
+    var color = ["#333333", "#3c763d", "#31708f", "#8a6d3b", "#a94442"]; 
     var inc = 0;
     pageFullData.forEach(function (trip) {
         var pathConstructor = JSON.parse(trip.pathConstructor);
+        var Thiscolor = color[inc];
         NavPaths[inc] = new google.maps.Polyline(pathConstructor[0]);
         NavPaths[inc].setMap(map);
         NavPaths[inc].ref = inc;
-        NavPaths[inc].setOptions({strokeWeight: 7});
+        NavPaths[inc].setOptions({strokeWeight: 7, strokeColor: Thiscolor});
         createPathClickEvent(inc);
         inc++;
     });
