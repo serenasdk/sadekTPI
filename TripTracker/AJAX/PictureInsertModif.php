@@ -14,6 +14,22 @@ if (!isset($_SESSION["visit"])) {
 
 require '../connection.php';
 
+$stream = fopen("../log.txt", 'a');
+fwrite($stream, "in\n");
+fclose($stream);
+
+if (isset($_POST["DeleteExisting"])) {
+    $stream = fopen("../log.txt", 'a');
+    fwrite($stream, "Delete Tentative\n");
+    fclose($stream);
+}
+
+if (isset($_POST["update"])) {
+    $stream = fopen("../log.txt", 'a');
+    fwrite($stream, "Update Tentative\n");
+    fclose($stream);
+}
+
 if (isset($_POST["insert"]) && !empty($_FILES)) {
     $id = $_COOKIE["WP" . $_POST["idState"]];
     $input = "picSelect" . $_POST["idState"];
@@ -26,7 +42,7 @@ if (isset($_POST["insert"]) && !empty($_FILES)) {
                 $tmp_name = $_FILES[$input]["tmp_name"][$index];
                 $name = uniqid("picture", true);
                 $ext = pathinfo($_FILES[$input]["name"][$index], PATHINFO_EXTENSION);
-                $name .= ".".$ext;
+                $name .= "." . $ext;
 
                 $win = move_uploaded_file($tmp_name, "../usersRessources/image/$name");
                 if (!$win) {
@@ -38,9 +54,9 @@ if (isset($_POST["insert"]) && !empty($_FILES)) {
                     $stream = fopen("../log.txt", 'a');
                     fwrite($stream, "Déplacement réussi\n");
                     fclose($stream);
-                    
-                    
-                    
+
+
+
                     AddPictureToWayPoint($id, $name, $connection);
                     //echo json_encode(array());
 
@@ -71,6 +87,5 @@ function AddPictureToWayPoint($wpId, $picName, $co) {
     $req->bindParam(":mediaName", $picName, PDO::PARAM_STR);
     $req->execute();
 }
-
 
 echo json_encode(array());

@@ -33,7 +33,7 @@ $(document).ready(function () {
             if (typeof href != "undefined") {
                 var comp = href.split("/");
                 var id = comp[comp.length - 1];
-                ref = id.slice(13, id.length);
+                ref = id.slice(22, id.length);
                 selectTab(ref);
             }
 
@@ -66,6 +66,14 @@ $(document).ready(function () {
         closeRight(true);
         openLeft();
     });
+
+    $("body").on("click", ".EditTrip", function () {
+        var id = event.target.id;
+        var ref = id.slice(4, id.length);
+        if ((typeof NavPaths[ref]) !== "undefined") {
+            OpenModif((NavPaths[ref].id));
+        }
+    });
 });
 
 function loadPage(idPage) {
@@ -84,6 +92,7 @@ function loadPage(idPage) {
     });
 }
 function generatePageLinks() {
+    $("#pageNos").html("");
     $.ajax({
         type: 'post',
         url: './AJAX/navigationData.php',
@@ -106,8 +115,9 @@ function generateTripPanels(pageContent) {
                         <div class="panel-heading" role="tab" id="headingTrip' + count + '">\n\
                             <h4 class="panel-title">\n\
                                 <a role="button" data-toggle="collapse" href="#collapseTrip' + count + '" aria-expanded="true" aria-controls="collapseTrip' + count + '" class="trigger collapsed">\n\
-                                    ' + trip.tpTitle + '\n\
-                                </a>\n\
+                                    ' + trip.tpTitle
+                + '</a>\n\
+                                <button type="button" id="Edit' + count + '" class="close pull-right EditTrip" aria-label="Edit" ' + count + '"><span  id="SEdi' + count + '" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></h4></div>\n\
                             </h4>\n\
                         </div>\n\
                         <div id="collapseTrip' + count + '" class="panel-collapse collapse navPanel" role="tabpanel" aria-labelledby="headingTrip' + count + '">\n\
@@ -134,6 +144,7 @@ function drawNavPath(pageFullData) {
         NavPaths[inc] = new google.maps.Polyline(pathConstructor[0]);
         NavPaths[inc].setMap(map);
         NavPaths[inc].ref = inc;
+        NavPaths[inc].id = trip.idTrip;
         NavPaths[inc].setOptions({strokeWeight: 7, strokeColor: Thiscolor});
         createPathClickEvent(inc);
         inc++;
@@ -252,6 +263,7 @@ function selectTab(tripPosition) {
 
 function panOnTrip(tripPosition) {
     var bounds = new google.maps.LatLngBounds();
+
     NavMarkers[tripPosition].forEach(function (marker) {
         bounds.extend(marker.getPosition());
     });

@@ -9,8 +9,9 @@
  * voyages contenu dans la base. Elle est l'aboutissement des call AJAX contenu 
  * dans le fichier JavaScript tripNavigation
  */
-
-session_start();
+if (!isset($_SESSION)) {
+    session_start();
+}
 
 require_once '../connection.php';
 
@@ -45,7 +46,6 @@ if (isset($_POST["getPageContent"])) {
         }
 
         echo json_encode($content);
-        
     } catch (Exception $exc) {
         echo $exc->getTraceAsString();
     }
@@ -54,17 +54,41 @@ if (isset($_POST["getPageContent"])) {
 if (isset($_POST["getWpDetails"])) {
     try {
         $wpId = filter_input(INPUT_POST, "wpId", FILTER_SANITIZE_NUMBER_INT);
-        
+
         $details = getWpDetails($wpId)[0];
-        
+        $date = implode("/", array_reverse(explode("-", $date)));
+
         $details["media"] = getMediaOfWp($wpId);
-        
+
+
         echo json_encode($details);
-        
     } catch (Exception $exc) {
         echo $exc->getTraceAsString();
     }
+}
 
+if (isset($_POST["loadTripModif"])) {
+    try {
+        $data = array();
+        $data["trip"] = getTrip($_POST["tripId"]);
+        $data["waypoints"] = getWps($_POST["tripId"]);
+
+        for ($index1 = 0; $index1 < count($data["waypoints"]); $index1++) {
+            $media = getMediaOfWp($data["waypoints"][$index1]["idWaypoint"]);
+            $mediaTitle = array();
+            for ($index2 = 0; $index2 < count($media); $index2++) {
+                $filename = "usersRessources/image/" . $media[$index2]["mediaName"];
+                array_push($mediaTitle, $filename);
+            }
+            $data["waypoints"][$index1]["wpDate"] = implode("/", array_reverse(explode("-", $data["waypoints"][$index1]["wpDate"])));
+
+            $data["waypoints"][$index1]["media"] = $mediaTitle;
+        }
+
+        echo json_encode($data);
+    } catch (Exception $exc) {
+        echo $exc->getTraceAsString();
+    }
 }
 
 function getPageNumber() {
@@ -122,11 +146,29 @@ function getMediaOfWp($idWp) {
     return $result;
 }
 
-function getPath($pathFileName){
+function getPath($pathFileName) {
     $fileFullName = "../usersRessources/path/" . $pathFileName;
     $stream = fopen($fileFullName, 'r');
     $content = fread($stream, filesize($fileFullName));
     fclose($stream);
-    
+
     return $content;
+}
+
+function getTrip($idTrip) {
+    $co = getConnection();
+    $req = $co->prepare("SELECT * FROM trip WHERE idTrip = :idTrip");
+    $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
+    $req->execute();
+    $response = $req->fetch(PDO::FETCH_ASSOC);
+    return $response;
+}
+
+function getWps($idTrip) {
+    $co = getConnection();
+    $req = $co->prepare("SELECT * FROM `waypoint` WHERE `idTrip`= :idTrip");
+    $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
+    $req->execute();
+    $response = $req->fetchAll(PDO::FETCH_ASSOC);
+    return $response;
 }

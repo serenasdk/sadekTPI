@@ -10,6 +10,7 @@
 <script src="js/insertInterface.js" type="text/javascript"></script>
 <script src="js/inertsDataTreatment.js" type="text/javascript"></script>
 <script src="js/tripNavigation.js" type="text/javascript"></script>
+<script src="js/modifPlugin.js" type="text/javascript"></script>
 
 <!-- Contenu de la page -->
 <div id="map">

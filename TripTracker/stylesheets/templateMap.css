@@ -181,3 +181,7 @@ ul{
 #navDetails .panel-body{
     overflow-y: auto;
 }
+
+.glyphicon-pencil{
+    font-size: 0.7em;
+}

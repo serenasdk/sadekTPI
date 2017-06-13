@@ -42,22 +42,17 @@ if (isset($_POST["insert"])) {
 
             $title = $content[$index]->title;
             $comment = $content[$index]->comment;
-
             $date = $content[$index]->date;
-            $date = str_replace('/', '-', $date);
-            $date = date('Y-m-d', strtotime($date));
-
-            $date = $content[$index]->date;
-            $date = implode("-", array_reverse(explode("/", $date)));
+            $date = implode("/", array_reverse(explode("-", $date)));
 
             $lat = $content[$index]->lat;
             $lng = $content[$index]->lng;
             $address = $content[$index]->address;
 
             $wpId = InsertWaypoint($tripId, $title, $comment, $date, $lat, $lng, $address, $connection);
-            setcookie("WP".$content[$index]->ref, $wpId, time()+10);
+            setcookie("WP" . $content[$index]->ref, $wpId, time() + 10);
             //Cookie destiné au call AJAX d'insertion des media
-            
+
             array_push($ids, $wpId);
         }
 
@@ -74,8 +69,83 @@ if (isset($_POST["insert"])) {
     }
 }
 
-if (isset($_POST["update"])) {
-    
+if (isset($_POST["edit"])) {
+    require './navigationData.php';
+
+    //Réucpération du contenu initial du trip
+
+    $data = array();
+    $data["trip"] = getTrip($_POST["tripId"]);
+    $data["waypoints"] = getWps($_POST["tripId"]);
+
+    for ($index1 = 0; $index1 < count($data["waypoints"]); $index1++) {
+        $media = getMediaOfWp($data["waypoints"][$index1]["idWaypoint"]);
+        $mediaTitle = array();
+        for ($index2 = 0; $index2 < count($media); $index2++) {
+            $filename = "usersRessources/image/" . $media[$index2]["mediaName"];
+            array_push($mediaTitle, $filename);
+        }
+        $data["waypoints"][$index1]["wpDate"] = implode("/", array_reverse(explode("-", $data["waypoints"][$index1]["wpDate"])));
+
+        $data["waypoints"][$index1]["media"] = $mediaTitle;
+    }
+
+    //Modification contextuelle du contenu
+
+    try {
+        $connection = getConnection();
+        $connection->beginTransaction();
+
+        $idTrip = $_POST["tripId"];
+        $title = $_POST["title"];
+        $path = $_POST["path"];
+
+        updateTrip($idTrip, $title, $connection);
+        updatePathTextFile(getPathName($idTrip, $connection), $path);
+
+        $content = json_decode($_POST["content"]);
+        $contentCopy = json_decode($_POST["content"]);
+
+        for ($index3 = 0; $index3 < count($content); $index3++) {
+
+            $title = $content[$index3]->title;
+            $date = $content[$index3]->date;
+            $comment = $content[$index3]->comment;
+            $lat = $content[$index3]->lat;
+            $lng = $content[$index3]->lng;
+            $address = $content[$index3]->address;
+
+            if (isset($content[$index3]->id)) {
+
+                $idWp = $content[$index3]->id;
+                updateWaypoint($idWp, $idTrip, $title, $comment, $date, $lat, $lng, $address, $connection);
+
+                for ($index4 = 0; $index4 < count($data["waypoints"]); $index4++) {
+                    if (isset($data["waypoints"][$index4]["idWaypoint"])) {
+                        if ($data["waypoints"][$index4]["idWaypoint"] == $idWp) {
+                            echo " update " . $data["waypoints"][$index4]["idWaypoint"];
+                            $data["waypoints"][$index4] = null;
+                        }
+                    }
+                }
+            } else {
+                InsertWaypoint($idTrip, $title, $comment, $date, $lat, $lng, $address, $connection);
+                echo ' insert ';
+            }
+        }
+        for ($index5 = 0; $index5 < count($data["waypoints"]); $index5++) {
+            if ($data["waypoints"][$index5] !== null) {
+                $wpid = ($data["waypoints"][$index5]["idWaypoint"]);
+                echo " delete " . $wpid;
+                removeMediaFile($wpid, $connection);
+                deleteMediaOfWp($wpid, $connection);
+                deleteWaypoint($wpid, $connection);
+            }
+        }
+    } catch (Exception $exc) {
+        $connection->rollBack();
+        echo $exc->getTraceAsString();
+    }
 }
 
 /**
@@ -144,4 +214,85 @@ function CreatePathTextFile($content) {
     fclose($stream);
 
     return $id;
+}
+
+/**
+ * Ré-écrit le fichier contenant le chemin.
+ * @param type $name
+ * @param type $content
+ */
+function updatePathTextFile($name, $content) {
+    $stream = fopen("../usersRessources/path/" . $name, 'w');
+    fwrite($stream, $content);
+    fclose($stream);
+}
+
+/**
+ * Efface uniquement le voyage de la table trip
+ * @param type $tripId
+ */
+function deleteTrip($tripId) {
+    $req = $co->prepare("DELETE FROM trip where idTrip = :id");
+    $req->bindParam(":id", $tripId, PDO::PARAM_INT);
+    $req->execute();
+}
+
+/**
+ * Efface l'étape uniquement
+ * @param type $wpId
+ * @param type $co
+ */
+function deleteWaypoint($wpId, $co) {
+    $req = $co->prepare("DELETE FROM waypoint where idWaypoint = :id");
+    $req->bindParam(":id", $wpId, PDO::PARAM_INT);
+    $req->execute();
+}
+
+/**
+ * Efface les réféférences des Média dans
+ * @param type $wpId
+ * @param type $co
+ */
+function deleteMediaOfWp($wpId, $co) {
+    $req = $co->prepare("DELETE FROM media where idWaypoint = :id");
+    $req->bindParam(":id", $wpId, PDO::PARAM_INT);
+    $req->execute();
+}
+
+/**
+ * Efface les images du serveux
+ * @param type $wpId
+ */
+function removeMediaFile($wpId, $co) {
+    $media = getMediaOfWp($wpId);
+    for ($index = 0; $index < count($media); $index++) {
+        unlink("../usersRessources/image/" . $media[$index]["mediaName"]);
+    }
+}
+
+function updateTrip($idTrip, $title, $co) {
+    $req = $co->prepare("UPDATE trip set tpTitle = :title where idTrip = :id");
+    $req->bindParam(":id", $idTrip, PDO::PARAM_INT);
+    $req->bindParam(":title", $title, PDO::PARAM_STR);
+    $req->execute();
+}
+
+function updateWaypoint($wpId, $idTrip, $title, $comment, $date, $lat, $lng, $address, $co) {
+    $req = $co->prepare("UPDATE waypoint set wpTitle = :title, wpComment = :comment, wpDate = :date, lat = :lat, lng = :lng, address = :address where idWaypoint = :wpId");
+    $req->bindParam(":wpId", $wpId, PDO::PARAM_INT);
+    $req->bindParam(":title", $title, PDO::PARAM_STR);
+    $req->bindParam(":comment", $comment, PDO::PARAM_STR);
+    $req->bindParam(":date", $date, PDO::PARAM_STR);
+    $req->bindParam(":lat", $lat, PDO::PARAM_STR);
+    $req->bindParam(":lng", $lng, PDO::PARAM_STR);
+    $req->bindParam(":address", $address, PDO::PARAM_STR);
+    $req->execute();
+}
+
+function getPathName($idTrip, $co) {
+    $req = $co->prepare("SELECT pathObject FROM trip WHERE idTrip = :idTrip");
+    $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
+    $req->execute();
+    $result = $req->fetch(PDO::FETCH_ASSOC);
+    return $result["pathObject"];
 }

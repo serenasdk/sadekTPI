@@ -1,5 +1,6 @@
 var coll = true;
 var creating = false;
+var editing = null;
 
 var creationMarkers = [];
 var creationRoutes = [];
@@ -121,11 +122,13 @@ function openAdd() {
         $('#navInsert .sidebar-body').toggle();
         $('#cmdInsert').hide();
     }
-    creating = true;
-    creationMarkers = [];
-    creationRoutes = [];
-    count = 0;
-
+    if (!creating) {
+        unsetPageDisplay();
+        creating = true;
+        creationMarkers = [];
+        creationRoutes = [];
+        count = 0;
+    }
 }
 function closeAdd(reopen) {
     if ($('#navInsert .sidebar-body').is(":visible") == true) {
@@ -138,6 +141,8 @@ function closeAdd(reopen) {
             creationMarkers = [];
             creationRoutes = [];
             count = 0;
+            openRight();
+            
         }
     }
 }
@@ -233,13 +238,22 @@ function geoLocation() {
  */
 function placeMarker(location, address) {
     if (focus !== null) {
+        var id = null;
         if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
             creationMarkers[focus].setMap(null);
+            if (typeof creationMarkers[focus].id !== "undefined" ) {
+                id = creationMarkers[focus].id;
+            }
         }
         creationMarkers[focus] = new google.maps.Marker({
             position: location,
             map: map
         });
+        
+        
+        if (id!== null) {
+            creationMarkers[focus].id = id;
+        }
 
         creationMarkers[focus].address = address;
 

@@ -17,6 +17,11 @@ $(document).ready(function () {
      * Evènement déclenché par le click du bouton "Enregistrer le voyage"
      */
     $("#SubmitNewTrip").click(function () {
+        /*if (editing == null) {
+         getInformations();
+         } else {
+         alert('poisson d\'avril');
+         }*/
         getInformations();
     });
 
@@ -47,6 +52,9 @@ $(document).ready(function () {
                         content[content.length - 1].lat = creationMarkers[flag].position.lat(); //Latitude
                         content[content.length - 1].lng = creationMarkers[flag].position.lng(); //Longitude
                         content[content.length - 1].address = creationMarkers[flag].address; //Adresse
+                        if (typeof creationMarkers[flag].id !== "undefined") {
+                            content[content.length - 1].id = creationMarkers[flag].id;
+                        }
                     }
                 }
                 if (count == flag + 1) {
@@ -180,7 +188,7 @@ $(document).ready(function () {
         var points = [];
         var inc = 0;
         creationRoutes.forEach(function (response) {
-            if (typeof response == "object") {
+            if (typeof response == "object" && response!==null) {
                 if (points.length != 0) {
                     points = points.concat(response.route.routes[0].legs[0].steps);
                     if (inc == creationRoutes.length - 1) {
@@ -231,10 +239,11 @@ $(document).ready(function () {
 
                 PathString += "{\"lat\": " + point.lat() + ",\"lng\": " + point.lng() + "}";
             });
-            
+
         });
         PathString += "]}";
         PathString += "]";
+
         SaveInformations(PathString, content, title);
     }
 
@@ -245,12 +254,17 @@ $(document).ready(function () {
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
     function SaveInformations(path, content, title) {
+        var data;
+        if (editing !== null) {
+            data = {path: path, content: JSON.stringify(content), title: title, edit: true, tripId: editing};
+        } else {
+            data = {path: path, content: JSON.stringify(content), title: title, insert: true};
+        }
         $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
             type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
             url: './AJAX/DataInsertModif.php',
-            data: {path: path, content: JSON.stringify(content), title: title, insert: true},
+            data: data,
             success: function (response) {
-                var wpIds
                 try
                 {
                     var wpIds = JSON.parse(response);
@@ -288,7 +302,6 @@ $(document).ready(function () {
 
                     return;
                 }
-
             }
         });
     }

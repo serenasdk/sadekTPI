@@ -238,7 +238,7 @@ function closeInsertInterface() {
 
     //Suppression et annulation de l'affichage de chaque marqueur 
     creationMarkers.forEach(function (element) {
-        if (typeof element == "object") {
+        if (typeof element == "object" && element !== null) {
             element.setMap(null);
         }
         if (countA == creationMarkers.length - 1) {
@@ -249,7 +249,7 @@ function closeInsertInterface() {
     var countB = 0;
     //Suppression et annulation de l'affichage de chaque route
     creationRoutes.forEach(function (element) {
-        if (typeof element == "object") {
+        if (typeof element == "object" && element !== null) {
             element.display.setMap(null);
         }
         if (countB == creationRoutes.length - 1) {
@@ -266,9 +266,14 @@ function closeInsertInterface() {
 
     //Fermeture de l'interface de création
     closeAdd(false);
-
+    creating = false;
+    editing = null;
+    
+    //Rechargement des numéro de page
+    generatePageLinks();
+    
     //Rechargement de la première page
-    loadPage(noPage);
+    loadPage(1);
 
     //Réouverture de la navigation
     openRight();
