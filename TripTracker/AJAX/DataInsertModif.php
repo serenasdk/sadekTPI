@@ -43,7 +43,7 @@ if (isset($_POST["insert"])) {
             $title = $content[$index]->title;
             $comment = $content[$index]->comment;
             $date = $content[$index]->date;
-            $date = implode("/", array_reverse(explode("-", $date)));
+            $date = implode("-", array_reverse(explode("/", $date)));
 
             $lat = $content[$index]->lat;
             $lng = $content[$index]->lng;
@@ -110,6 +110,7 @@ if (isset($_POST["edit"])) {
 
             $title = $content[$index3]->title;
             $date = $content[$index3]->date;
+            $date = implode("-", array_reverse(explode("/", $date)));
             $comment = $content[$index3]->comment;
             $lat = $content[$index3]->lat;
             $lng = $content[$index3]->lng;
@@ -123,20 +124,17 @@ if (isset($_POST["edit"])) {
                 for ($index4 = 0; $index4 < count($data["waypoints"]); $index4++) {
                     if (isset($data["waypoints"][$index4]["idWaypoint"])) {
                         if ($data["waypoints"][$index4]["idWaypoint"] == $idWp) {
-                            echo " update " . $data["waypoints"][$index4]["idWaypoint"];
                             $data["waypoints"][$index4] = null;
                         }
                     }
                 }
             } else {
                 InsertWaypoint($idTrip, $title, $comment, $date, $lat, $lng, $address, $connection);
-                echo ' insert ';
             }
         }
         for ($index5 = 0; $index5 < count($data["waypoints"]); $index5++) {
             if ($data["waypoints"][$index5] !== null) {
                 $wpid = ($data["waypoints"][$index5]["idWaypoint"]);
-                echo " delete " . $wpid;
                 removeMediaFile($wpid, $connection);
                 deleteMediaOfWp($wpid, $connection);
                 deleteWaypoint($wpid, $connection);
@@ -288,8 +286,6 @@ function updateTrip($idTrip, $title, $co) {
 }
 
 function updateWaypoint($wpId, $idTrip, $title, $comment, $date, $lat, $lng, $address, $co) {
-    var_dump($lat);
-    var_dump($lng);
     try {
         $req = $co->prepare("UPDATE waypoint set wpTitle = :title, wpComment = :comment, wpDate = :date, lat = :lat, lng = :lng, address = :address where idWaypoint = :wpId");
         $req->bindParam(":wpId", $wpId, PDO::PARAM_INT);

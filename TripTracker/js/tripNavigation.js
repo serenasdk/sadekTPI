@@ -220,6 +220,7 @@ function LoadDetails(tripId) {
         url: './AJAX/navigationData.php',
         data: {getWpDetails: true, wpId: tripId},
         success: function (response) {
+            console.log(response);
             var result = JSON.parse(response);
             $("#wpTitle").html(result.wpTitle);
             $("#wpDate").html(result.wpDate);

@@ -56,7 +56,7 @@ if (isset($_POST["getWpDetails"])) {
         $wpId = filter_input(INPUT_POST, "wpId", FILTER_SANITIZE_NUMBER_INT);
 
         $details = getWpDetails($wpId)[0];
-        $date = implode("/", array_reverse(explode("-", $date)));
+        $details["wpDate"] = implode("/", array_reverse(explode("-", $details["wpDate"])));
 
         $details["media"] = getMediaOfWp($wpId);
 
