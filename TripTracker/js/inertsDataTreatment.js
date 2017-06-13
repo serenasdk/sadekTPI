@@ -254,6 +254,7 @@ $(document).ready(function () {
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
     function SaveInformations(path, content, title) {
+        console.log(content);
         var data;
         if (editing !== null) {
             data = {path: path, content: JSON.stringify(content), title: title, edit: true, tripId: editing};

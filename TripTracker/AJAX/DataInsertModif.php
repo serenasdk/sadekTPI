@@ -28,8 +28,8 @@ if (isset($_POST["insert"])) {
 
         $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING);
 
-        $tripId = InsertTrip($title, $connection);
-        $fileId = CreatePathTextFile($_POST["path"]);
+        //$tripId = InsertTrip($title, $connection);
+        //$fileId = CreatePathTextFile($_POST["path"]);
         setPath($tripId, $fileId, $connection);
 
         $path = filter_input(INPUT_POST, "path", FILTER_SANITIZE_STRING);
@@ -142,9 +142,12 @@ if (isset($_POST["edit"])) {
                 deleteWaypoint($wpid, $connection);
             }
         }
+        $connection->commit();
+                
     } catch (Exception $exc) {
         $connection->rollBack();
-        echo $exc->getTraceAsString();
+
+        echo $exc->getMessage();
     }
 }
 
@@ -243,6 +246,7 @@ function deleteTrip($tripId) {
  * @param type $co
  */
 function deleteWaypoint($wpId, $co) {
+    echo " on delete wp ";
     $req = $co->prepare("DELETE FROM waypoint where idWaypoint = :id");
     $req->bindParam(":id", $wpId, PDO::PARAM_INT);
     $req->execute();
@@ -254,6 +258,7 @@ function deleteWaypoint($wpId, $co) {
  * @param type $co
  */
 function deleteMediaOfWp($wpId, $co) {
+    echo " on delete media ";
     $req = $co->prepare("DELETE FROM media where idWaypoint = :id");
     $req->bindParam(":id", $wpId, PDO::PARAM_INT);
     $req->execute();
@@ -271,22 +276,33 @@ function removeMediaFile($wpId, $co) {
 }
 
 function updateTrip($idTrip, $title, $co) {
-    $req = $co->prepare("UPDATE trip set tpTitle = :title where idTrip = :id");
-    $req->bindParam(":id", $idTrip, PDO::PARAM_INT);
-    $req->bindParam(":title", $title, PDO::PARAM_STR);
-    $req->execute();
+    try {
+
+        $req = $co->prepare("UPDATE trip set tpTitle = :title where idTrip = :id");
+        $req->bindParam(":id", $idTrip, PDO::PARAM_INT);
+        $req->bindParam(":title", $title, PDO::PARAM_STR);
+        $req->execute();
+    } catch (Exception $ex) {
+        echo $ex->getMessage();
+    }
 }
 
 function updateWaypoint($wpId, $idTrip, $title, $comment, $date, $lat, $lng, $address, $co) {
-    $req = $co->prepare("UPDATE waypoint set wpTitle = :title, wpComment = :comment, wpDate = :date, lat = :lat, lng = :lng, address = :address where idWaypoint = :wpId");
-    $req->bindParam(":wpId", $wpId, PDO::PARAM_INT);
-    $req->bindParam(":title", $title, PDO::PARAM_STR);
-    $req->bindParam(":comment", $comment, PDO::PARAM_STR);
-    $req->bindParam(":date", $date, PDO::PARAM_STR);
-    $req->bindParam(":lat", $lat, PDO::PARAM_STR);
-    $req->bindParam(":lng", $lng, PDO::PARAM_STR);
-    $req->bindParam(":address", $address, PDO::PARAM_STR);
-    $req->execute();
+    var_dump($lat);
+    var_dump($lng);
+    try {
+        $req = $co->prepare("UPDATE waypoint set wpTitle = :title, wpComment = :comment, wpDate = :date, lat = :lat, lng = :lng, address = :address where idWaypoint = :wpId");
+        $req->bindParam(":wpId", $wpId, PDO::PARAM_INT);
+        $req->bindParam(":title", $title, PDO::PARAM_STR);
+        $req->bindParam(":comment", $comment, PDO::PARAM_STR);
+        $req->bindParam(":date", $date, PDO::PARAM_STR);
+        $req->bindParam(":lat", $lat, PDO::PARAM_STR);
+        $req->bindParam(":lng", $lng, PDO::PARAM_STR);
+        $req->bindParam(":address", $address, PDO::PARAM_STR);
+        $req->execute();
+    } catch (Exception $ex) {
+        echo $ex->getMessage();
+    }
 }
 
 function getPathName($idTrip, $co) {
