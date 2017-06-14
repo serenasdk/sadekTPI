@@ -1,37 +1,3 @@
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-try
-inDéplacement réussi
-inininDéplacement réussi
-Ajout du nom à la base de données
-inDéplacement réussi
-Ajout du nom à la base de données
-inininDéplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
-in
 in
 Déplacement réussi
 Ajout du nom à la base de données
@@ -40,15 +6,10 @@ Ajout du nom à la base de données
 in
 Déplacement réussi
 Ajout du nom à la base de données
+Déplacement réussi
+Ajout du nom à la base de données
 in
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
-Déplacement réussi
-Ajout du nom à la base de données
+Test from now
 in
 Update Tentative
 in
@@ -56,8 +17,97 @@ Update Tentative
 in
 Update Tentative
 in
+Update Tentative
 in
+Update Tentative
 in
+Update Tentative
 in
+Update Tentative
 in
+Update Tentative
 in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+in
+Update Tentative
+Update Tentative of pic : 254nUpdate Tentative of pic : 256nUpdate Tentative of pic : 255n
+Update Tentative of pic : 254
+Update Tentative of pic : 255
+Update Tentative of pic : 256
+Update Tentative of pic : 254
+Update Tentative of pic : 255
+Update Tentative of pic : 256
+
+Test from now
+
+
+254 
+255 
+256 
+0 
+0 
+0 
+0 
+0 
+1 
+C:\Users\SADEKS_INFO\Documents\EasyPHP-DevServer-14.1VC9\binaries\tmp\php22D1.tmp 
+
+
+Delete Tentative on 
+Delete Tentative on 
+Delete Tentative on 11
+Delete Tentative on 12
+Delete Tentative on 11
+0 
+0 
+0 
+Delete Tentative on 14
+0 
+0 
+0 
+Delete Tentative on 13
+0 
+0 
+0 
+Delete Tentative on 2
+Delete Tentative on 1
+Delete Tentative on 12
+Déplacement réussi
+#0 C:\Users\SADEKS_INFO\Desktop\sadekTPI\TripTracker\AJAX\PictureInsertModif.php(109): PDOStatement->execute()
+#1 C:\Users\SADEKS_INFO\Desktop\sadekTPI\TripTracker\AJAX\PictureInsertModif.php(81): AddPictureToWayPoint(NULL, 'picture5940e9c5...', Object(PDO))
+#2 {main}
+Déplacement réussi
+#0 C:\Users\SADEKS_INFO\Desktop\sadekTPI\TripTracker\AJAX\PictureInsertModif.php(110): PDOStatement->execute()
+#1 C:\Users\SADEKS_INFO\Desktop\sadekTPI\TripTracker\AJAX\PictureInsertModif.php(82): AddPictureToWayPoint(NULL, 'picture5940ea2f...', Object(PDO))
+#2 {main}
+Déplacement réussi
+#0 C:\Users\SADEKS_INFO\Desktop\sadekTPI\TripTracker\AJAX\PictureInsertModif.php(110): PDOStatement->execute()
+#1 C:\Users\SADEKS_INFO\Desktop\sadekTPI\TripTracker\AJAX\PictureInsertModif.php(82): AddPictureToWayPoint(NULL, 'picture5940ea98...', Object(PDO))
+#2 {main}
+Déplacement réussi
+Ajout du nom à la base de données
+Delete Tentative on 15
+Déplacement réussi
+Ajout du nom à la base de données

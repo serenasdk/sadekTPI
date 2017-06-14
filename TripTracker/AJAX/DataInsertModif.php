@@ -14,6 +14,35 @@ session_start();
 
 require_once '../connection.php';
 
+if (isset($_POST["deleteTrip"])) {
+    require_once './navigationData.php';
+    
+    $idTrip = $_POST["idToDelete"];
+    
+    try {
+        $connection = getConnection();
+        $connection->beginTransaction();
+        
+        $wps = getWps($idTrip);
+        
+        for ($index7 = 0; $index7 < count($wps); $index7++) {
+            removeMediaFile($wps[$index7]["idWaypoint"], $connection);
+            deleteMediaOfWp($wps[$index7]["idWaypoint"], $connection);
+        }
+        
+        removePathOfTrip($idTrip, $connection);
+        deleteTrip($idTrip, $connection);
+        
+        $connection->commit();
+        
+    } catch (Exception $ex) {
+        
+        $connection->rollBack();
+        echo json_encode($ex->getTraceAsString());
+    }
+}
+
+
 /**
  * Procédure déclenchée par la présence de la variable insert dans le post
  * Récupère le path et les informations pour les insérer dans la base de donnée 
@@ -28,8 +57,8 @@ if (isset($_POST["insert"])) {
 
         $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING);
 
-        //$tripId = InsertTrip($title, $connection);
-        //$fileId = CreatePathTextFile($_POST["path"]);
+        $tripId = InsertTrip($title, $connection);
+        $fileId = CreatePathTextFile($_POST["path"]);
         setPath($tripId, $fileId, $connection);
 
         $path = filter_input(INPUT_POST, "path", FILTER_SANITIZE_STRING);
@@ -120,6 +149,7 @@ if (isset($_POST["edit"])) {
 
                 $idWp = $content[$index3]->id;
                 updateWaypoint($idWp, $idTrip, $title, $comment, $date, $lat, $lng, $address, $connection);
+                setcookie("WP" . $content[$index3]->ref, $idWp, time() + 10);
 
                 for ($index4 = 0; $index4 < count($data["waypoints"]); $index4++) {
                     if (isset($data["waypoints"][$index4]["idWaypoint"])) {
@@ -140,7 +170,17 @@ if (isset($_POST["edit"])) {
                 deleteWaypoint($wpid, $connection);
             }
         }
+        
+        for ($index6 = 0; $index6 < count($_SESSION["picOnDelete"]); $index6++) {
+            removeMedia($_SESSION["picOnDelete"][$index6], $connection);
+            deleteMedia($_SESSION["picOnDelete"][$index6], $connection);
+        }
+        
+        $_SESSION["picOnDelete"] = array();
+        
         $connection->commit();
+        
+        echo 'OK';
                 
     } catch (Exception $exc) {
         $connection->rollBack();
@@ -232,7 +272,7 @@ function updatePathTextFile($name, $content) {
  * Efface uniquement le voyage de la table trip
  * @param type $tripId
  */
-function deleteTrip($tripId) {
+function deleteTrip($tripId, $co) {
     $req = $co->prepare("DELETE FROM trip where idTrip = :id");
     $req->bindParam(":id", $tripId, PDO::PARAM_INT);
     $req->execute();
@@ -244,7 +284,6 @@ function deleteTrip($tripId) {
  * @param type $co
  */
 function deleteWaypoint($wpId, $co) {
-    echo " on delete wp ";
     $req = $co->prepare("DELETE FROM waypoint where idWaypoint = :id");
     $req->bindParam(":id", $wpId, PDO::PARAM_INT);
     $req->execute();
@@ -256,10 +295,48 @@ function deleteWaypoint($wpId, $co) {
  * @param type $co
  */
 function deleteMediaOfWp($wpId, $co) {
-    echo " on delete media ";
     $req = $co->prepare("DELETE FROM media where idWaypoint = :id");
     $req->bindParam(":id", $wpId, PDO::PARAM_INT);
     $req->execute();
+}
+
+/**
+ * Efface les réféférences des Média dans
+ * @param type $wpId
+ * @param type $co
+ */
+function deleteMedia($idMedia, $co) {
+    $req = $co->prepare("DELETE FROM media where idMedia = :id");
+    $req->bindParam(":id", $idMedia, PDO::PARAM_INT);
+    $req->execute();
+}
+
+/**
+ * Efface les réféférences des Média dans
+ * @param type $wpId
+ * @param type $co
+ */
+function removeMedia($idMedia, $co) {
+    $name = getMediaName($idMedia, $co);
+    unlink("../usersRessources/image/" . $name);
+}
+
+function removePathOfTrip($idTrip, $co){
+    $pathName = getPathName($idTrip, $co);
+    unlink("../usersRessources/path/" . $pathName);
+}
+
+/**
+ * Efface les réféférences des Média dans
+ * @param type $wpId
+ * @param type $co
+ */
+function getMediaName($mediaId, $co) {
+    $req = $co->prepare("SELECT mediaName FROM media where idMedia = :id");
+    $req->bindParam(":id", $mediaId, PDO::PARAM_INT);
+    $req->execute();
+    $result = $req->fetch(PDO::FETCH_ASSOC);
+    return $result["mediaName"];
 }
 
 /**
@@ -308,3 +385,4 @@ function getPathName($idTrip, $co) {
     $result = $req->fetch(PDO::FETCH_ASSOC);
     return $result["pathObject"];
 }
+

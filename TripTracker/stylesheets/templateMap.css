@@ -74,6 +74,8 @@ body { overflow: hidden; }
 }
 .noPage{
     padding-right: 5px;
+    margin: 0px;
+    padding-left: 5px;
 }
 .noPage:hover{
     cursor: pointer;
@@ -114,6 +116,8 @@ body { overflow: hidden; }
 .glyphicon-trash{
     font-size: 1.2em;
 }
+
+
 
 .input-group-btn .btn{
     height: 34px;
@@ -184,4 +188,12 @@ ul{
 
 .glyphicon-pencil{
     font-size: 0.7em;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.DeleteTrip .glyphicon-trash{
+    font-size: 0.7em;
+    margin-right: 5px;
+    margin-left: 5px;
 }

@@ -25,7 +25,7 @@ function LoadModifTrip(tripId) {
     $.ajax({
         type: 'post',
         url: './AJAX/navigationData.php',
-        data: {loadTripModif: true, tripId: tripId},
+        data: {loadTripModif: true, tripId: tripId, getPreviewConfig: true},
         success: function (response) {
             var data = JSON.parse(response);
             generateContent(data);
@@ -34,6 +34,8 @@ function LoadModifTrip(tripId) {
 }
 
 function generateContent(data) {
+    console.log(data);
+    
     $("#titleTrip").val(data.trip.tpTitle);
 
     var inc = 0;
@@ -114,7 +116,6 @@ function createPanelWithData(wpData) {
         
         var dataLength = wpData.media.length;
         var showDelete = dataLength > 0;
-        
     //Initialise le fileINput
     $("#picSelect" + length).fileinput({
         previewFileType: "image",
@@ -127,7 +128,7 @@ function createPanelWithData(wpData) {
         uploadUrl: './AJAX/PictureInsertModif.php',
         uploadExtraData: {
             idState: length,
-            update: true,
+            insert: true,
             idWp: wpData.idWaypoint
         }, // server upload action ?idState=' + length+"&insert=true"
         deleteUrl: './AJAX/PictureInsertModif.php',
@@ -139,6 +140,7 @@ function createPanelWithData(wpData) {
         uploadAsync: false,
         showUpload: false,
         initialPreview: wpData.media,
+        initialPreviewConfig: wpData.mediaConstruct,
         initialPreviewAsData: true,
         append: true,
         overwriteInitial: false,

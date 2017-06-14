@@ -28,15 +28,9 @@ $(document).ready(function () {
     $("body").on('show.bs.collapse', '.collapse', function () {
 
         if (!creating) {
-            var href = event.target.href;
-            var ref;
-            if (typeof href != "undefined") {
-                var comp = href.split("/");
-                var id = comp[comp.length - 1];
-                ref = id.slice(22, id.length);
-                selectTab(ref);
-            }
-
+            var id = $(event.target).parent().attr("id");
+            var ref = id.slice(6, id.length);
+            selectTab(ref);
 
             if (coll) {
                 if (typeof ref !== "undefined") {
@@ -72,6 +66,16 @@ $(document).ready(function () {
         var ref = id.slice(4, id.length);
         if ((typeof NavPaths[ref]) !== "undefined") {
             OpenModif((NavPaths[ref].id));
+        }
+    });
+
+    $("body").on("click", ".DeleteTrip", function () {
+        var id = event.target.id;
+        var ref = id.slice(6, id.length);
+        var tripId = NavPaths[ref].id;
+        var confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce voyage ?");
+        if (confirmation) {
+            DeleteTrip(tripId);
         }
     });
 });
@@ -113,11 +117,13 @@ function generateTripPanels(pageContent) {
     pageContent.forEach(function (trip) {
         var panel = '<div class="panel ' + panelClass[count] + ' navPanelTrip" id="paneTrip' + count + '">\n\
                         <div class="panel-heading" role="tab" id="headingTrip' + count + '">\n\
-                            <h4 class="panel-title">\n\
+                            <h4 class="panel-title" id="Parent' + count + '">\n\
                                 <a role="button" data-toggle="collapse" href="#collapseTrip' + count + '" aria-expanded="true" aria-controls="collapseTrip' + count + '" class="trigger collapsed">\n\
                                     ' + trip.tpTitle
                 + '</a>\n\
-                                <button type="button" id="Edit' + count + '" class="close pull-right EditTrip" aria-label="Edit" ' + count + '"><span  id="SEdi' + count + '" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></h4></div>\n\
+                                <button type="button" id="Edit' + count + '" class="close pull-right EditTrip" aria-label="Edit" ' + count + '"><span  id="SEdi' + count + '" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>\n\
+                                <button type="button" id="Delete' + count + '" class="close pull-right DeleteTrip" aria-label="Delete" ' + count + '"><span  id="SDelet' + count + '" class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>\n\
+                                </h4></div>\n\
                             </h4>\n\
                         </div>\n\
                         <div id="collapseTrip' + count + '" class="panel-collapse collapse navPanel" role="tabpanel" aria-labelledby="headingTrip' + count + '">\n\
@@ -220,7 +226,6 @@ function LoadDetails(tripId) {
         url: './AJAX/navigationData.php',
         data: {getWpDetails: true, wpId: tripId},
         success: function (response) {
-            console.log(response);
             var result = JSON.parse(response);
             $("#wpTitle").html(result.wpTitle);
             $("#wpDate").html(result.wpDate);
@@ -330,5 +335,18 @@ function findMarker(markerId) {
                 panOnMarker(marker);
             }
         });
+    });
+}
+
+function DeleteTrip(tripId) {
+    $.ajax({
+        type: 'post',
+        url: './AJAX/DataInsertModif.php',
+        data: {deleteTrip: true, idToDelete: tripId},
+        success: function (response) {
+            console.log(response);
+            generatePageLinks();
+            loadPage(1);
+        }
     });
 }

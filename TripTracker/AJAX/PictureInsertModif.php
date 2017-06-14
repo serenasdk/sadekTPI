@@ -14,19 +14,42 @@ if (!isset($_SESSION["visit"])) {
 
 require '../connection.php';
 
-$stream = fopen("../log.txt", 'a');
-fwrite($stream, "in\n");
-fclose($stream);
 
 if (isset($_POST["DeleteExisting"])) {
     $stream = fopen("../log.txt", 'a');
-    fwrite($stream, "Delete Tentative\n");
+    fwrite($stream, "Delete Tentative on ".$_POST["key"]."\n");
     fclose($stream);
+    
+    array_push($_SESSION["picOnDelete"], $_POST["key"]);
 }
 
-if (isset($_POST["update"])) {
+if (isset($_POST["update"]) && !empty($_FILES)) {
+    require_once './navigationData.php';
+
     $stream = fopen("../log.txt", 'a');
-    fwrite($stream, "Update Tentative\n");
+    
+    $wpId = $_POST["idWp"];
+    fwrite($stream, count($_FILES) . " \n");
+    $initalMedia = getMediaOfWp($wpId);
+   
+    $input = "picSelect" . $_POST["idState"];
+
+    for ($index = 0; $index < count($_FILES[$input]["error"]); $index++) {
+
+        try {
+            $connection = getConnection();
+            $connection->beginTransaction();
+
+            fwrite($stream, $_FILES[$input]["tmp_name"][$index] . " \n");
+
+
+            $connection->commit();
+        } catch (Exception $exc) {
+            fwrite($stream, $exc->getMessage() . " \n");
+            $connection->rollBack();
+        }
+    }
+
     fclose($stream);
 }
 
@@ -54,8 +77,6 @@ if (isset($_POST["insert"]) && !empty($_FILES)) {
                     $stream = fopen("../log.txt", 'a');
                     fwrite($stream, "Déplacement réussi\n");
                     fclose($stream);
-
-
 
                     AddPictureToWayPoint($id, $name, $connection);
                     //echo json_encode(array());

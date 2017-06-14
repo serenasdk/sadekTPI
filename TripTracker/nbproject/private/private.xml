@@ -4,10 +4,16 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/AJAX/navigationData.php</file>
-            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/js/templateMap.js</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/connection.php</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/AJAX/DataInsertModif.php</file>
             <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/js/inertsDataTreatment.js</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/js/templateMap.js</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/index.php</file>
             <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/js/tripNavigation.js</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/stylesheets/templateMap.css</file>
             <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/contentUserMap.php</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/js/modifPlugin.js</file>
+            <file>file:/C:/Users/SADEKS_INFO/Desktop/sadekTPI/TripTracker/js/insertInterface.js</file>
         </group>
     </open-files>
 </project-private>

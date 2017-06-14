@@ -76,13 +76,31 @@ if (isset($_POST["loadTripModif"])) {
         for ($index1 = 0; $index1 < count($data["waypoints"]); $index1++) {
             $media = getMediaOfWp($data["waypoints"][$index1]["idWaypoint"]);
             $mediaTitle = array();
+
+            if (isset($_POST["getPreviewConfig"])) {
+                $mediaConstruct = array();
+                $_SESSION["picOnDelete"] = array();
+            }
+
             for ($index2 = 0; $index2 < count($media); $index2++) {
                 $filename = "usersRessources/image/" . $media[$index2]["mediaName"];
                 array_push($mediaTitle, $filename);
+
+                if (isset($_POST["getPreviewConfig"])) {
+                    $construct = array();
+                    $construct["type"] = "image";
+                    $construct["caption"] = "";
+                    $construct["url"] = './AJAX/PictureInsertModif.php';
+                    $construct["key"] = $media[$index2]["idMedia"];
+                    array_push($mediaConstruct, $construct);
+                }
             }
             $data["waypoints"][$index1]["wpDate"] = implode("/", array_reverse(explode("-", $data["waypoints"][$index1]["wpDate"])));
 
             $data["waypoints"][$index1]["media"] = $mediaTitle;
+            if (isset($_POST["getPreviewConfig"])) {
+                $data["waypoints"][$index1]["mediaConstruct"] = $mediaConstruct;
+            }
         }
 
         echo json_encode($data);

@@ -188,7 +188,7 @@ $(document).ready(function () {
         var points = [];
         var inc = 0;
         creationRoutes.forEach(function (response) {
-            if (typeof response == "object" && response!==null) {
+            if (typeof response == "object" && response !== null) {
                 if (points.length != 0) {
                     points = points.concat(response.route.routes[0].legs[0].steps);
                     if (inc == creationRoutes.length - 1) {
@@ -254,12 +254,16 @@ $(document).ready(function () {
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
     function SaveInformations(path, content, title) {
-        console.log(content);
         var data;
+        var action;
+        var condition;
         if (editing !== null) {
             data = {path: path, content: JSON.stringify(content), title: title, edit: true, tripId: editing};
+            action = "mis à jour";
         } else {
             data = {path: path, content: JSON.stringify(content), title: title, insert: true};
+            action = "ajouté";
+            
         }
         $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
             type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
@@ -268,9 +272,14 @@ $(document).ready(function () {
             success: function (response) {
                 try
                 {
-                    var wpIds = JSON.parse(response);
+                    if (editing == null) {
+                        var wpIds = JSON.parse(response);
+                        condition = !isNaN(wpIds[0]);
+                    }else{
+                        condition = response == "OK";
+                    }
 
-                    if (!isNaN(wpIds[0])) {
+                    if (condition) {
                         var inc = 0;
                         content.forEach(function (element) {
                             var id = element.ref;
@@ -280,7 +289,7 @@ $(document).ready(function () {
                                 $('#InsertionErrorSection').addClass('alert');
                                 $('#InsertionErrorSection').removeClass('alert-danger');
                                 $('#InsertionErrorSection').addClass('alert-success');
-                                $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ajouté');
+                                $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Votre voyage a été ' + action);
 
                                 setTimeout(function () {
                                     closeInsertInterface();
@@ -299,7 +308,7 @@ $(document).ready(function () {
                 {
                     $('#InsertionErrorSection').addClass('alert');
                     $('#InsertionErrorSection').addClass('alert-danger');
-                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + response + '');
+                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + e + '');
 
                     return;
                 }
