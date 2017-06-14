@@ -191,6 +191,7 @@ $(document).ready(function () {
             if (typeof response == "object" && response !== null) {
                 if (points.length != 0) {
                     if (typeof response.route == "string") {
+                        console.log(points);
                         points = points.concat({path: response.display.getPath().b});
                     } else {
                         points = points.concat(response.route.routes[0].legs[0].steps);
@@ -200,7 +201,7 @@ $(document).ready(function () {
                     }
                 } else {
                     if (typeof response.route == "string") {
-                        points = {path: response.display.getPath().b};
+                        points = [{path: response.display.getPath().b}];
                     } else {
                         points = response.route.routes[0].legs[0].steps;
                     }
@@ -316,7 +317,7 @@ $(document).ready(function () {
                 {
                     $('#InsertionErrorSection').addClass('alert');
                     $('#InsertionErrorSection').addClass('alert-danger');
-                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + e + '');
+                    $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + response + '');
 
                     return;
                 }

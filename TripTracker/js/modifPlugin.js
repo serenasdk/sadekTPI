@@ -9,7 +9,7 @@
  */
 
 $(document).ready(function () {
-    
+
 });
 
 function OpenModif(tripId) {
@@ -33,7 +33,7 @@ function LoadModifTrip(tripId) {
     });
 }
 
-function generateContent(data) {    
+function generateContent(data) {
     $("#titleTrip").val(data.trip.tpTitle);
 
     var inc = 0;
@@ -82,7 +82,7 @@ function createPanelWithData(wpData) {
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-map-marker col-lg-1"></i>\n\
                             <div id="Padress' + length + '" class="input-group col-lg-11">\n\
-                                <input type="text" value="'+wpData.address+'" id="adress' + length + '" class="form-control" placeholder="Adresse de l\'étape">\n\
+                                <input type="text" value="' + wpData.address + '" id="adress' + length + '" class="form-control" placeholder="Adresse de l\'étape">\n\
                                 <div class="input-group-btn">\n\
                                     <button class="btn btn-default searchLoc" id="secfind' + length + '"><i id="findLoc' + length + '" class="glyphicon glyphicon-search col-lg-1"></i></button>\n\
                                     <button class="btn btn-default searchMyLoc" id="secMyLc' + length + '"><i  id="MyLoc' + length + '" class="glyphicon glyphicon-screenshot col-lg-1"></i></button>\n\
@@ -111,9 +111,9 @@ function createPanelWithData(wpData) {
     $("#date" + length).datetimepicker({format: 'dd/mm/yyyy', startView: 'month',
         minView: 'month',
         autoclose: true});
-        
-        var dataLength = wpData.media.length;
-        var showDelete = dataLength > 0;
+
+    var dataLength = wpData.media.length;
+    var showDelete = dataLength > 0;
     //Initialise le fileINput
     $("#picSelect" + length).fileinput({
         previewFileType: "image",
@@ -144,7 +144,11 @@ function createPanelWithData(wpData) {
         overwriteInitial: false,
         initialPreviewCount: dataLength,
         initialPreviewShowDelete: true,
-        showRemove: showDelete      
+        showRemove: showDelete,
+        maxFileSize: 200.0,
+        maxFileCount: 10,
+        msgFilesTooMany: "Vous ne pouvez pas insérer plus de {n} images par étape",
+        msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})"
     });
 }
 

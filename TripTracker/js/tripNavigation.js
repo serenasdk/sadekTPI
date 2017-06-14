@@ -21,6 +21,7 @@ $(document).ready(function () {
         var id = event.target.id;
         var noPage = id.slice(8, id.length);
         loadPage(noPage);
+        generatePageLinks();
     });
 
     //$("body").click();
@@ -191,12 +192,9 @@ function createMarkerClickEvent(id, positionA, positionB) {
 }
 
 function unsetPageDisplay() {
-    var inc = 0;
     NavMarkers.forEach(function (markerGroup) {
         markerGroup.forEach(function (marker) {
             marker.setMap(null);
-            console.log(inc);
-            inc++;
         });
     });
     NavPaths.forEach(function (path) {
@@ -204,6 +202,8 @@ function unsetPageDisplay() {
     });
     NavMarkers = [];
     NavPaths = [];
+    $("#TripPanels").html("");
+    $("#pageNos").html("");
 }
 
 function LoadDetails(tripId) {
