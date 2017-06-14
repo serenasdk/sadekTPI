@@ -190,12 +190,20 @@ $(document).ready(function () {
         creationRoutes.forEach(function (response) {
             if (typeof response == "object" && response !== null) {
                 if (points.length != 0) {
-                    points = points.concat(response.route.routes[0].legs[0].steps);
+                    if (typeof response.route == "string") {
+                        points = points.concat({path: response.display.getPath().b});
+                    } else {
+                        points = points.concat(response.route.routes[0].legs[0].steps);
+                    }
                     if (inc == creationRoutes.length - 1) {
                         serializePath(points, content, title);
                     }
                 } else {
-                    points = response.route.routes[0].legs[0].steps;
+                    if (typeof response.route == "string") {
+                        points = {path: response.display.getPath().b};
+                    } else {
+                        points = response.route.routes[0].legs[0].steps;
+                    }
                 }
             } else {
                 if (inc == creationRoutes.length - 1) {
@@ -215,7 +223,7 @@ $(document).ready(function () {
      */
     function serializePath(Polylines, content, title) {
         var PathString = "[";
-        PathString += "{\"map\": null,\"path\": [";
+        PathString += "{\"map\": null, \"geodesic\": true, \"path\": [";
         var countA = 0;
         Polylines.forEach(function (polyline) {
 
@@ -263,7 +271,7 @@ $(document).ready(function () {
         } else {
             data = {path: path, content: JSON.stringify(content), title: title, insert: true};
             action = "ajouté";
-            
+
         }
         $.ajax({//On demande à la base de donnée de vérifier les informations de l'utilisateur
             type: 'post', //La methode poste empèche l'utilisateur d'accéder lui-même au contenu de la base de donnée
@@ -275,7 +283,7 @@ $(document).ready(function () {
                     if (editing == null) {
                         var wpIds = JSON.parse(response);
                         condition = !isNaN(wpIds[0]);
-                    }else{
+                    } else {
                         condition = response == "OK";
                     }
 

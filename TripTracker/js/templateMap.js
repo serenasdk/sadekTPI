@@ -387,7 +387,9 @@ function setPath(position1, position2, StoragePosition) {
             creationRoutes[StoragePosition].display.setDirections(response);
         }
         if (status === "ZERO_RESULTS") {
+            creationRoutes[StoragePosition].display.setMap(null);
             drawFlight(dep, arr, StoragePosition);
+            //creationRoutes[StoragePosition].display.setMap(map);
         }
     });
 }
@@ -397,6 +399,7 @@ function setPath(position1, position2, StoragePosition) {
  * @returns {undefined}
  */
 function drawFlight(position1, position2, StoragePosition) {
+    creationRoutes[StoragePosition]
     creationRoutes[StoragePosition].display = new google.maps.Polyline({
         path: [position1, position2],
         geodesic: true,
@@ -404,8 +407,14 @@ function drawFlight(position1, position2, StoragePosition) {
         strokeOpacity: 1.0,
         strokeWeight: 4
     });
+    //creationRoutes[StoragePosition].display.setMap(map);
+    creationRoutes[StoragePosition].route = "polyline";
+    showFligh(StoragePosition);
+}
+
+function showFligh(StoragePosition){
+    console.log("show");
     creationRoutes[StoragePosition].display.setMap(map);
-    creationRoutes[StoragePosition].route = ["polyline"];
 }
 
 /**
