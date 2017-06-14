@@ -191,14 +191,19 @@ function createMarkerClickEvent(id, positionA, positionB) {
 }
 
 function unsetPageDisplay() {
+    var inc = 0;
     NavMarkers.forEach(function (markerGroup) {
         markerGroup.forEach(function (marker) {
             marker.setMap(null);
+            console.log(inc);
+            inc++;
         });
     });
     NavPaths.forEach(function (path) {
         path.setMap(null);
     });
+    NavMarkers = [];
+    NavPaths = [];
 }
 
 function LoadDetails(tripId) {

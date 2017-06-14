@@ -413,7 +413,6 @@ function drawFlight(position1, position2, StoragePosition) {
 }
 
 function showFligh(StoragePosition){
-    console.log("show");
     creationRoutes[StoragePosition].display.setMap(map);
 }
 

@@ -33,9 +33,7 @@ function LoadModifTrip(tripId) {
     });
 }
 
-function generateContent(data) {
-    console.log(data);
-    
+function generateContent(data) {    
     $("#titleTrip").val(data.trip.tpTitle);
 
     var inc = 0;
