@@ -109,11 +109,15 @@ $(document).ready(function () {
             uploadAsync: false,
             showUpload: false
         });
+        $('#insert' + length +" .collapse").collapse("show");
     });
 
     //Défini l'évènement de suppression commandé par la croix
     $('#QuitCreation').click(function () {
-        closeInsertInterface();
+        var confirmation = confirm("Voulez-vous vraiment quitter l'interface de création ?");
+        if (confirmation) {
+            closeInsertInterface();
+        }
     });
 
 
@@ -122,7 +126,9 @@ $(document).ready(function () {
      * Commande la suppression de ce panel
      */
     $('body').on('click', '.closeInsertionPanel', function () {
-        //Récupèration de l'id de la cible
+        var confirmation = confirm("Voulez-vous vraiment supprimer cette étape ?");
+        if (confirmation) {
+            //Récupèration de l'id de la cible
         var id = event.target.id;
         //Récupèraction du numéro du panel
         var position = id.substring(5, id.length);
@@ -143,6 +149,7 @@ $(document).ready(function () {
 
         //Supprimer les routes liées à cette étape
         suppressRoadsOfDot(position);
+        }
     });
 
     /**
@@ -259,6 +266,7 @@ function closeInsertInterface() {
     });
 
     //Vides les champs qui ne sont pas supprimés
+    $('#titleTrip').val('');
     $('#InsertionErrorSection').html('');
     $('#InsertionContent').html('');
     $('#InsertionErrorSection').removeClass('alert');

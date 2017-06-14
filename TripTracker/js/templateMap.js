@@ -364,7 +364,7 @@ function TraceNextRoad(PlaceId) {
  */
 function setPath(position1, position2, StoragePosition) {
     creationRoutes[StoragePosition] = [];
-    creationRoutes[StoragePosition].display = new google.maps.DirectionsRenderer({suppressMarkers: true});
+    creationRoutes[StoragePosition].display = new google.maps.DirectionsRenderer({suppressMarkers: true, preserveViewport: true});
 
     var dep = new google.maps.LatLng(position1.position.lat(), position1.position.lng());
     var arr = new google.maps.LatLng(position2.position.lat(), position2.position.lng());

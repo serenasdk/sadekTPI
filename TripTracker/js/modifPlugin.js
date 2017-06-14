@@ -67,7 +67,7 @@ function createPanelWithData(wpData) {
             '<div class="panel panel-default" id="insert' + length + '">'
             + '<div class="panel-heading" role="tab" id="headInsert' + length + '">'
             + '<h4 class="panel-title">'
-            + '<a role="button" data-toggle="collapse" id="TripName' + length + '" href="#content' + length + '" aria-expanded="true" aria-controls="content' + length + '" class="trigger collapsed">[Insérer un titre]</a>'
+            + '<a role="button" data-toggle="collapse" id="TripName' + length + '" href="#content' + length + '" aria-expanded="true" aria-controls="content' + length + '" class="trigger collapsed">' + wpData.wpTitle + '</a>'
             + '<button type="button" id="Close' + length + '" class="close pull-right closeInsertionPanel" aria-label="Close" ' + length + '">&times;</button></h4></div>'
             + '<div id="content' + length + '" class="panel-collapse collapse" role="tabpane' + length + '" aria-labelledby="headInsert' + length + '">'
             + '<div class="panel-body">'
