@@ -4,10 +4,15 @@ var editing = null;
 
 var creationMarkers = [];
 var creationRoutes = [];
+var currentZoom;
+
+var lastValidBound;
+var lastValidCenter;
 
 $(document).ready(function () {
     //Chargement de la carte
     initMap();
+    lastValidCenter = map.getCenter();
 
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
 
@@ -64,6 +69,28 @@ $(document).ready(function () {
     google.maps.event.addListener(map, 'click', function (event) {
         if (focus !== null) {
             getAdresseFromPosition(event.latLng);
+        }
+    });
+
+    google.maps.event.addListener(map, 'center_changed', function (event) {
+        var boundHeight = map.getBounds().f;
+        if (boundHeight.b < -85) {
+            var ecart = -(boundHeight.b + 85);
+            var centre = new google.maps.LatLng(lastValidCenter.lat() + ecart, lastValidCenter.lng());
+            lastValidCenter = centre;
+            map.setCenter(centre);
+        }
+        else if (boundHeight.f > 85) {
+            var ecart = boundHeight.f - 85;
+            var centre = new google.maps.LatLng(lastValidCenter.lat() - ecart, lastValidCenter.lng());
+            lastValidCenter = centre;
+            map.setCenter(centre);
+        } else {
+            try {
+                lastValidCenter = map.getCenter();
+            } catch (e) {
+                console.log(e);
+            }
         }
     });
 });
@@ -142,7 +169,6 @@ function closeAdd(reopen) {
             creationRoutes = [];
             count = 0;
             openRight();
-            
         }
     }
 }
@@ -153,10 +179,11 @@ function closeAdd(reopen) {
  */
 function initMap() {
     var mapOptions = {
-        zoom: 2,
+        zoom: 5,
         center: {lat: -34.397, lng: 150.644},
         mapTypeControl: false,
         streetViewControl: false,
+        minZoom: 2,
         zoomControlOptions: {
             position: google.maps.ControlPosition.LEFT_BOTTOM
         },
@@ -241,7 +268,7 @@ function placeMarker(location, address) {
         var id = null;
         if (creationMarkers[focus] !== "none" && creationMarkers[focus] !== null) {
             creationMarkers[focus].setMap(null);
-            if (typeof creationMarkers[focus].id !== "undefined" ) {
+            if (typeof creationMarkers[focus].id !== "undefined") {
                 id = creationMarkers[focus].id;
             }
         }
@@ -249,9 +276,9 @@ function placeMarker(location, address) {
             position: location,
             map: map
         });
-        
-        
-        if (id!== null) {
+
+
+        if (id !== null) {
             creationMarkers[focus].id = id;
         }
 
