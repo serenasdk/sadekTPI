@@ -181,6 +181,7 @@ function initMap() {
         mapTypeControl: false,
         streetViewControl: false,
         minZoom: 2,
+        sensor: false,
         zoomControlOptions: {
             position: google.maps.ControlPosition.LEFT_BOTTOM
         },
