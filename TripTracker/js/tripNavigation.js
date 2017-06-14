@@ -26,11 +26,12 @@ $(document).ready(function () {
     //$("body").click();
 
     $("body").on('show.bs.collapse', '.collapse', function () {
-
         if (!creating) {
-            var id = $(event.target).parent().attr("id");
-            var ref = id.slice(6, id.length);
-            selectTab(ref);
+            if (typeof $($(event.target).parent()).attr("id") !== "undefined") {
+                var id = $(event.target).parent().attr("id");
+                var ref = id.slice(6, id.length);
+                selectTab(ref);
+            }
 
             if (coll) {
                 if (typeof ref !== "undefined") {
