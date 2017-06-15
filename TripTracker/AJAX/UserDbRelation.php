@@ -5,6 +5,7 @@ session_start();
  * SADEK Serena
  * Juin 2017
  * TripTracker
+ * 
  * Cette page contient toute les fonction interéagissant avec la base de donnée,
  * en ce qui concerne la table des utilisateur
  * Elle est utilisée pour la connexion et l'inscription

@@ -1,9 +1,13 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * SADEK Serena
+ * Juin 2017
+ * TripTracker
+ * 
+ * Cette page contient toute les actions liées à la gestion d'image. Cette page 
+ * est appellée via AJAX par tout les input de type file, lors de l'upload ou de
+ * la suppression d'image.
  */
 
 session_start();
@@ -12,47 +16,21 @@ if (!isset($_SESSION["visit"])) {
     $_SESSION["visit"] = array();
 }
 
+//Connection PDO requise
 require '../connection.php';
 
-
+/**
+ * Protocole visant à indiquer qu'une image enregistrée devra être supprimée dès
+ * l'update du voyage réceptionné par la page DataInsertModif.php
+ */
 if (isset($_POST["DeleteExisting"])) {
-    $stream = fopen("../log.txt", 'a');
-    fwrite($stream, "Delete Tentative on ".$_POST["key"]."\n");
-    fclose($stream);
-    
+    //L'image est ajoutée aux suppressions en attente
     array_push($_SESSION["picOnDelete"], $_POST["key"]);
 }
 
-if (isset($_POST["update"]) && !empty($_FILES)) {
-    require_once './navigationData.php';
-
-    $stream = fopen("../log.txt", 'a');
-    
-    $wpId = $_POST["idWp"];
-    fwrite($stream, count($_FILES) . " \n");
-    $initalMedia = getMediaOfWp($wpId);
-   
-    $input = "picSelect" . $_POST["idState"];
-
-    for ($index = 0; $index < count($_FILES[$input]["error"]); $index++) {
-
-        try {
-            $connection = getConnection();
-            $connection->beginTransaction();
-
-            fwrite($stream, $_FILES[$input]["tmp_name"][$index] . " \n");
-
-
-            $connection->commit();
-        } catch (Exception $exc) {
-            fwrite($stream, $exc->getMessage() . " \n");
-            $connection->rollBack();
-        }
-    }
-
-    fclose($stream);
-}
-
+/**
+ * Protocole visant à upload des images et les référencer dans la base de donnée
+ */
 if (isset($_POST["insert"]) && !empty($_FILES)) {
     $id = $_COOKIE["WP" . $_POST["idState"]];
     $input = "picSelect" . $_POST["idState"];
@@ -68,40 +46,24 @@ if (isset($_POST["insert"]) && !empty($_FILES)) {
                 $name .= "." . $ext;
 
                 $win = move_uploaded_file($tmp_name, "../usersRessources/image/$name");
-                if (!$win) {
-                    $stream = fopen("../log.txt", 'a');
-                    fwrite($stream, "Erreur lors du dépaclement du fichier\n");
-                    fclose($stream);
-                    //echo json_encode("echec lors du chargement du fichier");
-                } else {
-                    $stream = fopen("../log.txt", 'a');
-                    fwrite($stream, "Déplacement réussi\n");
-                    fclose($stream);
-
+                if ($win) {
                     AddPictureToWayPoint($id, $name, $connection);
-                    //echo json_encode(array());
-
-                    $stream = fopen("../log.txt", 'a');
-                    fwrite($stream, "Ajout du nom à la base de données\n");
-                    fclose($stream);
                 }
-            }
-            if (!isset($win)) {
-                echo error;
             }
 
             $connection->commit();
         } catch (Exception $ex) {
             $connection->rollBack();
-            //echo json_encode($ex->getTraceAsString());
-
-            $stream = fopen("../log.txt", 'a');
-            fwrite($stream, $ex->getTraceAsString() . "\n");
-            fclose($stream);
         }
     }
 }
 
+/**
+ * Référence  une image dans la base de donnée
+ * @param type $wpId
+ * @param type $picName
+ * @param type $co
+ */
 function AddPictureToWayPoint($wpId, $picName, $co) {
     $req = $co->prepare("INSERT INTO media (mediaName, idWaypoint) values (:mediaName, :idWp)");
     $req->bindParam(":idWp", $wpId, PDO::PARAM_INT);
@@ -109,4 +71,6 @@ function AddPictureToWayPoint($wpId, $picName, $co) {
     $req->execute();
 }
 
+//L'input de type file attend une réponse en format JSON. 
+//Même s'il n'y a rien à traiter il faut retrouner un tableau vide
 echo json_encode(array());

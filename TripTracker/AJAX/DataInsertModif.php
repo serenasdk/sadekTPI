@@ -12,9 +12,16 @@
 
 session_start();
 
+//Connexion PDO requise
 require_once '../connection.php';
 
+/**
+ * Protocole visant à supprimer un voyage, ses étapes et les média qui leur sont
+ * attribués de la base de donnée. Le protocole supprime également le fichier du
+ * tracé et les images du serveur.
+ */
 if (isset($_POST["deleteTrip"])) {
+    //Nécessité de récupérer des données en lecture
     require_once './navigationData.php';
     
     $idTrip = $_POST["idToDelete"];
@@ -25,11 +32,16 @@ if (isset($_POST["deleteTrip"])) {
         
         $wps = getWps($idTrip);
         
+        
         for ($index7 = 0; $index7 < count($wps); $index7++) {
+            //Suppression des media
             removeMediaFile($wps[$index7]["idWaypoint"], $connection);
             deleteMediaOfWp($wps[$index7]["idWaypoint"], $connection);
+            //Suppression de l'étape
+            deleteWaypoint($wps[$index7]["idWaypoint"], $connection);
         }
         
+        //Suppression du voyage
         removePathOfTrip($idTrip, $connection);
         deleteTrip($idTrip, $connection);
         
@@ -63,7 +75,6 @@ if (isset($_POST["insert"])) {
 
         $path = filter_input(INPUT_POST, "path", FILTER_SANITIZE_STRING);
 
-        //$content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_STRING);
         $content = $_POST["content"];
         $content = json_decode($content);
 
@@ -79,8 +90,8 @@ if (isset($_POST["insert"])) {
             $address = $content[$index]->address;
 
             $wpId = InsertWaypoint($tripId, $title, $comment, $date, $lat, $lng, $address, $connection);
-            setcookie("WP" . $content[$index]->ref, $wpId, time() + 10);
             //Cookie destiné au call AJAX d'insertion des media
+            setcookie("WP" . $content[$index]->ref, $wpId, time() + 10);
 
             array_push($ids, $wpId);
         }
@@ -98,6 +109,11 @@ if (isset($_POST["insert"])) {
     }
 }
 
+/**
+ * Protocole visant à éditer un voyage existant. On compare les informations
+ * soumises aux informations existantes, et selon le cas on les met à jour,
+ * on les  insère ou on les supprime.
+ */
 if (isset($_POST["edit"])) {
     require './navigationData.php';
 
@@ -129,6 +145,7 @@ if (isset($_POST["edit"])) {
         $title = $_POST["title"];
         $path = $_POST["path"];
 
+        //Mise à jour du voyage
         updateTrip($idTrip, $title, $connection);
         updatePathTextFile(getPathName($idTrip, $connection), $path);
 
@@ -145,10 +162,12 @@ if (isset($_POST["edit"])) {
             $lng = $content[$index3]->lng;
             $address = $content[$index3]->address;
 
+            //Les étapes possédant un id (présentes dans la base) sont mises à jour
             if (isset($content[$index3]->id)) {
 
                 $idWp = $content[$index3]->id;
                 updateWaypoint($idWp, $idTrip, $title, $comment, $date, $lat, $lng, $address, $connection);
+                //Cookie destiné au call AJAX d'insertion des media
                 setcookie("WP" . $content[$index3]->ref, $idWp, time() + 10);
 
                 for ($index4 = 0; $index4 < count($data["waypoints"]); $index4++) {
@@ -159,9 +178,12 @@ if (isset($_POST["edit"])) {
                     }
                 }
             } else {
+                //Les étapes ne possédant pas d'id sont nouvelles et donc insérées dans la base
                 InsertWaypoint($idTrip, $title, $comment, $date, $lat, $lng, $address, $connection);
             }
         }
+        
+        //Les étapes de la base absentes des étapes mises à jour sont supprimées
         for ($index5 = 0; $index5 < count($data["waypoints"]); $index5++) {
             if ($data["waypoints"][$index5] !== null) {
                 $wpid = ($data["waypoints"][$index5]["idWaypoint"]);
@@ -171,6 +193,7 @@ if (isset($_POST["edit"])) {
             }
         }
         
+        //Les images dans la fille d'attente de suppression sont supprimées.
         for ($index6 = 0; $index6 < count($_SESSION["picOnDelete"]); $index6++) {
             removeMedia($_SESSION["picOnDelete"][$index6], $connection);
             deleteMedia($_SESSION["picOnDelete"][$index6], $connection);
@@ -190,7 +213,8 @@ if (isset($_POST["edit"])) {
 }
 
 /**
- * 
+ * Ajoute un voyage dans la base de donnée avec les informations données par le 
+ * biais de la connexion donnée
  * @param type $title
  * @param type $co
  * @return type
@@ -204,7 +228,8 @@ function InsertTrip($title, $co) {
 }
 
 /**
- * 
+ * Attribue le nom du fichier contenant son tracé au voyage donné par le biais 
+ * de la connexion donnée
  * @param type $idTrip
  * @param type $pathLocation
  * @param type $co
@@ -217,7 +242,7 @@ function setPath($idTrip, $pathLocation, $co) {
 }
 
 /**
- * Ajoute un waypoint par le biais de la connexion donnée
+ * Ajoute une étape par le biais de la connexion donnée
  * @param int $idTrip
  * @param string $title
  * @param string $comment
@@ -258,7 +283,7 @@ function CreatePathTextFile($content) {
 }
 
 /**
- * Ré-écrit le fichier contenant le chemin.
+ * Ré-écrit le chemin du voyage dans le fichier donné
  * @param type $name
  * @param type $content
  */
@@ -269,7 +294,7 @@ function updatePathTextFile($name, $content) {
 }
 
 /**
- * Efface uniquement le voyage de la table trip
+ * Efface le voyage donné se sa table par le biais de la connexion donnée
  * @param type $tripId
  */
 function deleteTrip($tripId, $co) {
@@ -279,7 +304,7 @@ function deleteTrip($tripId, $co) {
 }
 
 /**
- * Efface l'étape uniquement
+ * Efface l'étape de sa table par le biais de la connexion donnée
  * @param type $wpId
  * @param type $co
  */
@@ -290,7 +315,8 @@ function deleteWaypoint($wpId, $co) {
 }
 
 /**
- * Efface les réféférences des Média dans
+ * Efface les réféférences des Média du voyage donné dans la table par le biais 
+ * de la connexion donnée
  * @param type $wpId
  * @param type $co
  */
@@ -301,7 +327,7 @@ function deleteMediaOfWp($wpId, $co) {
 }
 
 /**
- * Efface les réféférences des Média dans
+ * Efface les réféférences du média donné par le biais de la connexion donnée
  * @param type $wpId
  * @param type $co
  */
@@ -312,7 +338,7 @@ function deleteMedia($idMedia, $co) {
 }
 
 /**
- * Efface les réféférences des Média dans
+ * Efface le média du serveur
  * @param type $wpId
  * @param type $co
  */
@@ -321,13 +347,18 @@ function removeMedia($idMedia, $co) {
     unlink("../usersRessources/image/" . $name);
 }
 
+/**
+ * Effece la tracé du serveur
+ * @param type $idTrip
+ * @param type $co
+ */
 function removePathOfTrip($idTrip, $co){
     $pathName = getPathName($idTrip, $co);
     unlink("../usersRessources/path/" . $pathName);
 }
 
 /**
- * Efface les réféférences des Média dans
+ * Récupère le nom du média à partir de son id par le biais de la connexion donnée
  * @param type $wpId
  * @param type $co
  */
@@ -340,7 +371,7 @@ function getMediaName($mediaId, $co) {
 }
 
 /**
- * Efface les images du serveux
+ * Efface les images de l'étape donnée par le biais de la connexion donnée
  * @param type $wpId
  */
 function removeMediaFile($wpId, $co) {
@@ -350,6 +381,12 @@ function removeMediaFile($wpId, $co) {
     }
 }
 
+/**
+ * Met à jour le voyage donnée par le biais de la connexion donnée
+ * @param type $idTrip
+ * @param type $title
+ * @param type $co
+ */
 function updateTrip($idTrip, $title, $co) {
     try {
 
@@ -362,6 +399,18 @@ function updateTrip($idTrip, $title, $co) {
     }
 }
 
+/**
+ * Met à jour l'étape donnée par le biais de la connexion donnée
+ * @param type $wpId
+ * @param type $idTrip
+ * @param type $title
+ * @param type $comment
+ * @param type $date
+ * @param type $lat
+ * @param type $lng
+ * @param type $address
+ * @param type $co
+ */
 function updateWaypoint($wpId, $idTrip, $title, $comment, $date, $lat, $lng, $address, $co) {
     try {
         $req = $co->prepare("UPDATE waypoint set wpTitle = :title, wpComment = :comment, wpDate = :date, lat = :lat, lng = :lng, address = :address where idWaypoint = :wpId");
@@ -378,6 +427,12 @@ function updateWaypoint($wpId, $idTrip, $title, $comment, $date, $lat, $lng, $ad
     }
 }
 
+/**
+ * Retounre le nom du fichier contenant le tracé do voyage donné
+ * @param type $idTrip
+ * @param type $co
+ * @return type
+ */
 function getPathName($idTrip, $co) {
     $req = $co->prepare("SELECT pathObject FROM trip WHERE idTrip = :idTrip");
     $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);

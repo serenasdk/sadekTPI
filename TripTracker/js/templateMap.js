@@ -12,7 +12,6 @@ var lastValidCenter;
 $(document).ready(function () {
     //Chargement de la carte
     initMap();
-    lastValidCenter = map.getCenter();
 
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
 
@@ -73,24 +72,24 @@ $(document).ready(function () {
     });
 
     google.maps.event.addListener(map, 'center_changed', function (event) {
-        var boundHeight = map.getBounds().f;
-        if (boundHeight.b < -85) {
-            var ecart = -(boundHeight.b + 85);
-            var centre = new google.maps.LatLng(lastValidCenter.lat() + ecart, lastValidCenter.lng());
-            lastValidCenter = centre;
+        var boundHeight = map.getBounds().f; // Limite haute et basse de la map
+        
+        if (boundHeight.b < -85) { //Limite basse de la map hors champ
+            var ecart = -(boundHeight.b + 85); 
+            var centre = new google.maps.LatLng(
+                    lastValidCenter.lat() + ecart, 
+                    lastValidCenter.lng()
+                            );
             map.setCenter(centre);
         }
-        else if (boundHeight.f > 85) {
+        
+        else if (boundHeight.f > 85) { //Limite haute de la map hors champ
             var ecart = boundHeight.f - 85;
-            var centre = new google.maps.LatLng(lastValidCenter.lat() - ecart, lastValidCenter.lng());
-            lastValidCenter = centre;
+            var centre = new google.maps.LatLng(
+                    lastValidCenter.lat() - ecart, 
+                    lastValidCenter.lng()
+                    );
             map.setCenter(centre);
-        } else {
-            try {
-                lastValidCenter = map.getCenter();
-            } catch (e) {
-                console.log(e);
-            }
         }
     });
 });
@@ -228,7 +227,10 @@ function getPositionFromAdresse(Adresse) {
         if (status === 'OK') {
             var id = "#adress" + focus;
             $(id).val(results[0].formatted_address);
-            placeMarker(new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()), results[0].formatted_address);
+            placeMarker(new google.maps.LatLng(
+                    results[0].geometry.location.lat(), 
+                    results[0].geometry.location.lng()), 
+                    results[0].formatted_address);
         } else {
             window.alert('Geocoder failed due to: ' + status);
         }
@@ -381,13 +383,14 @@ function setPath(position1, position2, StoragePosition) {
 
     directionsService.route(request, function (response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
-            creationRoutes[StoragePosition].route = response;
+            //Informations complètes concernant la route trouveée
+            creationRoutes[StoragePosition].route = response; 
+            //Connecteur entre la réponse et la map
             creationRoutes[StoragePosition].display.setDirections(response);
         }
         if (status === "ZERO_RESULTS") {
             creationRoutes[StoragePosition].display.setMap(null);
             drawFlight(dep, arr, StoragePosition);
-            //creationRoutes[StoragePosition].display.setMap(map);
         }
     });
 }
