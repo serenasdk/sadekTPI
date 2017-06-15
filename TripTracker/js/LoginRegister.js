@@ -104,7 +104,7 @@ $(document).ready(function () {
                             setTimeout(function () {
                                 //L'identifiant de l'utilisateur se trouve déjà dans la session
                                 //Il va être redirigé sur sa page personelle lors de l'actualisation de la page
-                                location.reload();
+                                //location.reload();
                             }, 1500);
                         }
                         else { //Si l'inscription ne s'est pas passée correctement
