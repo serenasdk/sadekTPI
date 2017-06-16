@@ -36,7 +36,6 @@ if (isset($_POST["getPages"])) {
  */
 if (isset($_POST["getPageContent"])) {
     try {
-
         $pages = getPageNumber();
         $pageNo = filter_input(INPUT_POST, "pageNo", FILTER_SANITIZE_NUMBER_INT);
 
@@ -47,7 +46,7 @@ if (isset($_POST["getPageContent"])) {
         if ($pageNo < 1) {
             $pageNo = 1;
         }
-        
+
         //Récupération des voyages de la page
         $content = getPageContent($pageNo);
 
@@ -71,20 +70,26 @@ if (isset($_POST["getWpDetails"])) {
     try {
         $wpId = filter_input(INPUT_POST, "wpId", FILTER_SANITIZE_NUMBER_INT);
 
-        //Récupération des détails
-        $details = getWpDetails($wpId)[0];
-        
-        //Le format de la date de la base de donnée est aaaa-mm-jj
-        //Le format des input date est jj/mm/aaaa
-        //On le fait dont passer de l'un à l'autre
-        $details["wpDate"] = implode("/", array_reverse(explode("-", $details["wpDate"])));
+        $dbResult = getWpDetails($wpId);
 
-        
-        //Récupération des média
-        $details["media"] = getMediaOfWp($wpId);
+        if (count($dbResult) > 0) {
+            //Récupération des détails
+            $details = getWpDetails($wpId)[0];
+
+            //Le format de la date de la base de donnée est aaaa-mm-jj
+            //Le format des input date est jj/mm/aaaa
+            //On le fait dont passer de l'un à l'autre
+            $details["wpDate"] = implode("/", array_reverse(explode("-", $details["wpDate"])));
 
 
-        echo json_encode($details);
+            //Récupération des média
+            $details["media"] = getMediaOfWp($wpId);
+
+
+            echo json_encode($details);
+        } else {
+            echo 'noResult';
+        }
     } catch (Exception $exc) {
         echo $exc->getTraceAsString();
     }
@@ -99,45 +104,50 @@ if (isset($_POST["loadTripModif"])) {
         $data = array();
         //Récupération du voyage
         $data["trip"] = getTrip($_POST["tripId"]);
-        //Récupération des étapes
-        $data["waypoints"] = getWps($_POST["tripId"]);
 
-        //Récupération des étapes
-        for ($index1 = 0; $index1 < count($data["waypoints"]); $index1++) {
-            $media = getMediaOfWp($data["waypoints"][$index1]["idWaypoint"]);
-            $mediaTitle = array();
+        if (count($data["trip"]) > 0) {
+            //Récupération des étapes
+            $data["waypoints"] = getWps($_POST["tripId"]);
 
-            
-            if (isset($_POST["getPreviewConfig"])) {
-                $mediaConstruct = array();
-                $_SESSION["picOnDelete"] = array();
-            }
+            //Récupération des étapes
+            for ($index1 = 0; $index1 < count($data["waypoints"]); $index1++) {
+                $media = getMediaOfWp($data["waypoints"][$index1]["idWaypoint"]);
+                $mediaTitle = array();
 
-            //Récupération du nom des média
-            for ($index2 = 0; $index2 < count($media); $index2++) {
-                $filename = "usersRessources/image/" . $media[$index2]["mediaName"];
-                array_push($mediaTitle, $filename);
 
-                //Génération d'un constructeur pour la prévisualisation de l'input type file
                 if (isset($_POST["getPreviewConfig"])) {
-                    $construct = array();
-                    $construct["type"] = "image";
-                    $construct["caption"] = "";
-                    $construct["url"] = './AJAX/PictureInsertModif.php';
-                    $construct["key"] = $media[$index2]["idMedia"];
-                    array_push($mediaConstruct, $construct);
+                    $mediaConstruct = array();
+                    $_SESSION["picOnDelete"] = array();
+                }
+
+                //Récupération du nom des média
+                for ($index2 = 0; $index2 < count($media); $index2++) {
+                    $filename = "usersRessources/image/" . $media[$index2]["mediaName"];
+                    array_push($mediaTitle, $filename);
+
+                    //Génération d'un constructeur pour la prévisualisation de l'input type file
+                    if (isset($_POST["getPreviewConfig"])) {
+                        $construct = array();
+                        $construct["type"] = "image";
+                        $construct["caption"] = "";
+                        $construct["url"] = './AJAX/PictureInsertModif.php';
+                        $construct["key"] = $media[$index2]["idMedia"];
+                        array_push($mediaConstruct, $construct);
+                    }
+                }
+                //Formatage de la date de aaaa-mm-jj à jj/mm/aaaa
+                $data["waypoints"][$index1]["wpDate"] = implode("/", array_reverse(explode("-", $data["waypoints"][$index1]["wpDate"])));
+
+                $data["waypoints"][$index1]["media"] = $mediaTitle;
+                if (isset($_POST["getPreviewConfig"])) {
+                    $data["waypoints"][$index1]["mediaConstruct"] = $mediaConstruct;
                 }
             }
-            //Formatage de la date de aaaa-mm-jj à jj/mm/aaaa
-            $data["waypoints"][$index1]["wpDate"] = implode("/", array_reverse(explode("-", $data["waypoints"][$index1]["wpDate"])));
 
-            $data["waypoints"][$index1]["media"] = $mediaTitle;
-            if (isset($_POST["getPreviewConfig"])) {
-                $data["waypoints"][$index1]["mediaConstruct"] = $mediaConstruct;
-            }
+            echo json_encode($data);
+        } else{
+            echo 'noResult';
         }
-
-        echo json_encode($data);
     } catch (Exception $exc) {
         echo $exc->getTraceAsString();
     }
@@ -203,12 +213,14 @@ function getTripContent($idTrip) {
  */
 function getWpDetails($idWp) {
     $co = getConnection();
-    $req = $co->prepare("SELECT `wpDate`, `wpComment`, `wpTitle`, `address` FROM `waypoint`where `idWaypoint`= :idWP");
+    $req = $co->prepare("SELECT `wpDate`, `wpComment`, `wpTitle`, `address`, `user`.idUser FROM `waypoint`, trip, `user` where waypoint.idTrip = trip.idTrip and trip.idUser = `user`.idUser and `idWaypoint`= :idWP and `user`.idUser = :idUser");
     $req->bindParam(":idWP", $idWp, PDO::PARAM_INT);
+    $req->bindParam(":idUser", $_SESSION["idUser"], PDO::PARAM_INT);
     $req->execute();
     $result = $req->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
+
 /**
  * Retourne les informations des média associés à l'étape donnée
  * @param type $idWp
@@ -222,6 +234,7 @@ function getMediaOfWp($idWp) {
     $result = $req->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
+
 /**
  * Retourne les informations du tracé contenu dans le fichier donné
  * @param type $pathFileName
@@ -243,8 +256,9 @@ function getPath($pathFileName) {
  */
 function getTrip($idTrip) {
     $co = getConnection();
-    $req = $co->prepare("SELECT * FROM trip WHERE idTrip = :idTrip");
+    $req = $co->prepare("SELECT * FROM trip WHERE idTrip = :idTrip AND idUser = :idUser");
     $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
+    $req->bindParam(":idUser", $_SESSION["idUser"], PDO::PARAM_INT);
     $req->execute();
     $response = $req->fetch(PDO::FETCH_ASSOC);
     return $response;
@@ -257,8 +271,9 @@ function getTrip($idTrip) {
  */
 function getWps($idTrip) {
     $co = getConnection();
-    $req = $co->prepare("SELECT * FROM `waypoint` WHERE `idTrip`= :idTrip");
+    $req = $co->prepare("SELECT waypoint.idWaypoint, waypoint.`idTrip`, waypoint.wpDate, waypoint.wpComment, waypoint.wpTitle, waypoint.lat, waypoint.lng, waypoint.address FROM `waypoint`, `trip` WHERE `waypoint`.`idTrip`= :idTrip AND waypoint.idTrip = `trip`.idTrip AND `trip`.idUser = :idUser");
     $req->bindParam(":idTrip", $idTrip, PDO::PARAM_INT);
+    $req->bindParam(":idUser", $_SESSION["idUser"], PDO::PARAM_INT);
     $req->execute();
     $response = $req->fetchAll(PDO::FETCH_ASSOC);
     return $response;

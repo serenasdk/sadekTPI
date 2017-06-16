@@ -16,10 +16,8 @@
 function OpenModif(tripId) {
     var height = $(window).height() - 50 - 37 - 7;
     $('#navInsert .insertPanel').css("max-height", height);
-    editing = tripId;
-    closeRight(false);
     LoadModifTrip(tripId);
-    openAdd();
+
 }
 
 /**
@@ -33,8 +31,13 @@ function LoadModifTrip(tripId) {
         url: './AJAX/navigationData.php',
         data: {loadTripModif: true, tripId: tripId, getPreviewConfig: true},
         success: function (response) {
-            var data = JSON.parse(response);
-            generateContent(data);
+            if (response !== "noResult") {
+                editing = tripId;
+                closeRight(false);
+                openAdd();
+                var data = JSON.parse(response);
+                generateContent(data);
+            }
         }
     });
 }
