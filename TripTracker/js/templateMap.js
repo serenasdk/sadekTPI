@@ -127,7 +127,9 @@ function openLeft() {
  */
 function openRight() {
     if ($('.sidebar-left .sidebar-body').is(":visible") == false) {
-
+        if (ActivePanelId !== null && ActivePanelId < 5 && ActivePanelId >= 0) {
+            panOnTrip(ActivePanelId);
+        }
         window.setTimeout(function () {
             $('.sidebar-left .sidebar-body').toggle();
             $('.mini-submenu-left').hide();
@@ -187,6 +189,7 @@ function openAdd() {
     if (!creating) {
         unsetPageDisplay();
         creating = true;
+        ActivePanelId = null;
         creationMarkers = [];
         creationRoutes = [];
         count = 0;

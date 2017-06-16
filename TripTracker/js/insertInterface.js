@@ -172,7 +172,7 @@ $(document).ready(function () {
         var id = event.target.id;
         var ref = id.substring(7, id.length);
         if (!isNaN(ref)) {
-            if (ref <= 0 && ref < count) {
+            if (ref >= 0 && ref < count) {
                 var source = "#adress" + ref;
                 var address = $(source).val();
                 if (address.length > 0) {
