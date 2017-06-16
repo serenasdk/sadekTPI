@@ -78,7 +78,7 @@ $(document).ready(function () {
                         </div>'
                 + '</li>'
                 + '<li class="list-group-item">'
-                + '<input id="picSelect' + length + '" name="picSelect' + length + '[]" type="file" multiple class="file-loading">' //Ajout des images
+                + '<input id="picSelect' + length + '" accept="image/*" name="picSelect' + length + '[]" type="file" multiple class="file-loading">' //Ajout des images
                 + '</li>'
                 + '</ul>'
                 + '<div id="Pcomment' + length + '" class="form-group"><textarea class="form-control col-lg-10" offset="" rows="15" id="comment' + length + '"></textarea></div>'
