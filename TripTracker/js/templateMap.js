@@ -13,16 +13,19 @@ $(document).ready(function () {
     //Chargement de la carte
     initMap();
 
+    //Tout les panneaux sont ouverts par défaut. Il faut donc les fermer manuellement
     $('#navDetails .slide-submenu').closest('.sidebar-body').hide();
-
     $('#navInsert .slide-submenu').closest('.sidebar-body').hide();
     $('#cmdInsert').show();
 
+    //Lorsqu'on click sur une étape, le panneau de gauche doit se fermer et celui de droite s'ouvrir
     $('.list-group-item').click(function () {
         closeRight(true);
         $('#navDetails').show();
         openLeft();
     });
+
+    //Lorsqu'on ouvre un panneau, on ferme l'autre
 
     $('.sidebar-left .slide-submenu').on('click', function () {
         closeRight(true);
@@ -65,28 +68,36 @@ $(document).ready(function () {
         }
     });
 
+    //Lorsqu'on est en mode création, l'évènement click de la map déclenche une
+    //Recherche d'adresse
     google.maps.event.addListener(map, 'click', function (event) {
-        if (focus !== null) {
+        if (focus !== null) { //Si l'utilisateur a son focus sur une étape
             getAdresseFromPosition(event.latLng);
         }
     });
 
+    /**
+     * Lorsque la position de la map change (que ce soit le zoom ou le pan), on
+     * vérifie si le limite de la map ne dépassent pas le lite du pôle nord et 
+     * du pôle sud. Si c'est le cas, on décale le centre de manière à ce que la 
+     * map soit de nouveau dans les limites.
+     */
     google.maps.event.addListener(map, 'center_changed', function (event) {
         var boundHeight = map.getBounds().f; // Limite haute et basse de la map
-        
+
         if (boundHeight.b < -85) { //Limite basse de la map hors champ
-            var ecart = -(boundHeight.b + 85); 
+            var ecart = -(boundHeight.b + 85);
             var centre = new google.maps.LatLng(
-                    lastValidCenter.lat() + ecart, 
+                    lastValidCenter.lat() + ecart,
                     lastValidCenter.lng()
-                            );
+                    );
             map.setCenter(centre);
         }
-        
+
         else if (boundHeight.f > 85) { //Limite haute de la map hors champ
             var ecart = boundHeight.f - 85;
             var centre = new google.maps.LatLng(
-                    lastValidCenter.lat() - ecart, 
+                    lastValidCenter.lat() - ecart,
                     lastValidCenter.lng()
                     );
             map.setCenter(centre);
@@ -94,6 +105,10 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * Ouvre le panneau de droite
+ * @returns {undefined}
+ */
 function openLeft() {
     if ($('#navDetails .sidebar-body').is(":visible") == false) {
         window.setTimeout(function () {
@@ -105,6 +120,11 @@ function openLeft() {
         }, 400);
     }
 }
+
+/**
+ * Ouvre le panneau de gauche
+ * @returns {undefined}
+ */
 function openRight() {
     if ($('.sidebar-left .sidebar-body').is(":visible") == false) {
 
@@ -114,6 +134,12 @@ function openRight() {
         }), 400;
     }
 }
+
+/**
+ * Ferme le panneau de gauche
+ * @param {type} reopen : La miniature doit-elle s'affiche pour permettre une réouverture ?
+ * @returns {undefined}
+ */
 function closeRight(reopen) {
     if ($('.sidebar-left .sidebar-body').is(":visible") == true) {
         $('.sidebar-left .slide-submenu').closest('.sidebar-body').fadeOut('slide');
@@ -127,6 +153,12 @@ function closeRight(reopen) {
     }
 
 }
+
+/**
+ * Ferme le panneau de droite
+ * @param {type} reopen : La miniature doit-elle s'affiche pour permettre une réouverture ?
+ * @returns {undefined}
+ */
 function closeLeft(reopen) {
     if ($('#navDetails .sidebar-body').is(":visible") == true) {
         $('#navDetails .slide-submenu').closest('.sidebar-body').fadeOut('slide');
@@ -140,10 +172,17 @@ function closeLeft(reopen) {
         }
     }
 }
+
+/**
+ * Ouvre la panneau d'ajout
+ * @returns {undefined}
+ */
 function openAdd() {
     if ($('#navInsert .sidebar-body').is(":visible") == false) {
-        $('#navInsert .sidebar-body').toggle();
-        $('#cmdInsert').hide();
+        window.setTimeout(function () {
+            $('#navInsert .sidebar-body').toggle();
+            $('#cmdInsert').hide();
+        }), 400;
     }
     if (!creating) {
         unsetPageDisplay();
@@ -153,6 +192,11 @@ function openAdd() {
         count = 0;
     }
 }
+/**
+ * Ferme le panneau d'ajout, avec la possibilité ou non de l'ouvrir à nouveau
+ * @param {type} reopen
+ * @returns {undefined}
+ */
 function closeAdd(reopen) {
     if ($('#navInsert .sidebar-body').is(":visible") == true) {
         $('#navInsert .slide-submenu').closest('.sidebar-body').fadeOut('slide');
@@ -228,8 +272,8 @@ function getPositionFromAdresse(Adresse) {
             var id = "#adress" + focus;
             $(id).val(results[0].formatted_address);
             placeMarker(new google.maps.LatLng(
-                    results[0].geometry.location.lat(), 
-                    results[0].geometry.location.lng()), 
+                    results[0].geometry.location.lat(),
+                    results[0].geometry.location.lng()),
                     results[0].formatted_address);
         } else {
             window.alert('Geocoder failed due to: ' + status);
@@ -384,7 +428,7 @@ function setPath(position1, position2, StoragePosition) {
     directionsService.route(request, function (response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
             //Informations complètes concernant la route trouveée
-            creationRoutes[StoragePosition].route = response; 
+            creationRoutes[StoragePosition].route = response;
             //Connecteur entre la réponse et la map
             creationRoutes[StoragePosition].display.setDirections(response);
         }
@@ -413,7 +457,7 @@ function drawFlight(position1, position2, StoragePosition) {
     showFligh(StoragePosition);
 }
 
-function showFligh(StoragePosition){
+function showFligh(StoragePosition) {
     creationRoutes[StoragePosition].display.setMap(map);
 }
 

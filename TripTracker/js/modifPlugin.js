@@ -8,10 +8,11 @@
  * fichiers ajoutés
  */
 
-$(document).ready(function () {
-
-});
-
+/**
+ * Ouvre l'interface de cération en mode modification.
+ * @param {type} tripId
+ * @returns {undefined}
+ */
 function OpenModif(tripId) {
     var height = $(window).height() - 50 - 37 - 7;
     $('#navInsert .insertPanel').css("max-height", height);
@@ -21,6 +22,11 @@ function OpenModif(tripId) {
     openAdd();
 }
 
+/**
+ * Charge les informations complètes du voyage 
+ * @param {type} tripId
+ * @returns {undefined}
+ */
 function LoadModifTrip(tripId) {
     $.ajax({
         type: 'post',
@@ -33,6 +39,11 @@ function LoadModifTrip(tripId) {
     });
 }
 
+/**
+ * Gènère des panneaux dans l'ingerface de modification avec les informations données
+ * @param {type} data
+ * @returns {undefined}
+ */
 function generateContent(data) {
     $("#titleTrip").val(data.trip.tpTitle);
 
@@ -52,8 +63,6 @@ function createPanelWithData(wpData) {
     if (count > 0) { //Si ce n'est pas le premier marqueur
         creationRoutes.push("none");
     }
-
-
 
     var length = count;
 
@@ -152,6 +161,12 @@ function createPanelWithData(wpData) {
     });
 }
 
+/**
+ * Genère les marqueurs dans l'interface selon les informations données.
+ * @param {type} wpData
+ * @param {type} inc
+ * @returns {undefined}
+ */
 function PlaceWaypoint(wpData, inc) {
     var location = new google.maps.LatLng(wpData.lat, wpData.lng);
 

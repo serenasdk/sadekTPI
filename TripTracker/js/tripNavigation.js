@@ -6,8 +6,11 @@
  * Les fonctions de cette page concernent la nagigation parmis les voyages, 
  * de l'affichage au chargement des données
  */
+
+//Voyage actif lors de l'apperçu
 var ActivePanelId = null;
 
+//
 var NavPaths = [];
 var NavMarkers = [];
 
@@ -17,6 +20,9 @@ $(document).ready(function () {
     //Chargement de la permière page
     loadPage(1);
 
+    /*
+     * Évènement click sur un lien (numéro de page), généré automatiquement
+     */
     $("body").on('click', ".noPage", function () {
         var id = event.target.id;
         var noPage = id.slice(8, id.length);
@@ -24,8 +30,9 @@ $(document).ready(function () {
         generatePageLinks();
     });
 
-    //$("body").click();
-
+    /*
+     * Évènement à l'ouverture des paneaux dynamiques de navigation
+     */
     $("body").on('show.bs.collapse', '.collapse', function () {
         if (!creating) {
             if (typeof $($(event.target).parent()).attr("id") !== "undefined") {
@@ -34,7 +41,7 @@ $(document).ready(function () {
                 selectTab(ref);
             }
 
-            if (coll) {
+            if (coll) { //Si l'évènement n'est pas lui-même appellé par un évènement collapse
                 if (typeof ref !== "undefined") {
                     ActivePanelId = ref;
                 }
@@ -46,6 +53,9 @@ $(document).ready(function () {
         }
     });
 
+    /*
+     * Évènement à la fermeture des paneaux dynamiques de navigation
+     */
     $("body").on('hide.bs.collapse', '.collapse', function () {
         if (!creating) {
             ActivePanelId = null;
@@ -54,6 +64,9 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     * Évènement lors de la sélécation d'un lien désignant une étape
+     */
     $("body").on("click", ".waypoitLink", function () {
         var id = event.target.id;
         var ref = id.slice(6, id.length);
@@ -62,7 +75,10 @@ $(document).ready(function () {
         closeRight(true);
         openLeft();
     });
-
+    
+    /**
+     * Évènement click des icone de stylo présents à droite des panneau de navigation
+     */
     $("body").on("click", ".EditTrip", function () {
         var id = event.target.id;
         var ref = id.slice(4, id.length);
@@ -71,6 +87,9 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     * Évènement click des icone de boubelle présents à droite des panneaux de navigation
+     */
     $("body").on("click", ".DeleteTrip", function () {
         var id = event.target.id;
         var ref = id.slice(6, id.length);
@@ -82,6 +101,11 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * Charge et génère le contenu d'une nouvelle page
+ * @param {type} idPage
+ * @returns {undefined}
+ */
 function loadPage(idPage) {
     unsetPageDisplay();
     $.ajax({
@@ -97,6 +121,10 @@ function loadPage(idPage) {
         }
     });
 }
+/**
+ * Charge et génère les liens menant aux différentes pages
+ * @returns {undefined}
+ */
 function generatePageLinks() {
     $("#pageNos").html("");
     $.ajax({
@@ -111,7 +139,13 @@ function generatePageLinks() {
     });
 }
 
+/**
+ * Génère les panneaux de navigation avec un code de couleur, à partir des informations passées en paramètre
+ * @param {type} pageContent
+ * @returns {undefined}
+ */
 function generateTripPanels(pageContent) {
+    //Gris, vert, bleu, jaune, rouge 
     var panelClass = ["panel-default", "panel-success", "panel-info", "panel-warning", "panel-danger"];
 
     $("#TripPanels").html("");
@@ -143,7 +177,11 @@ function generateTripPanels(pageContent) {
     });
 }
 
+/*
+ * Génère les tracés des informations passées en paramètres, avec un code de couleur 
+ */
 function drawNavPath(pageFullData) {
+    //Gris, vert, bleu, jaune, rouge 
     var color = ["#333333", "#3c763d", "#31708f", "#8a6d3b", "#a94442"];
     var inc = 0;
     pageFullData.forEach(function (trip) {
@@ -159,12 +197,22 @@ function drawNavPath(pageFullData) {
     });
 }
 
+/**
+ * Rend le tracé d'index donné clickable
+ * @param {type} inc
+ * @returns {undefined}
+ */
 function createPathClickEvent(inc) {
     google.maps.event.addListener(NavPaths[inc], 'click', function () {
         selectTrip(inc);
     });
 }
 
+/**
+ * Crée des marqueurs cachés pour chaque étape des informations données
+ * @param {type} pageFullData
+ * @returns {undefined}
+ */
 function drawMarkers(pageFullData) {
     var countA = 0;
     pageFullData.forEach(function (trip) {
@@ -181,9 +229,15 @@ function drawMarkers(pageFullData) {
     });
 }
 
+/**
+ * Rend les marqueur de l'étape donnée, du voyage donné, clickable.
+ * @param {type} id
+ * @param {type} positionA : Index du voyage
+ * @param {type} positionB : Index de l'étape
+ * @returns {undefined}
+ */
 function createMarkerClickEvent(id, positionA, positionB) {
     google.maps.event.addListener(NavMarkers[positionA][positionB], 'click', function () {
-        //alert(id);
         LoadDetails(id);
         closeRight(true);
         openLeft();
@@ -191,6 +245,10 @@ function createMarkerClickEvent(id, positionA, positionB) {
     });
 }
 
+/**
+ * Réinitialise l'affichage de la navigation
+ * @returns {undefined}
+ */
 function unsetPageDisplay() {
     NavMarkers.forEach(function (markerGroup) {
         markerGroup.forEach(function (marker) {
@@ -206,6 +264,12 @@ function unsetPageDisplay() {
     $("#pageNos").html("");
 }
 
+/**
+ * Charge le contenu détaillé de l'étape dans le panneau de droite. Génère 
+ * également le carousel si le voyage contient une image
+ * @param {type} tripId
+ * @returns {undefined}
+ */
 function LoadDetails(tripId) {
     $("#carouselSection").html(
             '<div id="carouselWP" class="carousel slide" data-ride="carousel">\n\
@@ -262,17 +326,34 @@ function LoadDetails(tripId) {
     map.setZoom(10);
 }
 
+/**
+ * Met le focus le voyage à l'index donné lorsque c'est l'évènement click du tracé
+ * qui le déclenche
+ * @param {type} tripPosition
+ * @returns {undefined}
+ */
 function selectTrip(tripPosition) {
     panOnTrip(tripPosition);
     ShowOnlyTrip(tripPosition);
     $("#collapseTrip" + tripPosition).collapse("show");
 }
 
+/**
+ * Met le focus le voyage à l'index donné lorsque c'est l'évènement click de 
+ * l'onglet qui le déclenche
+ * @param {type} tripPosition
+ * @returns {undefined}
+ */
 function selectTab(tripPosition) {
     panOnTrip(tripPosition);
     ShowOnlyTrip(tripPosition);
 }
 
+/**
+ * Règle le zoom et le centre de la map de telle sorte à ce qu'elle contienne tout juste tout les marqueurs de la map
+ * @param {type} tripPosition
+ * @returns {undefined}
+ */
 function panOnTrip(tripPosition) {
     var bounds = new google.maps.LatLngBounds();
 
@@ -296,10 +377,20 @@ function panOnTrip(tripPosition) {
     });
 }
 
+/**
+ * Centre la map sur le marque donné
+ * @param {type} marker
+ * @returns {undefined}
+ */
 function panOnMarker(marker) {
     map.panTo(marker.position);
 }
 
+/**
+ * Cache les tracés de tout les voyage sauf celui du voyage à l'index donné
+ * @param {type} tripPosition
+ * @returns {undefined}111
+ */
 function ShowOnlyTrip(tripPosition) {
     var inc = 0;
     NavPaths.forEach(function (path) {
@@ -312,6 +403,10 @@ function ShowOnlyTrip(tripPosition) {
         inc++;
     });
 }
+/**
+ * Montre tout les tracés et cache tout les marqueurs
+ * @returns {undefined}
+ */
 function showAllTrips() {
     NavMarkers.forEach(function (markerGroup) {
         markerGroup.forEach(function (marker) {
@@ -324,6 +419,12 @@ function showAllTrips() {
     });
 }
 
+/**
+ * Règele le zoom et le centre de la map de telle sorte à ce qu'elle puisse tout
+ * juste contenir tout les voyage de la page
+ * @param {type} tripId
+ * @returns {undefined}
+ */
 function panOnAllTrips(tripId) {
     var bounds = new google.maps.LatLngBounds();
     NavMarkers.forEach(function (markerGroup) {
@@ -334,6 +435,12 @@ function panOnAllTrips(tripId) {
     map.fitBounds(bounds);
 }
 
+/**
+ * Cherche parmi tout les marqueur de tout les voyages de la page celui qui 
+ * correspond à l'id sélectionné.
+ * @param {type} markerId
+ * @returns {undefined}
+ */
 function findMarker(markerId) {
     NavMarkers.forEach(function (markerGroup) {
         markerGroup.forEach(function (marker) {
@@ -344,13 +451,17 @@ function findMarker(markerId) {
     });
 }
 
+/**
+ * Supprime le voyage de l'id sélectionné.
+ * @param {type} tripId
+ * @returns {undefined}
+ */
 function DeleteTrip(tripId) {
     $.ajax({
         type: 'post',
         url: './AJAX/DataInsertModif.php',
         data: {deleteTrip: true, idToDelete: tripId},
         success: function (response) {
-            console.log(response);
             generatePageLinks();
             loadPage(1);
         }
