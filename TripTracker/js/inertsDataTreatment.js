@@ -17,11 +17,6 @@ $(document).ready(function () {
      * Evènement déclenché par le click du bouton "Enregistrer le voyage"
      */
     $("#SubmitNewTrip").click(function () {
-        /*if (editing == null) {
-         getInformations();
-         } else {
-         alert('poisson d\'avril');
-         }*/
         getInformations();
     });
 

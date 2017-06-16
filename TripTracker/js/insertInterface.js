@@ -113,7 +113,7 @@ $(document).ready(function () {
             msgFilesTooMany: "Vous ne pouvez pas insérer plus de {n} images par étape",
             msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})"
         });
-        $('#insert' + length +" .collapse").collapse("show");
+        $('#insert' + length + " .collapse").collapse("show");
     });
 
     //Défini l'évènement de suppression commandé par la croix
@@ -133,26 +133,31 @@ $(document).ready(function () {
         var confirmation = confirm("Voulez-vous vraiment supprimer cette étape ?");
         if (confirmation) {
             //Récupèration de l'id de la cible
-        var id = event.target.id;
-        //Récupèraction du numéro du panel
-        var position = id.substring(5, id.length);
-        //Génération de l'id du panel
-        var DeleteItemID = "#insert" + position;
-        //Suppression du panel
-        $(DeleteItemID).remove();
-        if (position == focus) {
-            //Le focus ne doit pas rester sur un panel supprimé
-            focus = null;
-        }
-        //Masquer le marqueur si il est défini
-        if (creationMarkers[position] !== "none" && creationMarkers[position] !== null) {
-            creationMarkers[position].setMap(null);
-        }
-        //Supprimer le marqueur
-        creationMarkers[position] = null;
+            var id = event.target.id;
+            //Récupèraction du numéro du panel
+            var position = id.substring(5, id.length);
 
-        //Supprimer les routes liées à cette étape
-        suppressRoadsOfDot(position);
+            if (!isNaN(position)) {
+                if (position >= 0 && position < count) {
+                    //Génération de l'id du panel
+                    var DeleteItemID = "#insert" + position;
+                    //Suppression du panel
+                    $(DeleteItemID).remove();
+                    if (position == focus) {
+                        //Le focus ne doit pas rester sur un panel supprimé
+                        focus = null;
+                    }
+                    //Masquer le marqueur si il est défini
+                    if (creationMarkers[position] !== "none" && creationMarkers[position] !== null) {
+                        creationMarkers[position].setMap(null);
+                    }
+                    //Supprimer le marqueur
+                    creationMarkers[position] = null;
+
+                    //Supprimer les routes liées à cette étape
+                    suppressRoadsOfDot(position);
+                }
+            }
         }
     });
 
@@ -166,10 +171,14 @@ $(document).ready(function () {
     $('body').on('click', '.searchLoc', function () {
         var id = event.target.id;
         var ref = id.substring(7, id.length);
-        var source = "#adress" + ref;
-        var address = $(source).val();
-        if (address.length > 0) {
-            getPositionFromAdresse(address);
+        if (!isNaN(ref)) {
+            if (ref <= 0 && ref < count) {
+                var source = "#adress" + ref;
+                var address = $(source).val();
+                if (address.length > 0) {
+                    getPositionFromAdresse(address);
+                }
+            }
         }
     });
 
@@ -191,6 +200,7 @@ $(document).ready(function () {
          * Déclencher une boucle infini. La variable coll est donc nécessaire 
          * pour que l'évenement agisse différement s'il est appellé par une 
          * action de l'utilisateur ou s'il est appelé par lui même*/
+
         if (creating) {
             if (coll) { //L'évenèment est-il appelé par une action ?
                 //Le prochain ne le sera pas
@@ -202,8 +212,12 @@ $(document).ready(function () {
                 //Les prochain evènement seront une action
                 coll = true;
 
-                //Changement de focus
-                focus = id.substring(8, id.length);
+                var ref = id.substring(8, id.length);
+
+                if (!isNaN(ref)) {
+                    //Changement de focus
+                    focus = ref;
+                }
             }
         }
 
@@ -223,14 +237,17 @@ $(document).ready(function () {
      */
     $('body').on('change', '.titleControl', function () {
         var id = event.target.id;
-        var target = "#TripName" + id.substring(5, id.length);
+        var ref = id.substring(5, id.length);
+        var target = "#TripName" + ref;
         var value = event.target.value;
-        if (value.length > 1) {
-            $(target).html(value);
-        }
-        else {
-            //Si le champ titre est vide, on remet l'entête par défaut
-            $(target).html("[Insérer un titre]");
+        if (ref >= 0 && ref < count) {
+            if (value.length > 1 && !isNaN(ref)) {
+                $(target).html(value);
+            }
+            else {
+                //Si le champ titre est vide, on remet l'entête par défaut
+                $(target).html("[Insérer un titre]");
+            }
         }
     }
     );
@@ -280,10 +297,10 @@ function closeInsertInterface() {
     closeAdd(false);
     creating = false;
     editing = null;
-    
+
     //Rechargement des numéro de page
     generatePageLinks();
-    
+
     //Rechargement de la première page
     loadPage(1);
 

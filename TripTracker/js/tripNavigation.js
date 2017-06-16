@@ -26,8 +26,10 @@ $(document).ready(function () {
     $("body").on('click', ".noPage", function () {
         var id = event.target.id;
         var noPage = id.slice(8, id.length);
-        loadPage(noPage);
-        generatePageLinks();
+        if (!isNaN(noPage)) {
+            loadPage(noPage);
+            generatePageLinks();
+        }
     });
 
     /*
@@ -38,7 +40,9 @@ $(document).ready(function () {
             if (typeof $($(event.target).parent()).attr("id") !== "undefined") {
                 var id = $(event.target).parent().attr("id");
                 var ref = id.slice(6, id.length);
-                selectTab(ref);
+                if (!isNaN(ref) && ref >= 0 && ref < 5) {
+                    selectTab(ref);
+                }
             }
 
             if (coll) { //Si l'évènement n'est pas lui-même appellé par un évènement collapse
@@ -70,20 +74,23 @@ $(document).ready(function () {
     $("body").on("click", ".waypoitLink", function () {
         var id = event.target.id;
         var ref = id.slice(6, id.length);
-        findMarker(ref);
-        LoadDetails(ref);
-        closeRight(true);
-        openLeft();
+        if (!isNaN(ref)) {
+            LoadDetails(ref);
+        }
     });
-    
+
     /**
      * Évènement click des icone de stylo présents à droite des panneau de navigation
      */
     $("body").on("click", ".EditTrip", function () {
         var id = event.target.id;
         var ref = id.slice(4, id.length);
-        if ((typeof NavPaths[ref]) !== "undefined") {
-            OpenModif((NavPaths[ref].id));
+        if (!isNaN(ref)) {
+            if (ref >= 0 && ref < 5) {
+                if ((typeof NavPaths[ref]) !== "undefined") {
+                    OpenModif((NavPaths[ref].id));
+                }
+            }
         }
     });
 
@@ -93,10 +100,16 @@ $(document).ready(function () {
     $("body").on("click", ".DeleteTrip", function () {
         var id = event.target.id;
         var ref = id.slice(6, id.length);
-        var tripId = NavPaths[ref].id;
-        var confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce voyage ?");
-        if (confirmation) {
-            DeleteTrip(tripId);
+        if (!isNaN(ref)) {
+            if (ref >= 0 && ref < 5) {
+                if (typeof NavPaths[ref] !== "undefined") {
+                    var tripId = NavPaths[ref].id;
+                    var confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce voyage ?");
+                    if (confirmation) {
+                        DeleteTrip(tripId);
+                    }
+                }
+            }
         }
     });
 });
@@ -271,8 +284,32 @@ function unsetPageDisplay() {
  * @returns {undefined}
  */
 function LoadDetails(tripId) {
-    $("#carouselSection").html(
-            '<div id="carouselWP" class="carousel slide" data-ride="carousel">\n\
+    $.ajax({
+        type: 'post',
+        url: './AJAX/navigationData.php',
+        data: {getWpDetails: true, wpId: tripId},
+        success: function (response) {
+            if (response !== "noResult") {
+                map.setZoom(10);
+                closeRight(true);
+                openLeft();
+                findMarker(tripId);
+                var result = JSON.parse(response);
+                $("#wpTitle").html(result.wpTitle);
+                $("#wpDate").html(result.wpDate);
+                $("#wpComment").html(result.wpComment);
+                $("#wpAddress").html(result.address);
+
+                $("#carouselSection .carousel-indicators").html("");
+                $("#carouselSection .carousel-inner").html("");
+
+                if (result.media.length == 0) {
+                    $("#carouselSection").hide();
+                } else {
+                    $("#carouselSection").show();
+
+                    $("#carouselSection").html(
+                            '<div id="carouselWP" class="carousel slide" data-ride="carousel">\n\
                                 <!-- Indicators -->\n\
                                 <ol class="carousel-indicators">\n\
                                 </ol>\n\
@@ -290,40 +327,23 @@ function LoadDetails(tripId) {
                                     <span class="sr-only">Next</span>\n\
                                 </a>\n\
                             </div>'
-            );
-    $.ajax({
-        type: 'post',
-        url: './AJAX/navigationData.php',
-        data: {getWpDetails: true, wpId: tripId},
-        success: function (response) {
-            var result = JSON.parse(response);
-            $("#wpTitle").html(result.wpTitle);
-            $("#wpDate").html(result.wpDate);
-            $("#wpComment").html(result.wpComment);
-            $("#wpAddress").html(result.address);
+                            );
 
-            $("#carouselSection .carousel-indicators").html("");
-            $("#carouselSection .carousel-inner").html("");
-
-            if (result.media.length == 0) {
-                $("#carouselSection").hide();
-            } else {
-                $("#carouselSection").show();
-                var inc = 0;
-                result.media.forEach(function (media) {
-                    if (inc == 0) {
-                        $("#carouselSection .carousel-indicators").html('<li data-target="#carouselWP" data-slide-to="' + inc + '" class="active"></li>');
-                        $("#carouselSection .carousel-inner").html('<div class="item active"><img src="./usersRessources/image/' + media.mediaName + '" alt=""/></div>');
-                    } else {
-                        $("#carouselSection .carousel-indicators").append('<li data-target="#carouselWP" data-slide-to="' + inc + '"></li>');
-                        $("#carouselSection .carousel-inner").append('<div class="item"><img src="./usersRessources/image/' + media.mediaName + '" alt=""/></div>');
-                    }
-                    inc++;
-                });
+                    var inc = 0;
+                    result.media.forEach(function (media) {
+                        if (inc == 0) {
+                            $("#carouselSection .carousel-indicators").html('<li data-target="#carouselWP" data-slide-to="' + inc + '" class="active"></li>');
+                            $("#carouselSection .carousel-inner").html('<div class="item active"><img src="./usersRessources/image/' + media.mediaName + '" alt=""/></div>');
+                        } else {
+                            $("#carouselSection .carousel-indicators").append('<li data-target="#carouselWP" data-slide-to="' + inc + '"></li>');
+                            $("#carouselSection .carousel-inner").append('<div class="item"><img src="./usersRessources/image/' + media.mediaName + '" alt=""/></div>');
+                        }
+                        inc++;
+                    });
+                }
             }
         }
     });
-    map.setZoom(10);
 }
 
 /**

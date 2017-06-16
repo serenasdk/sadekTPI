@@ -468,8 +468,10 @@ function showFligh(StoragePosition) {
  */
 function suppressRoadsOfDot(dotId) {
     var dot1 = null;
-
-    creationRoutes[Number(dotId) - 1].display.setMap(null);
+    
+    if (typeof creationRoutes[Number(dotId) - 1] !== "string") {
+        creationRoutes[Number(dotId) - 1].display.setMap(null);
+    }
 
     var negaArray = creationMarkers.slice(0, Number(dotId)).reverse();
     dot1 = Number(dotId) - 1;
