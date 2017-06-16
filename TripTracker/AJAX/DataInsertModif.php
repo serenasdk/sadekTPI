@@ -349,7 +349,9 @@ function deleteMedia($idMedia, $co) {
  */
 function removeMedia($idMedia, $co) {
     $name = getMediaName($idMedia, $co);
-    unlink("../usersRessources/image/" . $name);
+    if (file_exists("../usersRessources/image/" . $name)) {
+        unlink("../usersRessources/image/" . $name);
+    }
 }
 
 /**
@@ -382,7 +384,9 @@ function getMediaName($mediaId, $co) {
 function removeMediaFile($wpId, $co) {
     $media = getMediaOfWp($wpId);
     for ($index = 0; $index < count($media); $index++) {
-        unlink("../usersRessources/image/" . $media[$index]["mediaName"]);
+        if (file_exists("../usersRessources/image/" . $media[$index]["mediaName"])) {
+            unlink("../usersRessources/image/" . $media[$index]["mediaName"]);
+        }
     }
 }
 

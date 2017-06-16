@@ -31,8 +31,6 @@ $(document).ready(function () {
         if (count >= 1) {
             var name = "#insert";
             var content = [];
-            
-            console.log("in");
 
             //Récupération du titre du voyage
             var title = $('#titleTrip').val();
@@ -69,7 +67,6 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function checkInformations(content, title) {
-        console.log("in");
         var i = 0;
 
         //Présence d'aucune erreur
@@ -150,8 +147,6 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function areAllPointSet(content, title, ok, inc) {
-        
-        console.log("in");
         /* Si un marqueur n'est pas défini, c'est dans le champs d'adresse du
          * panel correspondant que l'erreur sera indiquée */
 
@@ -224,7 +219,6 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function serializePath(Polylines, content, title) {
-        console.log("in");
         var PathString = "[";
         PathString += "{\"map\": null, \"geodesic\": true, \"path\": [";
         var countA = 0;
@@ -265,7 +259,6 @@ $(document).ready(function () {
      * rien ne sera enregistré ni sur le serveur, ni sur la base de donnée
      */
     function SaveInformations(path, content, title) {
-        console.log("in");
         var data;
         var action;
         var condition;

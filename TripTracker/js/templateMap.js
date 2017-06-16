@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     $('.mini-submenu-left').on('click', function () {
         openRight();
-        closeLeft(true);
+        closeLeft(false);
     });
 
     $('#navDetails .slide-submenu').on('click', function () {
@@ -117,7 +117,7 @@ function openLeft() {
 
             $('#navDetails .sidebar-body').toggle();
             $('#cmdNavDetails').hide();
-        }, 400);
+        }, 450);
     }
 }
 
@@ -133,7 +133,7 @@ function openRight() {
         window.setTimeout(function () {
             $('.sidebar-left .sidebar-body').toggle();
             $('.mini-submenu-left').hide();
-        }), 400;
+        }), 450;
     }
 }
 
