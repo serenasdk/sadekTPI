@@ -2,6 +2,7 @@
  * SADEK Seren
  * Juin 2017
  * TripTracker
+ * LoginRegister.js
  * 
  * Cette page contient les fonctions relatives à la connexion et à l'inscriptions des utilisateur
  * Elle fait aussi office de "portail" pour les call AJAX relatifs à ces fonctionalités

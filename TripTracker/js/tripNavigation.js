@@ -2,6 +2,7 @@
  * SADEK Serena 
  * Juin 2017
  * TripTracker
+ * tripNaviagtion.js
  * 
  * Les fonctions de cette page concernent la nagigation parmis les voyages, 
  * de l'affichage au chargement des données

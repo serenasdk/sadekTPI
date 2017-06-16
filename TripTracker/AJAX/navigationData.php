@@ -4,6 +4,7 @@
  * SADEK Serena 
  * Juin 2017
  * TripTracker
+ * navigationData.php
  * 
  * Cette page regroupe toute les fonctionalités retrounant les informations des 
  * voyages contenu dans la base. Elle est l'aboutissement des call AJAX contenu 

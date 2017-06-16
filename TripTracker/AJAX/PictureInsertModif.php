@@ -4,6 +4,7 @@
  * SADEK Serena
  * Juin 2017
  * TripTracker
+ * PictureInsertModif.php
  * 
  * Cette page contient toute les actions liées à la gestion d'image. Cette page 
  * est appellée via AJAX par tout les input de type file, lors de l'upload ou de

@@ -2,6 +2,7 @@
  * SADEK Serena 
  * Juin 2017
  * TripTracker
+ * inertsDataTratments.js
  * 
  * Les fonctions de cette page concernent le traitement, le formatage et l'envoi
  * des informations rentrées par l'utilsiateur dans le formulaire d'ajour de 

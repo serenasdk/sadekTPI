@@ -2,6 +2,7 @@
  * SADEK Serena
  * Juin 2017
  * TripTracker
+ * modifPlugin.js
  * 
  * Ces fonctionalité s'ajoutent à celles du fichier insertInterface. Les 
  * fonctionalité ajoutée permettent le chargement et la modification des 

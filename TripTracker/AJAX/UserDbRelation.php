@@ -1,15 +1,17 @@
 <?php
-session_start();
 
 /*
  * SADEK Serena
  * Juin 2017
  * TripTracker
+ * UserDbRelation.php
  * 
  * Cette page contient toute les fonction interéagissant avec la base de donnée,
  * en ce qui concerne la table des utilisateur
  * Elle est utilisée pour la connexion et l'inscription
  */
+
+session_start();
 
 require_once '../connection.php';
 

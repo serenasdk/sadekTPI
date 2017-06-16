@@ -1,3 +1,16 @@
+/* 
+ * SADEK Serena 
+ * Juin 2017
+ * TripTracker
+ * templateMap.js
+ * 
+ * Les fonctions de cette page concernent l'essenciel de ce qui concerne Google
+ * Map API. Elle initialise la map et contient les fonctions faisant appel au 
+ * Serveur Google Map API. 
+ * Cette page contient également les fonctionalités développée lors de la préparation,
+ * c'est à dire celle donc l'action est purement cosmétique
+ */
+ 
 var coll = true;
 var creating = false;
 var editing = null;

@@ -2,6 +2,7 @@
  * SADEK Serena
  * Juin 2017
  * TripTracker
+ * insertInterface.js
  * 
  * Toute les fonctions reliées à l'onglet permettant l'insertion de voyage
  */
