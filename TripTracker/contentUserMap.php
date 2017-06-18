@@ -102,7 +102,7 @@
             <div class="panel-collapse collapse in">
                 <div class="panel-body list-group insertPanel">
                     <div id="titleSection" class="form-group">
-                        <input type="text" id="titleTrip" class="form-control col-lg-12" placeholder="Titre du Voyage">
+                        <input type="text"  maxlength="35" id="titleTrip" class="form-control col-lg-12" placeholder="Titre du Voyage">
                     </div>
                     <div>
                         <div id="InsertionContent">

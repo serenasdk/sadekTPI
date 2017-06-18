@@ -86,7 +86,7 @@
                 <h1>Inscription</h1><br>
                 <form method="post" action="index.php">
                     <div id="userNameRegP" class="form-group">
-                        <input type="text" class="form-control" name="user" id="userNameReg" placeholder="Nom d'utilisateur">
+                        <input type="text" class="form-control" maxlength="30"  name="user" id="userNameReg" placeholder="Nom d'utilisateur">
                     </div>
                     <div id="passRegP" class="form-group"><input class="form-control" type="password" name="pass"  id="passReg" placeholder="Mot de passe"></div>
                     <div id="passConfirmRegP" class="form-group"><input type="password" class="form-control" name="passConf" id="passConfirmReg" placeholder="Confirmation du mot de passe"></div>

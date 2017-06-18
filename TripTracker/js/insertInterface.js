@@ -57,7 +57,7 @@ $(document).ready(function () {
                         <div class="form-group">\n\
                             <i class="glyphicon glyphicon-flag col-lg-1"></i>\n\
                             <div id="Ptitle' + length + '" class="input-group col-lg-11">\n\
-                                <input type="text" id="title' + length + '" class="form-control titleControl" placeholder="Titre de L\'étape">\n\
+                                <input type="text" maxlength="30" id="title' + length + '" class="form-control titleControl" placeholder="Titre de L\'étape">\n\
                             </div>\n\
                         </div>\n\
                         <!-- Recherche d\'adresse -->\n\
