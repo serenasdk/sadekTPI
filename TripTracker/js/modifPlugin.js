@@ -165,7 +165,7 @@ function createPanelWithData(wpData) {
         maxFileCount: 9,
         validateInitialCount: true,
         msgFilesTooMany: "Vous ne pouvez pas insérer plus de {n} images par étape",
-        msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})",
+        msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize}Ko)",
         allowedFileTypes: ["image"],
         msgInvalidFileType: "Le fichier {name} n'est pas une image"
     });

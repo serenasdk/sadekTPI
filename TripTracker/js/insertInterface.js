@@ -111,11 +111,12 @@ $(document).ready(function () {
             }, // server upload action ?idState=' + length+"&insert=true"
             uploadAsync: false,
             showUpload: false,
-            maxFileSize: 200.0,
+            maxFileSize: 700.0,
             maxFileCount: 10,
             msgFilesTooMany: "Vous ne pouvez pas insérer plus de {n} images par étape",
-            msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})",
-            allowedFileTypes: ["image"]
+            msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize}Ko)",
+            allowedFileTypes: ["image"],
+            msgInvalidFileType: "Le fichier {name} n'est pas une image"
         });
         $('#insert' + length + " .collapse").collapse("show");
     });
