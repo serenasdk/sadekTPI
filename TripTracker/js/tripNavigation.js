@@ -296,7 +296,7 @@ function LoadDetails(tripId) {
             if (response !== "noResult") {
                 var currentZoom = map.getZoom();
                 if (currentZoom>=10) {
-                    map.setZoom(currentZoom + currentZoom/3);
+                    map.setZoom(17);
                 }else{
                     map.setZoom(10);
                 }

@@ -75,7 +75,7 @@ $(document).ready(function () {
 
         ///     VERIFICATION DU TITRE DU VOYAGE
 
-        if (title.length == 0) { //Le titre n'est pas vide
+        if ($.trim(title).length == 0) { //Le titre n'est pas vide
             ok = false;
             $("#titleSection").addClass("has-error");
         } else {
@@ -112,21 +112,23 @@ $(document).ready(function () {
 
             ///     VERIFICATION DU COMMENTAIRE
 
-            if (element.comment.length == 0) {//Le commentaire n'est pas vide
+            if ($.trim(element.comment).length == 0) {//Le commentaire n'est pas vide
                 hasError = true;
                 $("#Pcomment" + element.ref).addClass("has-error");
             } else {
                 $("#Pcomment" + element.ref).removeClass("has-error");
             }
+            content[i].comment = element.comment.replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
             ///     VERIFICATION DU TITRE DE L'ETAPE
 
-            if (element.title.length == 0) {//Le titre n'est pas vide
+            if ($.trim(element.title).length == 0) {//Le titre n'est pas vide
                 hasError = true;
                 $("#Ptitle" + element.ref).addClass("has-error");
             } else {
                 $("#Ptitle" + element.ref).removeClass("has-error");
             }
+            content[i].title = element.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")
             
             ///     Vérification du type des images
             

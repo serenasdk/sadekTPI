@@ -245,7 +245,7 @@ $(document).ready(function () {
         var target = "#TripName" + ref;
         var value = event.target.value;
         if (ref >= 0 && ref < count) {
-            if (value.length > 1 && !isNaN(ref)) {
+            if ($.trim(value).length > 1 && !isNaN(ref)) {
                 $(target).html(value);
             } else {
                 //Si le champ titre est vide, on remet l'entête par défaut
