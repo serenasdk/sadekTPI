@@ -10,7 +10,7 @@
  * Cette page contient également les fonctionalités développée lors de la préparation,
  * c'est à dire celle donc l'action est purement cosmétique
  */
- 
+
 var coll = true;
 var creating = false;
 var editing = null;
@@ -102,9 +102,7 @@ $(document).ready(function () {
                     initalCentre.lng()
                     );
             map.setCenter(centre);
-        }
-
-        else if (boundHeight.f > 85) { //Limite haute de la map hors champ
+        } else if (boundHeight.f > 85) { //Limite haute de la map hors champ
             var ecart = boundHeight.f - 85;
             var centre = new google.maps.LatLng(
                     initalCentre.lat() - ecart,
@@ -177,8 +175,7 @@ function closeLeft(reopen) {
         if (reopen) {
             $('#cmdNavDetails').fadeIn();
         }
-    }
-    else {
+    } else {
         if (!reopen) {
             $('#cmdNavDetails').hide();
         }
@@ -342,6 +339,8 @@ function placeMarker(location, address) {
         creationMarkers[focus].address = address;
 
         TraceRoute(focus);
+        
+        PanOnCreationTrip();
     }
 }
 
@@ -481,7 +480,7 @@ function showFligh(StoragePosition) {
  */
 function suppressRoadsOfDot(dotId) {
     var dot1 = null;
-    
+
     if (typeof creationRoutes[Number(dotId) - 1] !== "string") {
         creationRoutes[Number(dotId) - 1].display.setMap(null);
     }

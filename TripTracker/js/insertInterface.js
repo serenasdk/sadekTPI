@@ -20,7 +20,7 @@ var focus = null;
 
 $(document).ready(function () {
 
-    
+
 
     /**
      * Evenèement click du bouton "Ajouter une étape"
@@ -127,7 +127,7 @@ $(document).ready(function () {
             closeInsertInterface();
         }
     });
-    
+
 
     /**
      * Evènement déclenché par la croix d'un panel dynamique
@@ -160,6 +160,9 @@ $(document).ready(function () {
 
                     //Supprimer les routes liées à cette étape
                     suppressRoadsOfDot(position);
+
+
+                    PanOnCreationTrip();
                 }
             }
         }
@@ -224,7 +227,6 @@ $(document).ready(function () {
                 }
             }
         }
-
     });
 
     /**
@@ -309,4 +311,14 @@ function closeInsertInterface() {
 
     //Réouverture de la navigation
     openRight();
+}
+
+function PanOnCreationTrip() {
+    var bounds = new google.maps.LatLngBounds();
+    creationMarkers.forEach(function (marker) {
+        if (typeof marker == "object" && marker !== null) {
+            bounds.extend(marker.getPosition());
+        }
+    });
+    map.fitBounds(bounds);
 }

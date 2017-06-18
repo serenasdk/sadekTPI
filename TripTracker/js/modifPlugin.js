@@ -58,6 +58,8 @@ function generateContent(data) {
         PlaceWaypoint(waypoint, inc);
         inc++;
     });
+    
+    PanOnCreationTrip();
 }
 
 function createPanelWithData(wpData) {
