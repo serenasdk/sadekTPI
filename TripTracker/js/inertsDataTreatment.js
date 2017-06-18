@@ -52,10 +52,21 @@ $(document).ready(function () {
                 }
                 if (count == flag + 1) {
                     //Verification des informations
-                    checkInformations(content, title);
-                    break;
+                    if (content.length > 1) {
+                        checkInformations(content, title);
+                        break;
+                    } else {
+                        $('#InsertionErrorSection').addClass('alert');
+                        $('#InsertionErrorSection').addClass('alert-danger');
+                        $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Il vous faut au moins deux étapes pour composer un voyage');
+                    }
                 }
             }
+        } else {
+            $('#InsertionErrorSection').addClass('alert');
+            $('#InsertionErrorSection').addClass('alert-danger');
+            $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Il vous faut au moins deux étapes pour composer un voyage');
+
         }
     }
 
