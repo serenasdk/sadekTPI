@@ -9,6 +9,7 @@
  * fichiers ajoutés
  */
 
+
 /**
  * Ouvre l'interface de cération en mode modification.
  * @param {type} tripId
@@ -158,10 +159,13 @@ function createPanelWithData(wpData) {
         initialPreviewCount: dataLength,
         initialPreviewShowDelete: true,
         showRemove: showDelete,
-        maxFileSize: 200.0,
-        maxFileCount: 10,
+        maxFileSize: 700.0,
+        maxFileCount: 9,
+        validateInitialCount: true,
         msgFilesTooMany: "Vous ne pouvez pas insérer plus de {n} images par étape",
-        msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})"
+        msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})",
+        allowedFileTypes: ["image"],
+        msgInvalidFileType: "Le fichier {name} n'est pas une image"
     });
 }
 

@@ -20,6 +20,8 @@ var focus = null;
 
 $(document).ready(function () {
 
+    
+
     /**
      * Evenèement click du bouton "Ajouter une étape"
      * Genère un onglet pré-fabriqué, mais unique grâce à la variable count
@@ -112,7 +114,8 @@ $(document).ready(function () {
             maxFileSize: 200.0,
             maxFileCount: 10,
             msgFilesTooMany: "Vous ne pouvez pas insérer plus de {n} images par étape",
-            msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})"
+            msgSizeTooLarge: "L'image {name} dépasse la limite de taille autorisée ({maxSize})",
+            allowedFileTypes: ["image"]
         });
         $('#insert' + length + " .collapse").collapse("show");
     });
@@ -124,7 +127,7 @@ $(document).ready(function () {
             closeInsertInterface();
         }
     });
-
+    
 
     /**
      * Evènement déclenché par la croix d'un panel dynamique
@@ -244,8 +247,7 @@ $(document).ready(function () {
         if (ref >= 0 && ref < count) {
             if (value.length > 1 && !isNaN(ref)) {
                 $(target).html(value);
-            }
-            else {
+            } else {
                 //Si le champ titre est vide, on remet l'entête par défaut
                 $(target).html("[Insérer un titre]");
             }

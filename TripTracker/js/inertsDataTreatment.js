@@ -127,7 +127,30 @@ $(document).ready(function () {
             } else {
                 $("#Ptitle" + element.ref).removeClass("has-error");
             }
+            
+            ///     Vérification du type des images
+            
+            var reg2 = new RegExp(/danger/);
+            var htmlContent = $($($("#picSelect"+element.ref).parent()).parent()).parent().find(".file-caption-name").html();
+            if (reg2.test(htmlContent)) {
+                hasError = true;
+            }
 
+            var regexp = new RegExp(/image*/);
+            var files = $("#picSelect" + element.ref).fileinput('getFileStack');
+            if (files.length > 10) {
+                hasError = true;
+            }
+            files.forEach(function (file) {
+                if (!regexp.test(file.type)) {
+                    hasError = true;
+                }
+                if (Number(file.size)/1024 > 600 ) {
+                    hasError = true;
+                }
+            });
+            
+            console.log()
             //Met le panneau en rouge s'il possède au moins une erreur
             if (hasError) {
                 $("#insert" + element.ref).removeClass("panel-default");
@@ -309,8 +332,7 @@ $(document).ready(function () {
                         $('#InsertionErrorSection').addClass('alert-danger');
                         $('#InsertionErrorSection').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>' + response + '');
                     }
-                }
-                catch (e)
+                } catch (e)
                 {
                     $('#InsertionErrorSection').addClass('alert');
                     $('#InsertionErrorSection').addClass('alert-danger');
