@@ -161,7 +161,7 @@ $(document).ready(function () {
                     //Supprimer les routes liées à cette étape
                     suppressRoadsOfDot(position);
 
-
+                    //Centre la map sur le nouveau tracé
                     PanOnCreationTrip();
                 }
             }

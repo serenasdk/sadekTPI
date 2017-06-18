@@ -9,9 +9,6 @@
  * voyage.
  */
 
-//Expression régulière pour jj/mm/aaaa
-var regExpDate = new RegExp(/^(((0[1-9]|[12][0-9]|30)[-\/]?(0[13-9]|1[012])|31[-\/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-\/]?02)[-\/]?[0-9]{4}|29[-\/]?02[-\/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/);
-
 $(document).ready(function () {
 
     /**
@@ -68,6 +65,9 @@ $(document).ready(function () {
      * @returns {undefined}
      */
     function checkInformations(content, title) {
+        //Expression régulière pour jj/mm/aaaa
+        var regExpDate = new RegExp(/^(((0[1-9]|[12][0-9]|30)[-\/]?(0[13-9]|1[012])|31[-\/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-\/]?02)[-\/]?[0-9]{4}|29[-\/]?02[-\/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/);
+
         var i = 0;
 
         //Présence d'aucune erreur
@@ -129,11 +129,11 @@ $(document).ready(function () {
                 $("#Ptitle" + element.ref).removeClass("has-error");
             }
             content[i].title = element.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-            
+
             ///     Vérification du type des images
-            
+
             var reg2 = new RegExp(/danger/);
-            var htmlContent = $($($("#picSelect"+element.ref).parent()).parent()).parent().find(".file-caption-name").html();
+            var htmlContent = $($($("#picSelect" + element.ref).parent()).parent()).parent().find(".file-caption-name").html();
             if (reg2.test(htmlContent)) {
                 hasError = true;
             }
@@ -147,11 +147,11 @@ $(document).ready(function () {
                 if (!regexp.test(file.type)) {
                     hasError = true;
                 }
-                if (Number(file.size)/1024 > 600 ) {
+                if (Number(file.size) / 1024 > 600) {
                     hasError = true;
                 }
             });
-            
+
             console.log()
             //Met le panneau en rouge s'il possède au moins une erreur
             if (hasError) {
