@@ -61,22 +61,25 @@ if (isset($_POST["deleteTrip"])) {
  * l'aide d'une transaction.
  */
 if (isset($_POST["insert"])) {
+
+
+    $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING);
+    $path = $_POST["path"];
+
+    $content = $_POST["content"];
+    $content = json_decode($content);
+
     try {
         $ids = array();
 
         $connection = getConnection();
         $connection->beginTransaction();
 
-        $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING);
-
         $tripId = InsertTrip($title, $connection);
         $fileId = CreatePathTextFile($_POST["path"]);
         setPath($tripId, $fileId, $connection);
 
-        $path = filter_input(INPUT_POST, "path", FILTER_SANITIZE_STRING);
 
-        $content = $_POST["content"];
-        $content = json_decode($content);
 
         for ($index = 0; $index < count($content); $index++) {
 
