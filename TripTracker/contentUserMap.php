@@ -49,6 +49,9 @@
             </div>
             <div id="taskpane" class="panel-collapse collapse in">
                 <div class="panel-body">
+                    <button class="btn btn-default" id="BackToNav">
+                        Retour
+                    </button>
                     <ul class="list-group">
                         <li class="list-group-item">
                             <div class="form-group">

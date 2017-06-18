@@ -8,6 +8,18 @@
  * Elle fait aussi office de "portail" pour les call AJAX relatifs à ces fonctionalités
  */
 $(document).ready(function () {
+
+    $("#register-modal").keypress(function (e) {
+        if (e.which == 13) {
+            $("#register").click();
+        }
+    });
+    
+    $("#login-modal").keypress(function (e) {
+        if (e.which == 13) {
+            $("#login").click();
+        }
+    });
     /**
      * Evènement click du bouton "valider" de la modale de connexion
      */
@@ -46,15 +58,24 @@ $(document).ready(function () {
                         $('#errorSectionLog').addClass('alert-danger');
                         $('#errorSectionLog').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>L\'utilisateur n\'existe pas');
                     } else { // Valeur numérique => Les informations sont correctes
-                        $('#errorSectionLog').addClass('alert');
-                        $('#errorSectionLog').removeClass('alert-danger');
-                        $('#errorSectionLog').addClass('alert-success');
-                        $('#errorSectionLog').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span>Connexion réussie');
-                        setTimeout(function () {
-                            //Lors du call, l'identifiant de l'utilisateur a été ajouté à la session
-                            //La page principale se chargera donc lorsque la page sera rechargée
-                            location.reload();
-                        }, 1500);
+                        var id = response.replace(/"/g, "");
+                        if (isNaN(id)) {
+                            $('#errorSectionLog').addClass('alert');
+                            $('#errorSectionLog').removeClass('alert-success');
+                            $('#errorSectionLog').addClass('alert-danger');
+                            $('#errorSectionLog').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error: </span>' + response);
+                        } else {
+                            $('#errorSectionLog').addClass('alert');
+                            $('#errorSectionLog').removeClass('alert-danger');
+                            $('#errorSectionLog').addClass('alert-success');
+                            $('#errorSectionLog').html('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span> Connexion réussie');
+
+                            setTimeout(function () {
+                                //L'identifiant de l'utilisateur se trouve déjà dans la session
+                                //Il va être redirigé sur sa page personelle lors de l'actualisation de la page
+                                location.reload();
+                            }, 1500);
+                        }
                     }
                 }
             });
@@ -107,8 +128,7 @@ $(document).ready(function () {
                                 //Il va être redirigé sur sa page personelle lors de l'actualisation de la page
                                 //location.reload();
                             }, 1500);
-                        }
-                        else { //Si l'inscription ne s'est pas passée correctement
+                        } else { //Si l'inscription ne s'est pas passée correctement
                             $('#errorSectionReg').addClass('alert');
                             $('#errorSectionReg').removeClass('alert-success');
                             $('#errorSectionReg').addClass('alert-danger');

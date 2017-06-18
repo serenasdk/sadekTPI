@@ -17,10 +17,6 @@ var editing = null;
 
 var creationMarkers = [];
 var creationRoutes = [];
-var currentZoom;
-
-var lastValidBound;
-var lastValidCenter;
 
 $(document).ready(function () {
     //Chargement de la carte
@@ -97,12 +93,13 @@ $(document).ready(function () {
      */
     google.maps.event.addListener(map, 'center_changed', function (event) {
         var boundHeight = map.getBounds().f; // Limite haute et basse de la map
+        var initalCentre = map.getCenter();
 
         if (boundHeight.b < -85) { //Limite basse de la map hors champ
             var ecart = -(boundHeight.b + 85);
             var centre = new google.maps.LatLng(
-                    lastValidCenter.lat() + ecart,
-                    lastValidCenter.lng()
+                    initalCentre.lat() + ecart,
+                    initalCentre.lng()
                     );
             map.setCenter(centre);
         }
@@ -110,8 +107,8 @@ $(document).ready(function () {
         else if (boundHeight.f > 85) { //Limite haute de la map hors champ
             var ecart = boundHeight.f - 85;
             var centre = new google.maps.LatLng(
-                    lastValidCenter.lat() - ecart,
-                    lastValidCenter.lng()
+                    initalCentre.lat() - ecart,
+                    initalCentre.lng()
                     );
             map.setCenter(centre);
         }

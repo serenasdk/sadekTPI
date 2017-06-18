@@ -21,6 +21,11 @@ $(document).ready(function () {
     //Chargement de la permière page
     loadPage(1);
 
+    $("#BackToNav").click(function(){
+        closeLeft(false);
+        openRight();
+    });
+
     /*
      * Évènement click sur un lien (numéro de page), généré automatiquement
      */
@@ -253,8 +258,6 @@ function drawMarkers(pageFullData) {
 function createMarkerClickEvent(id, positionA, positionB) {
     google.maps.event.addListener(NavMarkers[positionA][positionB], 'click', function () {
         LoadDetails(id);
-        closeRight(true);
-        openLeft();
         panOnMarker(NavMarkers[positionA][positionB]);
     });
 }
@@ -291,7 +294,13 @@ function LoadDetails(tripId) {
         data: {getWpDetails: true, wpId: tripId},
         success: function (response) {
             if (response !== "noResult") {
-                map.setZoom(10);
+                var currentZoom = map.getZoom();
+                if (currentZoom>=10) {
+                    map.setZoom(currentZoom + currentZoom/3);
+                }else{
+                    map.setZoom(10);
+                }
+                
                 closeRight(true);
                 openLeft();
                 findMarker(tripId);
