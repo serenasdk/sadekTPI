@@ -260,9 +260,9 @@ function getAdresseFromPosition(Position) {
                 placeMarker(Position, results[0].formatted_address);
                 var id = "#adress" + focus;
                 $(id).val(results[1].formatted_address);
-            } else {
-                alert('Pas d\'adresse réferencée pour cette position');
             }
+        } else if (status == "ZERO_RESULTS") {
+            alert("Pas d'adresse référencée pour cette position");
         } else {
             window.alert('Geocoder failed due to: ' + status);
         }
@@ -285,6 +285,8 @@ function getPositionFromAdresse(Adresse) {
                     results[0].geometry.location.lat(),
                     results[0].geometry.location.lng()),
                     results[0].formatted_address);
+        } else if (status == "ZERO_RESULTS") {
+            alert("Cette adresse n'existe pas");
         } else {
             window.alert('Geocoder failed due to: ' + status);
         }
@@ -339,7 +341,7 @@ function placeMarker(location, address) {
         creationMarkers[focus].address = address;
 
         TraceRoute(focus);
-        
+
         PanOnCreationTrip();
     }
 }
