@@ -23,7 +23,7 @@ $(document).ready(function () {
 
 
     /**
-     * Evenèement click du bouton "Ajouter une étape"
+     * Evenèment click du bouton "Ajouter une étape"
      * Genère un onglet pré-fabriqué, mais unique grâce à la variable count
      */
     $("#AddState").click(function () {
@@ -314,6 +314,10 @@ function closeInsertInterface() {
     openRight();
 }
 
+/**
+ * cadre la map sur les marqueurs de l'interface de création
+ * @returns {undefined}
+ */
 function PanOnCreationTrip() {
     var bounds = new google.maps.LatLngBounds();
     creationMarkers.forEach(function (marker) {

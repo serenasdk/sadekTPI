@@ -6,7 +6,7 @@
  * TripTracker
  * callDisconect.php
  * 
- * Cette page, lorsqu'elle est appellée via AJAX, déconecte l'utilisateur.
+ * Cette page, lorsqu'elle est appellée via AJAX, déconnecte l'utilisateur.
  */
 
 session_start();

@@ -15,6 +15,10 @@ session_start();
 
 require_once '../connection.php';
 
+
+/**
+ * Processus d'inscription
+ */
 if (isset($_POST["register"])) {
     $result = [];
     $username = filter_input(INPUT_POST, "userName", FILTER_SANITIZE_STRING);
@@ -37,6 +41,9 @@ if (isset($_POST["register"])) {
     echo json_encode($result);
 }
 
+/**
+ * Pocessus de connexion
+ */
 if (isset($_POST["login"])) {
     $username = filter_input(INPUT_POST, "userName", FILTER_SANITIZE_STRING);
     $pwd = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
@@ -48,6 +55,11 @@ if (isset($_POST["login"])) {
     echo json_encode($result);
 }
 
+/**
+ * Vérifie si un utilisasteur portant de nom existe dans la base de donnée
+ * @param type $username
+ * @return boolean
+ */
 function userExist($username) {
     $co = getConnection();
     $req = $co->prepare("SELECT * FROM user WHERE `userName` LIKE :userName");
