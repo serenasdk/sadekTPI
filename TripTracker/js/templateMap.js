@@ -365,20 +365,22 @@ function TracePreviousRoad(PlaceId) {
     if (PlaceId - 1 >= 0) {
         var negaArray = creationMarkers.slice(0, PlaceId).reverse();
         var count = PlaceId - 1;
+        var flag = true;
         negaArray.forEach(function (element) {
-            if (creationMarkers[count] !== null) {
-                if (creationMarkers[count] == "none") {
-                    return;
-                } else {
-                    if (typeof creationRoutes[PlaceId - 1] == "object") {
-                        creationRoutes[PlaceId - 1].display.setMap(null);
-                    }
-                    setPath(creationMarkers[count], creationMarkers[PlaceId], PlaceId - 1);
-                    if (true) {
-                        return;
+            if (flag) {
+                if (creationMarkers[count] !== null) {
+                    if (creationMarkers[count] == "none") {
+                        flag = false;
+                    } else {
+                        if (typeof creationRoutes[PlaceId - 1] == "object") {
+                            creationRoutes[PlaceId - 1].display.setMap(null);
+                        }
+                        setPath(creationMarkers[count], creationMarkers[PlaceId], PlaceId - 1);
+                        flag = false;
                     }
                 }
             }
+
             count--;
         });
     }
@@ -390,21 +392,21 @@ function TracePreviousRoad(PlaceId) {
  * @returns {undefined}
  */
 function TraceNextRoad(PlaceId) {
-
     if (Number(PlaceId) + 1 < creationMarkers.length) {
         var posiArray = creationMarkers.slice(Number(PlaceId) + 1, creationMarkers.length);
         var count = Number(PlaceId) + 1;
+        var flag = true;
         posiArray.forEach(function (element) {
-            if (creationMarkers[count] !== null) {
-                if (creationMarkers[count] == "none") {
-                    return;
-                } else {
-                    if (typeof creationRoutes[count - 1] == "object") {
-                        creationRoutes[count - 1].display.setMap(null);
-                    }
-                    setPath(creationMarkers[PlaceId], creationMarkers[count], count - 1);
-                    if (true) {
-                        return;
+            if (flag) {
+                if (creationMarkers[count] !== null) {
+                    if (creationMarkers[count] == "none") {
+                        flag = false;
+                    } else {
+                        if (typeof creationRoutes[count - 1] == "object") {
+                            creationRoutes[count - 1].display.setMap(null);
+                        }
+                        setPath(creationMarkers[PlaceId], creationMarkers[count], count - 1);
+                        flag = false;
                     }
                 }
             }
@@ -453,12 +455,16 @@ function setPath(position1, position2, StoragePosition) {
     });
 }
 
+function storeRoute(response, sp) {
+
+}
+
 /**
  * Dessine une ligne droite entre deux point ne pouvant pas être reliés par la terre
  * @returns {undefined}
  */
 function drawFlight(position1, position2, StoragePosition) {
-    creationRoutes[StoragePosition]
+    creationRoutes[StoragePosition];
     creationRoutes[StoragePosition].display = new google.maps.Polyline({
         path: [position1, position2],
         geodesic: true,
@@ -505,18 +511,22 @@ function suppressRoadsOfDot(dotId) {
     if (Number(dotId) + 1 < creationMarkers.length) {
         var posiArray = creationMarkers.slice(Number(dotId) + 1, creationMarkers.length);
         var count = Number(dotId) + 1;
+        var flag = true;
         posiArray.forEach(function (element) {
-            if (creationMarkers[count] !== null) {
-                if (creationMarkers[count] == "none") {
-                    return;
-                } else {
-                    creationRoutes[count - 1].display.setMap(null);
-                    creationRoutes[count - 1] = null;
-                    if (dot1 !== null) {
-                        setPath(creationMarkers[dot1], creationMarkers[count], count - 1);
-                    }
-                    if (true) {
-                        return;
+            if (flag) {
+                if (creationMarkers[count] !== null) {
+                    if (creationMarkers[count] == "none") {
+                        flag = false;
+                    } else {
+                        if (creationRoutes[count - 1] !== "none") {
+                            creationRoutes[count - 1].display.setMap(null);
+                            creationRoutes[count - 1] = null;
+                        }
+
+                        if (dot1 !== null) {
+                            setPath(creationMarkers[dot1], creationMarkers[count], count - 1);
+                        }
+                        flag = false;
                     }
                 }
             }

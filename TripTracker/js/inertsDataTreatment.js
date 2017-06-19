@@ -221,7 +221,6 @@ $(document).ready(function () {
             if (typeof response == "object" && response !== null) {
                 if (points.length != 0) {
                     if (typeof response.route == "string") {
-                        console.log(points);
                         points = points.concat({path: response.display.getPath().b});
                     } else {
                         points = points.concat(response.route.routes[0].legs[0].steps);

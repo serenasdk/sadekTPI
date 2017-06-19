@@ -59,6 +59,12 @@ function generateContent(data) {
         inc++;
     });
     
+    var inc2 = 0;
+    creationMarkers.forEach(function(wp){
+        TracePreviousRoad(inc2);
+        inc2++;
+    });
+    
     PanOnCreationTrip();
 }
 
@@ -188,5 +194,5 @@ function PlaceWaypoint(wpData, inc) {
     creationMarkers[inc].address = wpData.address;
     creationMarkers[inc].id = wpData.idWaypoint;
 
-    TracePreviousRoad(inc);
+    //TracePreviousRoad(inc);
 }
